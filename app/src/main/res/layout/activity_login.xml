@@ -74,8 +74,8 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="?android:textAppearanceSmall"
                 android:id="@+id/register_account_button"
-                android:layout_marginTop="18dp"
                 android:text="@string/register_form"
                 android:textStyle="bold"/>
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
