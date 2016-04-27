@@ -1,7 +1,9 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
 
+import android.content.pm.PackageInstaller;
 import android.os.Bundle;
+import android.service.textservice.SpellCheckerService;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,8 +41,11 @@ public class FacebookFragment extends Fragment {
         List<String> permissions = new ArrayList<String>();
         permissions.add("email");
         permissions.add("public_profile");
+        permissions.add("user_friends");
         loginButton.setReadPermissions(permissions);
         loginButton.setFragment(this);
+        Log.e("FBOOK", loginButton.getLoginBehavior().toString());
+
 
         // If using in a fragment
 
@@ -68,5 +73,6 @@ public class FacebookFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_facebook, container, false);
 
     }
+
 
 }
