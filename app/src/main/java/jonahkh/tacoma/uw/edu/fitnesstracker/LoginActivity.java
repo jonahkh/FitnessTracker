@@ -25,7 +25,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -59,7 +58,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  * @author Jonah Howard
  * @author Hector Diaz
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,
+        RegisterUserFragment.UserAddListener{
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -84,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -110,6 +111,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        // the register button
+        final Button regBut = (Button) findViewById(R.id.register_button);
+        assert regBut != null;
+        regBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Hide the regisgter button
+                //regBut.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -266,6 +281,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
+    }
+
+    @Override
+    public void addUser(String url) {
+        // TODO the add user method to be implemented
     }
 
     private interface ProfileQuery {

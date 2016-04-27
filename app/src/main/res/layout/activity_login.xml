@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
@@ -75,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="?android:textAppearanceSmall"
-                android:id="@+id/register_account_button"
+                android:id="@+id/register_button"
                 android:text="@string/register_form"
                 android:textStyle="bold"/>
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -88,3 +89,5 @@
 
     </ScrollView>
 </LinearLayout>
+
+    <!--android:id="@+id/register_account_button"-->
