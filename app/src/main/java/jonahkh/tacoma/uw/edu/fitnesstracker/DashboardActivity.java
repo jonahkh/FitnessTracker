@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,10 +18,13 @@ import android.view.MenuItem;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ExerciseFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment;
 
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                    PreDefinedWorkoutFragment.OnListFragmentInteractionListener {
+                    PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
+                    WeightWorkoutListFragment.OnListFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,11 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     @Override
+    public void onListFragmentInteraction(WeightWorkout workout) {
+
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -98,7 +107,7 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Log.e("TAAG", item.getItemId() + "");
         if (id == R.id.nav_predefined_workouts) {
             PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
             getSupportFragmentManager().beginTransaction()
@@ -106,7 +115,11 @@ public class DashboardActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_weight_workouts) {
-
+            WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

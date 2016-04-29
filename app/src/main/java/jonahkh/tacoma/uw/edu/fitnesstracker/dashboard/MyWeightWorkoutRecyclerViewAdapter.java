@@ -9,6 +9,7 @@ import android.widget.TextView;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment.OnListFragmentInteractionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +23,12 @@ public class MyWeightWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyW
     private final OnListFragmentInteractionListener mListener;
 
     public MyWeightWorkoutRecyclerViewAdapter(List<WeightWorkout> items, OnListFragmentInteractionListener listener) {
+        if (items == null) {
+            items = new ArrayList<WeightWorkout>();
+        }
         mValues = items;
         mListener = listener;
+
     }
 
     @Override
