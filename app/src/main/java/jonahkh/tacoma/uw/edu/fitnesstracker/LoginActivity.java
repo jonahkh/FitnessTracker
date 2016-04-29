@@ -138,6 +138,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
+        List<String> permissions = new ArrayList<String>();
+
+        // Set up permissions
+        permissions.add("email");
+        permissions.add("public_profile");
+        permissions.add("user_friends");
 
     }
 
@@ -152,7 +158,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         permissions.add("public_profile");
         permissions.add("user_friends");
         mLoginButton.setReadPermissions(permissions);
-//        LoginManager.getInstance().logInWithReadPermissions(this, permissions);
 
         // Check that profile is logged in
         Profile profile = Profile.getCurrentProfile();

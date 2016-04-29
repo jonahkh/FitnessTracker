@@ -3,11 +3,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_predefined_workouts"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Weight Workouts" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_weight_workouts"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Gallery" />
         <item

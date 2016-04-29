@@ -14,13 +14,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ExerciseFragment;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
+
 public class DashboardActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                    PreDefinedWorkoutFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delete);
+        setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,6 +48,17 @@ public class DashboardActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         Intent intent = getIntent();
 
+    }
+
+    @Override
+    public void onListFragmentInteraction(PreDefinedWorkout workout) {
+        ExerciseFragment exerciseFragment = new ExerciseFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ExerciseFragment.EXERCISE_SELECTED, workout);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, exerciseFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -83,9 +99,13 @@ public class DashboardActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_predefined_workouts) {
+            PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (id == R.id.nav_weight_workouts) {
 
         } else if (id == R.id.nav_slideshow) {
 
