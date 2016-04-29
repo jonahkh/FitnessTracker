@@ -10,7 +10,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,11 +49,22 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
 import com.facebook.FacebookActivity;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -79,12 +93,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private LoginButton mLoginButton;
     private FacebookActivity mFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
+            @Override
+            public void onInitialized() {
+                if(AccessToken.getCurrentAccessToken() == null){
+                    System.out.println("not logged in yet");
+                } else {
+                    System.out.println("Logged in");
+                }
+            }
+        });
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -100,6 +125,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -110,7 +137,59 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mLoginButton = (LoginButton) findViewById(R.id.login_button);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CallbackManager callback = CallbackManager.Factory.create();
+        List<String> permissions = new ArrayList<String>();
+
+        // Set up permissions
+        permissions.add("email");
+        permissions.add("public_profile");
+        permissions.add("user_friends");
+        mLoginButton.setReadPermissions(permissions);
+//        LoginManager.getInstance().logInWithReadPermissions(this, permissions);
+
+        // Check that profile is logged in
+        Profile profile = Profile.getCurrentProfile();
+        if (profile == null) {
+            Log.e("FBOOK", "I am null");
+        } else {
+            Log.e("FBOOK", profile.getFirstName());
+        }
+
+        mLoginButton.registerCallback(callback, new FacebookCallback<LoginResult>() {
+            private ProfileTracker mProfileTracker;
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.e("FBOOK", loginResult.toString());
+                if(Profile.getCurrentProfile() == null) {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            // profile2 is the new profile
+                            Log.v("facebook - profile", profile2.getFirstName());
+                            mProfileTracker.stopTracking();
+                        }
+                    };
+                }
+                Log.e("TAG", "Success");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("TAG", "Cancel");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.e("TAG", "ERROR");
+            }
+        });
     }
 
     /**
