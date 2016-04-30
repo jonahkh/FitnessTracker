@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ExerciseFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkout;
@@ -56,12 +55,13 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(PreDefinedWorkout workout) {
-        Log.e("TAAG", "crash");
-        ExerciseFragment exerciseFragment = new ExerciseFragment();
+//        ExerciseFragment exerciseFragment = new ExerciseFragment();
+        WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
+        weightWorkout.setName(workout.getName());
         Bundle args = new Bundle();
-        args.putSerializable(ExerciseFragment.EXERCISE_SELECTED, workout);
+        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, exerciseFragment)
+                .replace(R.id.fragment_container, weightWorkout)
                 .addToBackStack(null)
                 .commit();
     }
@@ -108,7 +108,6 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Log.e("TAAG", item.getItemId() + "");
         if (id == R.id.nav_predefined_workouts) {
             PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
             getSupportFragmentManager().beginTransaction()

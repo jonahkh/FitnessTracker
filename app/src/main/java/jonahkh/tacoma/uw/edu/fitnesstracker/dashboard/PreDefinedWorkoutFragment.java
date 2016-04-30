@@ -31,8 +31,10 @@ import java.util.List;
  * interface.
  */
 public class PreDefinedWorkoutFragment extends Fragment {
+    /** The url to fetch data from the mysql server. */
     private static final String WORKOUT_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=predefinedworkouts";
+
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -79,7 +81,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
             task.execute(new String[]{WORKOUT_URL});
         } else {
             Toast.makeText(view.getContext(),
-                    "No network connection available. Cannot display courses",
+                    "No network connection available. Cannot display workouts",
                     Toast.LENGTH_SHORT) .show();
         }
         mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
@@ -141,7 +143,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                     }
 
                 } catch (Exception e) {
-                    response = "Unable to download the list of courses, Reason: "
+                    response = "Unable to download the list of predefinedworkouts, Reason: "
                             + e.getMessage();
                 }
                 finally {
@@ -173,8 +175,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
                 mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
-
-
             }
 
         }

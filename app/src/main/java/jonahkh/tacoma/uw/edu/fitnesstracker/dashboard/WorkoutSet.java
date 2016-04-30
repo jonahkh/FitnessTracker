@@ -6,10 +6,12 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 public class WorkoutSet {
     private String mExerciseName;
     private int mReps;
+    private int mSetNumber;
 
-    public WorkoutSet(String exerciseName, int reps) {
+    public WorkoutSet(String exerciseName, int reps, int setNumber) {
         mExerciseName = exerciseName;
         mReps = reps;
+        mSetNumber = setNumber;
     }
 
     public String getExerciseName() {
@@ -18,5 +20,9 @@ public class WorkoutSet {
 
     public int getReps() {
         return mReps;
+    }
+
+    public int getmSetNumber() {
+        return mSetNumber;
     }
 }

@@ -70,6 +70,7 @@ public class ExerciseFragment extends Fragment {
 //                ViewExerciseTask task = new ViewExerciseTask();
 //                task.execute(new String[]{WORKOUT_URL});
 //            }
+            // TODO: Delete this I think
             mExercises = new ArrayList<>();
             mExercises.add(new Exercise("DUMMY"));
             recyclerView.setAdapter(new MyExerciseRecyclerViewAdapter(mExercises, mListener));
