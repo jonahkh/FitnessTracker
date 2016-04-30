@@ -9,6 +9,7 @@ import android.widget.TextView;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment.OnListFragmentInteractionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,11 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
     private final List<PreDefinedWorkout> mValues;
     private final OnListFragmentInteractionListener mListener;
 
+
     public MyPreDefinedWorkoutRecyclerViewAdapter(List<PreDefinedWorkout> items, OnListFragmentInteractionListener listener) {
+        if (items == null) {
+            items = new ArrayList<PreDefinedWorkout>();
+        }
         mValues = items;
         mListener = listener;
     }

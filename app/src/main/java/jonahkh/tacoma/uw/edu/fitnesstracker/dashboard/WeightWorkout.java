@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class WeightWorkout implements Serializable{
 
-    public static final String NAME = "name";
+    public static final String NAME = "workoutName";
     /** Maps exercises for this workout to the sets performed. */
     private Map<Exercise, List<WorkoutSet>> mExercises;
     private String mWorkoutName;
@@ -44,9 +44,9 @@ public class WeightWorkout implements Serializable{
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
-
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
+                    Log.e("NEW_TAG", arr.getJSONObject(i).toString());
                     WeightWorkout weightWorkout = new WeightWorkout(obj.getString(WeightWorkout.NAME));
                     weightWorkoutList.add(weightWorkout);
                 }

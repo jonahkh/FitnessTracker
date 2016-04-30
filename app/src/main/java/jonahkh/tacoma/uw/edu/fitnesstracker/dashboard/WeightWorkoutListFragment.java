@@ -33,7 +33,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class WeightWorkoutListFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~jonahkh/workouts.php?cmd=weightworkouts";
+            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=weightworkouts";
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
@@ -133,7 +133,6 @@ public class WeightWorkoutListFragment extends Fragment {
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
                     String s = "";
                     while ((s = buffer.readLine()) != null) {
-                        Log.e("TAAG", "here");
                         response += s;
                     }
 
