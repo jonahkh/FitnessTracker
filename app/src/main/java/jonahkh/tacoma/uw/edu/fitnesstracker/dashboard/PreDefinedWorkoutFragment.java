@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class PreDefinedWorkoutFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~jonahkh/getWorkouts.php?cmd=predefinedworkouts";
+            = "http://cssgate.insttech.washington.edu/~jonahkh/workouts.php?cmd=predefinedworkouts";
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters

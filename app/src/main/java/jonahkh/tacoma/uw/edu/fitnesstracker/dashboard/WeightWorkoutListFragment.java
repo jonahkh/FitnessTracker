@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class WeightWorkoutListFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~jonahkh/getWorkouts.php?cmd=weightworkouts";
+            = "http://cssgate.insttech.washington.edu/~jonahkh/workouts.php?cmd=weightworkouts";
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
@@ -132,11 +133,12 @@ public class WeightWorkoutListFragment extends Fragment {
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
                     String s = "";
                     while ((s = buffer.readLine()) != null) {
+                        Log.e("TAAG", "here");
                         response += s;
                     }
 
                 } catch (Exception e) {
-                    response = "Unable to download the list of courses, Reason: "
+                    response = "Unable to download the list of weight workouts, Reason: "
                             + e.getMessage();
                 }
                 finally {
