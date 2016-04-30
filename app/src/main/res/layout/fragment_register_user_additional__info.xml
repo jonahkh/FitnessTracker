@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.RegisterUserAdditional_Info">
+
+
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="130dp"
+        android:id="@+id/registerUser_imageButton"
+        android:layout_gravity="center|top"
+        android:backgroundTint="@color/com_facebook_blue"
+        android:src="@android:drawable/ic_menu_camera"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/addImageString"
+        android:textColor="@color/com_facebook_blue"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/birthDay"
+        android:textColor="#000000"
+        android:id="@+id/reigisterUser_birhtday" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/day_spinner"
+        android:entries="@array/Day_array"
+        android:textSize="15sp"
+        android:textColor="#000000"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/month_spinner"
+        android:entries="@array/month_array"
+        android:textColor="#000000" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textColor="#000000"
+        android:id="@+id/year_entered"
+        android:hint="@string/year_str" />
+
+
+</LinearLayout>

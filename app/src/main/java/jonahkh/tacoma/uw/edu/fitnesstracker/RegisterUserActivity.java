@@ -71,6 +71,10 @@ public class RegisterUserActivity extends AppCompatActivity implements RegisterU
     protected void getUserAdditionalInfo() {
         // Takes you back to the previous fragment by popping the current fragment out.
         getSupportFragmentManager().popBackStackImmediate();
-
+        RegisterUserAdditional_Info userOtherInfo = new RegisterUserAdditional_Info();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.activity_register_user_xml, userOtherInfo)
+                .addToBackStack(null)
+                .commit();
     }
 }
