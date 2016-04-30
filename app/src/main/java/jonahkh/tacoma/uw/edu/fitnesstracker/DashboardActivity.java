@@ -56,6 +56,7 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(PreDefinedWorkout workout) {
+        Log.e("TAAG", "crash");
         ExerciseFragment exerciseFragment = new ExerciseFragment();
         Bundle args = new Bundle();
         args.putSerializable(ExerciseFragment.EXERCISE_SELECTED, workout);
