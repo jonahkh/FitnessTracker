@@ -125,6 +125,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        // the register button
+        final Button regBut = (Button) findViewById(R.id.register_account_button);
+        assert regBut != null;
+        regBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Hide the regisgter button
+                //regBut.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);

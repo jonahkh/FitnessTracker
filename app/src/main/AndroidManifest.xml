@@ -45,6 +45,10 @@
             android:name=".DashboardActivity"
             android:label="@string/title_activity_delete"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".RegisterUserActivity"
+            android:parentActivityName=".LoginActivity">
+        </activity>
     </application>
 
 </manifest>
