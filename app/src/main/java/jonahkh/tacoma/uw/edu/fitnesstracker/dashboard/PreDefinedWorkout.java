@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Jonah on 4/29/2016.
  */
 public class PreDefinedWorkout implements Serializable {
-    private static String NAME = "name";
+    private static String NAME = "workoutName";
     private static String TYPE = "type";
     private String mName;
     private String mType;
@@ -33,7 +33,6 @@ public class PreDefinedWorkout implements Serializable {
 
     public static String parseWeightWorkoutJSON(String weightWorkoutJSON, List<PreDefinedWorkout> workoutList) {
         String reason = null;
-        Log.i("TAG", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);

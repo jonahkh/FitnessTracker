@@ -40,6 +40,7 @@ public class WeightWorkoutListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private List<WeightWorkout> mWorkoutList;
+    private WeightWorkout mCurrentWorkout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -52,6 +53,10 @@ public class WeightWorkoutListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    public void setName(String name) {
+        mCurrentWorkout = new WeightWorkout(name);
     }
 
     @Override
@@ -72,9 +77,13 @@ public class WeightWorkoutListFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        String param = "";
+        if (mCurrentWorkout != null) {
+            param = "&name=" + mCurrentWorkout.getWorkoutName();
+        }
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
-            task.execute(new String[]{WORKOUT_URL});
+            task.execute(new String[]{WORKOUT_URL + param});
         }
 //        mWorkoutList = new ArrayList<WeightWorkout>();
         mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
@@ -137,7 +146,7 @@ public class WeightWorkoutListFragment extends Fragment {
                     }
 
                 } catch (Exception e) {
-                    response = "Unable to download the list of weight workouts, Reason: "
+                    response = "Unable to download the list of exercises, Reason: "
                             + e.getMessage();
                 }
                 finally {

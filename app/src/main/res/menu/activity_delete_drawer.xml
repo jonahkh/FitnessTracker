@@ -5,11 +5,11 @@
         <item
             android:id="@+id/nav_predefined_workouts"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Weight Workouts" />
+            android:title="Pre-defined Workouts" />
         <item
             android:id="@+id/nav_weight_workouts"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
