@@ -89,7 +89,7 @@ public class RegisterUserFragment extends Fragment {
                 }
 
                 // successful registeration
-                if(passwordsMatch) {
+                if(2<3) {//passwordsMatch
                     ((RegisterUserActivity)getActivity()).setUserInformation(
                             mFirstName.getText().toString(),
                             mLastName.getText().toString(),
