@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.RegisterUserAdditional_Info">
+    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.RegisterUserAdditional_Info"
+    android:weightSum="1">
 
 
     <ImageButton
@@ -22,36 +23,161 @@
         android:textColor="@color/com_facebook_blue"
         android:layout_gravity="center_horizontal" />
 
-    <TextView
+    <!--Date of birth (day and Month)-->
+    <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/birthDay"
-        android:textColor="#000000"
-        android:id="@+id/reigisterUser_birhtday" />
+        android:layout_height="20dp"
+        android:layout_weight="0.08">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/birthDay"
+            android:textColor="#000000" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/day_spinner"
-        android:entries="@array/Day_array"
-        android:textSize="15sp"
-        android:textColor="#000000"/>
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/day_spinner"
+            android:entries="@array/Day_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/month_spinner"
-        android:entries="@array/month_array"
-        android:textColor="#000000" />
+        <Spinner
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/month_spinner"
+            android:entries="@array/month_array"
+            android:textColor="#000000" />
+    </TableRow>
 
-    <EditText
+    <!--Date of birth Year-->
+    <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:textColor="#000000"
-        android:id="@+id/year_entered"
-        android:hint="@string/year_str" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/year_str"/>
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:layout_marginLeft="18dp"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            android:id="@+id/year_entered"
+            android:hint="@string/year_hint" />
+    </TableRow>
+
+    <!--Height-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/enter_weightStr"/>
+
+        <EditText
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:gravity="center_horizontal"
+            android:hint="@string/weight_hint"
+            android:id="@+id/registerUser_weight" />
+    </TableRow>
+
+    <!--Height (Ft and In)-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/height_str"/>
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            android:id="@+id/registerUser_heightFt"
+            android:hint="@string/heightFt_hint" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:layout_marginLeft="8dp"
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            android:id="@+id/registerUser_heightIn"
+            android:hint="@string/heightIn_hint" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_str"
+            android:id="@+id/registerUser_cancelBt"
+            android:layout_alignTop="@+id/registerUser_bt"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="100dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_str"
+            android:id="@+id/registerUser_bt"
+            android:layout_marginTop="184dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="100dp" />
+    </RelativeLayout>
 
 
 </LinearLayout>
