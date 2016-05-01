@@ -26,7 +26,7 @@
     <!--Date of birth (day and Month)-->
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_weight="0.08">
         <TextView
             android:layout_width="wrap_content"
@@ -137,12 +137,7 @@
 
     </TableRow>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -150,7 +145,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="144dp"
+        android:layout_weight="1.05">
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
@@ -162,7 +158,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginLeft="40dp"
             android:layout_marginStart="40dp"
-            android:layout_marginBottom="100dp" />
+            android:layout_marginBottom="150dp" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -170,13 +166,12 @@
             android:layout_height="wrap_content"
             android:text="@string/register_str"
             android:id="@+id/registerUser_bt"
-            android:layout_marginTop="184dp"
-            android:layout_alignParentTop="true"
+            android:layout_marginRight="38dp"
+            android:layout_marginEnd="38dp"
+            android:layout_marginBottom="43dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="100dp" />
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 

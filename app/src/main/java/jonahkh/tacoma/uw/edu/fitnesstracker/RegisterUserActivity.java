@@ -1,8 +1,10 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by Hector on 4/26/2016.
@@ -21,6 +23,18 @@ public class RegisterUserActivity extends AppCompatActivity implements RegisterU
     private String mUserEmail = "";
 
     private String mUserPassword = "";
+
+    private int mDateDOB;
+
+    private int mMonthDOB;
+
+    private int mYearDOB;
+
+    private int mWeight;
+
+    private int mHeightFt;
+
+    private int mHeightIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,5 +90,22 @@ public class RegisterUserActivity extends AppCompatActivity implements RegisterU
                 .replace(R.id.activity_register_user_xml, userOtherInfo)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void setUserAdditionInfo(int dateDOB, int monthDOB, int yearDOB,
+                                    int weight, int heightFt, int heightIn) {
+        mDateDOB = dateDOB;
+        mMonthDOB = monthDOB;
+        mYearDOB = yearDOB;
+        mWeight = weight;
+        mHeightFt = heightFt;
+        mHeightIn = heightIn;
+        // TODO send user registration data to database;
+        String messageDebug = "User Registering Info: "
+                + "\nName: " + mUserFirstName + " " + mUserLastName
+                + "\nemail: " + mUserEmail + "\nPassword: " + mUserPassword
+                + "\nDOB: " + mMonthDOB + "/" + mDateDOB + "/" + mYearDOB
+                + "\nWeight: " + mWeight + "\nHeight: " + mHeightFt + "'" + mHeightIn + "\"";
+        Log.i(TAG, messageDebug);
     }
 }

@@ -55,6 +55,8 @@
     <string name="heightIn_hint">Inches</string>
     <string name="register_str">Register</string>
     <string name="cancel_str">Cancel</string>
+    <string name="error_day_required">Choose a valid Date</string>
+    <string name="error_month_required">Choose a Month</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
