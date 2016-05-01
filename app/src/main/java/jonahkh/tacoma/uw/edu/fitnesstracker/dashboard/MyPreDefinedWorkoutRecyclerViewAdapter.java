@@ -1,9 +1,14 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -29,7 +34,10 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
         }
         mValues = items;
         mListener = listener;
+
     }
+
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,8 +49,8 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
-        holder.mContentView.setText(mValues.get(position).getType());
+        holder.mContentView.setText(mValues.get(position).getName());
+//        holder.mContentView.setText(mValues.get(position).getType());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +64,7 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
         });
     }
 
+
     @Override
     public int getItemCount() {
         return mValues.size();
@@ -63,15 +72,16 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+//        public final ListView mIdView;
         public final TextView mContentView;
         public PreDefinedWorkout mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+//            mIdView = (ListView) view.findViewById(R.id.listView);
+            mContentView = (TextView) view.findViewById(R.id.id);
+//            mContentView = (ListView) view.findViewById(R.id.content);
         }
 
         @Override
