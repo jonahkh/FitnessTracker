@@ -9,7 +9,9 @@ package jonahkh.tacoma.uw.edu.fitnesstracker;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -62,6 +64,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginFragment;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -76,16 +79,13 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
+    /* Id to identity READ_CONTACTS permission request. */
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /** Url to attempt user login. */
     private static final String USER_URL = "http://cssgate.insttech.washington.edu/~_450atm2/login.php?";
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+
+    /* Keep track of the login task to ensure we can cancel it if requested. */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -95,10 +95,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private LoginButton mLoginButton;
     private FacebookActivity mFacebook;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//       mSharedPreferences = getSharedPreferences(getString(R.string.logged_in)
+//                , Context.MODE_PRIVATE);
+        checkLoggedIn();
 //        FacebookSdk.sdkInitialize(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
             @Override
@@ -158,6 +162,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         permissions.add("public_profile");
         permissions.add("user_friends");
 
+    }
+
+    private void checkLoggedIn() {
+        Log.e("check", "I enter the checkLogeg");
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
+        if (mSharedPreferences.getBoolean(getString(R.string.logged_in), false)) {
+            Log.e("also", "in checkedLog");
+            Intent i = new Intent(this, DashboardActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     @Override
@@ -403,6 +419,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
             if (success) {
+                Log.e("HERE", "I'm Here WHEN I SHOULDNT BE");
+                mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                        , Context.MODE_PRIVATE);
+
+                mSharedPreferences.edit()
+                    .putBoolean(getString(R.string.logged_in), true)
+                    .commit();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(intent);

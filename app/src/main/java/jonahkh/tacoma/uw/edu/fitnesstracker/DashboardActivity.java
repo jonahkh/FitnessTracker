@@ -1,6 +1,8 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +26,8 @@ public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener{
+
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,15 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Intent intent = getIntent();
+//        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+//                , Context.MODE_PRIVATE);
 
+//        mSharedPreferences.edit()
+//                .putBoolean(getString(R.string.logged_in), true)
+//                .commit();
     }
+
+
 
     @Override
     public void onListFragmentInteraction(PreDefinedWorkout workout) {
@@ -96,8 +107,15 @@ public class DashboardActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.logout) {
+            Log.e("here", "HEREERERE");
+            mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                    , Context.MODE_PRIVATE);
+            mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
+//            Log.e("newtag", mSharedPreferences.getBoolean(getString(R.string.logged_in), false) + "");
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -134,4 +152,5 @@ public class DashboardActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
