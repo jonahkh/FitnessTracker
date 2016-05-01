@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.Integer;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,6 +31,8 @@ public class RegisterUserAdditional_Info extends Fragment {
     public final String TAG = "Reg Additional Info";
 
     public final int INVALID = -1;
+
+    private byte[] mPhoto = null;
 
     private int mDateDOB;
 
@@ -65,15 +68,21 @@ public class RegisterUserAdditional_Info extends Fragment {
                 mHeightIn = getHeightIn(myView);
                 if(mDateDOB != INVALID && mMonthDOB != INVALID && mYearDOB != INVALID
                         && mWeight != INVALID && mHeightFt != INVALID && mHeightIn != INVALID){
-                    ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mDateDOB, mMonthDOB,
+                    ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mPhoto, mDateDOB, mMonthDOB,
                             mYearDOB, mWeight, mHeightFt, mHeightIn);
-                    // Go to dashboard
 
-                    (Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
-                    Intent intent = new Intent(getActivity().getApplicationContext(), DashboardActivity.class);
-                    startActivity(intent);
-                    getActivity().getSupportFragmentManager().popBackStackImmediate();
+
+                    String url = ((RegisterUserActivity)getActivity()).buildAddUserAddtionaIfoURL();
+                    ((RegisterUserActivity)getActivity()).addUserData(url);
+//                    boolean addedUserAddtionalInfo = ((RegisterUserActivity)getActivity()).mSuccesful;
+//                    if(addedUserAddtionalInfo) {
+                        // Go to dashboard
+//                        (Toast.makeText(getActivity().getApplicationContext(),
+//                                R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
+//                        Intent intent = new Intent(getActivity().getApplicationContext(), DashboardActivity.class);
+//                        startActivity(intent);
+//                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+//                    }
                 }
             }
         });
@@ -164,4 +173,6 @@ public class RegisterUserAdditional_Info extends Fragment {
         Log.i(TAG, "Month Selected (int): " + monthSelec);
         return monthSelec;
     }
+
+
 }

@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.net.URLEncoder;
+
 import jonahkh.tacoma.uw.edu.fitnesstracker.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
@@ -25,38 +27,14 @@ public class RegisterUserFragment extends Fragment {
 
     public final String TAG = "Register User Fragment";
 
+    private final static String USER_ADD_URL
+            = "http://cssgate.insttech.washington.edu/~_450atm2/addUser.php?";
+
     private EditText mFirstName;
     private EditText mLastName;
     private EditText mEmail;
     private EditText mPassword;
     private EditText mConfirmPassword;
-
-    // TODO PHP file to be modified because it only takes email and password
-    private final static String USER_ADD_URL
-            = "http://cssgate.insttech.washington.edu/~hectord/Android/addUser.php?";
-
-    private UserAddListener mListener;
-
-//    public String getUserEmail() {
-//        return mEmail.getText().toString();
-//    }
-
-
-    public interface UserAddListener {
-        public void addUser(String url);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof UserAddListener) {
-            mListener = (UserAddListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement CourseAddListener");
-        }
-    }
-
 
     public RegisterUserFragment() {
         // Required empty public constructor
@@ -95,11 +73,15 @@ public class RegisterUserFragment extends Fragment {
                             mLastName.getText().toString(),
                             mEmail.getText().toString(),
                             mPassword.getText().toString());
-                    ((RegisterUserActivity)getActivity()).getUserAdditionalInfo();
-//                    (Toast.makeText(getActivity().getApplicationContext(),
-//                            R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
-//                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
-//                    startActivity(intent);
+                    String addUserURL = buildAddUserURL();
+                    ((RegisterUserActivity)getActivity()).addUserData(addUserURL);
+//                    boolean addedUser = ((RegisterUserActivity)getActivity()).mSuccesful;
+//                    Log.i(TAG, "Continue: " + addedUser);
+//                    if(addedUser) {
+//                        ((RegisterUserActivity)getActivity()).getUserAdditionalInfo();
+//                    } else {
+//                        mEmail.requestFocus();
+//                    }
                 }
             }
         });
@@ -147,5 +129,29 @@ public class RegisterUserFragment extends Fragment {
             mConfirmPassword.requestFocus();
         }
         return notEmpty;
+    }
+
+    /** method that will build the url for calling the AsyncTask.  */
+    private String buildAddUserURL() {
+
+        StringBuilder sb = new StringBuilder(USER_ADD_URL);
+
+        try {
+            String email = mEmail.getText().toString();
+            sb.append("email=");
+            sb.append(email);
+
+
+            String pwd = mPassword.getText().toString();
+            sb.append("&pwd=");
+            sb.append(URLEncoder.encode(pwd, "UTF-8"));
+
+            Log.i(TAG, sb.toString());
+        }
+        catch(Exception e) {
+            Toast.makeText( getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        }
+        return sb.toString();
     }
 }
