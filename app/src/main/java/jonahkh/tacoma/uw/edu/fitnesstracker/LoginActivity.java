@@ -100,10 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//       mSharedPreferences = getSharedPreferences(getString(R.string.logged_in)
-//                , Context.MODE_PRIVATE);
         checkLoggedIn();
-//        FacebookSdk.sdkInitialize(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
             @Override
             public void onInitialized() {
@@ -164,12 +161,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
+    /**
+     * Check whether the user is already logged in. If so, go straight to the dashboard.
+     */
     private void checkLoggedIn() {
-        Log.e("check", "I enter the checkLogeg");
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
         if (mSharedPreferences.getBoolean(getString(R.string.logged_in), false)) {
-            Log.e("also", "in checkedLog");
             Intent i = new Intent(this, DashboardActivity.class);
             startActivity(i);
             finish();
@@ -419,13 +417,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
             if (success) {
-                Log.e("HERE", "I'm Here WHEN I SHOULDNT BE");
+                // Store user email and record that they are logged in
                 mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                         , Context.MODE_PRIVATE);
-
-                mSharedPreferences.edit()
-                    .putBoolean(getString(R.string.logged_in), true)
-                    .commit();
+                mSharedPreferences.edit().putString(getString(R.string.current_email), mEmail)
+                        .commit();
+                mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).commit();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(intent);

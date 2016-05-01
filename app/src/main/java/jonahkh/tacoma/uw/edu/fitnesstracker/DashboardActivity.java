@@ -54,19 +54,12 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Intent intent = getIntent();
-//        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
-//                , Context.MODE_PRIVATE);
-
-//        mSharedPreferences.edit()
-//                .putBoolean(getString(R.string.logged_in), true)
-//                .commit();
     }
 
 
 
     @Override
     public void onListFragmentInteraction(PreDefinedWorkout workout) {
-//        ExerciseFragment exerciseFragment = new ExerciseFragment();
         WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
         weightWorkout.setName(workout.getName());
         Bundle args = new Bundle();
@@ -108,11 +101,9 @@ public class DashboardActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
-            Log.e("here", "HEREERERE");
             mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                     , Context.MODE_PRIVATE);
             mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
-//            Log.e("newtag", mSharedPreferences.getBoolean(getString(R.string.logged_in), false) + "");
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -132,20 +123,12 @@ public class DashboardActivity extends AppCompatActivity
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
-        } else if (id == R.id.nav_weight_workouts) {
+        } else if (id == R.id.view_logged_workouts) {
             WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
