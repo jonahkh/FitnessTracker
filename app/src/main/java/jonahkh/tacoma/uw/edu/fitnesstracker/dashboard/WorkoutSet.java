@@ -7,11 +7,13 @@ public class WorkoutSet {
     private String mExerciseName;
     private int mReps;
     private int mSetNumber;
+    private int mWeight;
 
-    public WorkoutSet(String exerciseName, int reps, int setNumber) {
+    public WorkoutSet(String exerciseName, int reps, int setNumber, int weight) {
         mExerciseName = exerciseName;
         mReps = reps;
         mSetNumber = setNumber;
+        mWeight = weight;
     }
 
     public String getExerciseName() {
@@ -22,7 +24,11 @@ public class WorkoutSet {
         return mReps;
     }
 
-    public int getmSetNumber() {
+    public int getSetNumber() {
         return mSetNumber;
+    }
+
+    public int getWeight() {
+        return mWeight;
     }
 }
