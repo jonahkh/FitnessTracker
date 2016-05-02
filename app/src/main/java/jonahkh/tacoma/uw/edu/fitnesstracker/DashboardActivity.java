@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.MyExerciseExpandableListAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkout;
@@ -28,6 +29,7 @@ public class DashboardActivity extends AppCompatActivity
                     WeightWorkoutListFragment.OnListFragmentInteractionListener{
 
     private SharedPreferences mSharedPreferences;
+    private MyExerciseExpandableListAdapter mExerciseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

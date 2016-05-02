@@ -1,6 +1,7 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -33,7 +34,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class WeightWorkoutListFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=weightworkouts";
+            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=loggedweightworkouts";
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
@@ -77,10 +78,8 @@ public class WeightWorkoutListFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        String param = "";
-        if (mCurrentWorkout != null) {
-            param = "&name=" + mCurrentWorkout.getWorkoutName();
-        }
+        SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+        String param = "&email=" +pref.getString(getString(R.string.current_email), "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{WORKOUT_URL + param});
