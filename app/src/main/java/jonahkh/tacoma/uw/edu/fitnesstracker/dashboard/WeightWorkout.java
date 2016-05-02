@@ -19,6 +19,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
@@ -37,11 +38,20 @@ public class WeightWorkout implements Serializable {
     /** Identifier for this Serializable object. */
     public static final String WORKOUT_SELECTED = "workout_selected";
 
+    /** Name of the workout number for this workout. */
+    public static final String WORKOUT_NUMBER = "workoutNubmer";
+
     /** Maps exercises for this workout to the sets performed. */
     private Map<Exercise, List<WorkoutSet>> mExercises;
 
     /** The name of the current workout. */
     private String mWorkoutName;
+
+    private int mWorkoutNumber;
+
+
+
+    private String mDate;
 
     /** Shared preferences for this Fragment. */
     private SharedPreferences mSharedPreferences;
@@ -54,6 +64,7 @@ public class WeightWorkout implements Serializable {
      */
     public WeightWorkout(String workoutName) {
         mWorkoutName = workoutName;
+        mExercises = new TreeMap<Exercise, List<WorkoutSet>>();
     }
 
     /**
@@ -79,6 +90,41 @@ public class WeightWorkout implements Serializable {
         return mWorkoutName;
     }
 
+    /**
+     * Set the workout number to the passed value.
+     *
+     * @param workoutNumber the workout number for this workout
+     */
+    public void setWorkoutNumber(int workoutNumber) {
+        mWorkoutNumber = workoutNumber;
+    }
+
+    /**
+     * Get the workout number for this weight workout.
+     *
+     * @return the workout number for this weight workout
+     */
+    public int getWorkoutNumber() {
+        return mWorkoutNumber;
+    }
+
+    /**
+     * Return the date this workout was completed.
+     *
+     * @return the date this workout was completed
+     */
+    public String getDate() {
+        return mDate;
+    }
+
+    /**
+     * Set the date for this workout to the passed value.
+     *
+     * @param mDate the date this workout was completed
+     */
+    public void setDate(String mDate) {
+        this.mDate = mDate;
+    }
 
     public static String parsePreDefinedWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
@@ -118,15 +164,16 @@ public class WeightWorkout implements Serializable {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    String workoutName = obj.getString(WeightWorkout.NAME);
+                    String workoutName = obj.getString(NAME);
                     Exercise exercise = new Exercise(obj.getString(Exercise.NAME));
                     WorkoutSet set = new WorkoutSet(exercise.getExerciseName(), obj.getInt(WorkoutSet.REPETITIONS),
                             obj.getInt(WorkoutSet.SET_NUMBER), obj.getInt(WorkoutSet.WEIGHT));
                     int check = checkContains(workoutName, weightWorkoutList);
                     if (check > -1) {
                         weightWorkoutList.get(check).addExercise(exercise, set);
+                        weightWorkoutList.get(check).setWorkoutNumber(obj.getInt(WORKOUT_NUMBER));
                     } else {
-                        WeightWorkout weightWorkout = new WeightWorkout(obj.getString(WeightWorkout.NAME));
+                        WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
                         weightWorkout.addExercise(exercise, set);
                         weightWorkoutList.add(weightWorkout);
                     }
