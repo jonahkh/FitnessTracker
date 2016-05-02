@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker;
+package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 /**
  * Created by Jonah on 4/21/2016.

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.FacebookFragment">
+    tools:context=".authentication.FacebookFragment">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"

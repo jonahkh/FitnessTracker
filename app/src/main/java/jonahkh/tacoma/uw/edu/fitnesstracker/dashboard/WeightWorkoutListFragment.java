@@ -34,7 +34,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class WeightWorkoutListFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=loggedweightworkouts";
+            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=weightworkouts";
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
@@ -42,7 +42,7 @@ public class WeightWorkoutListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<WeightWorkout> mWorkoutList;
     private WeightWorkout mCurrentWorkout;
-
+    private SharedPreferences mSharedPreferences;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -78,8 +78,12 @@ public class WeightWorkoutListFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-        String param = "&email=" +pref.getString(getString(R.string.current_email), "Email does not exist");
+        String param = "";
+        if (mCurrentWorkout != null) {
+            param = "&name=" + mCurrentWorkout.getWorkoutName();
+        }
+//        mSharedPreferences = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//        String param = "&name=" + mSharedPreferences.getString(getString(R.string.current_email), "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{WORKOUT_URL + param});
@@ -133,6 +137,7 @@ public class WeightWorkoutListFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             for (String url : urls) {
                 try {
+                    Log.e("HERE", "In WeightWk;aklsdjfasd");
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
 
@@ -166,7 +171,7 @@ public class WeightWorkoutListFragment extends Fragment {
             }
 
             mWorkoutList = new ArrayList<WeightWorkout>();
-            result = WeightWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
+            result = WeightWorkout.parsePreDefinedWorkoutJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)

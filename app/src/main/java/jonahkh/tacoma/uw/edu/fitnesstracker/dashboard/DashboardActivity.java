@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker;
+package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.MyExerciseExpandableListAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
@@ -72,9 +73,21 @@ public class DashboardActivity extends AppCompatActivity
                 .commit();
     }
 
+
     @Override
     public void onListFragmentInteraction(WeightWorkout workout) {
-
+        // TODO implement this for view logged workouts
+        // When you select a recorded workout, goes to a new Fragment where you are able to view
+        // the exercises completed for that workout
+        final ViewExercisesFragment exercises = new ViewExercisesFragment();
+        exercises.setCurrentExercise(getSharedPreferences(getString(R.string.WORKOUT_INFO),
+                Context.MODE_PRIVATE).getString(getString(R.string.current_workout), "ERROR"));
+        Bundle args = new Bundle();
+        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, exercises);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, exercises)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
