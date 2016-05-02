@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.LoginActivity">
+    tools:context=".authentication.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -82,7 +82,7 @@
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->
                 <!--android:id="@+id/facebook_fragment"-->
-                <!--android:name="jonahkh.tacoma.uw.edu.fitnesstracker.FacebookFragment"-->
+                <!--android:name="jonahkh.tacoma.uw.edu.fitnesstracker.authentication.FacebookFragment"-->
                 <!--&gt;</fragment>-->
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"

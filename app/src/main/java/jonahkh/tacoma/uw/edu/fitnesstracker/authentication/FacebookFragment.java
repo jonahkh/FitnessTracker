@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker;
+package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
 import android.content.pm.PackageInfo;
@@ -29,6 +29,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 
 /**

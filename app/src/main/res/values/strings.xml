@@ -104,4 +104,6 @@
     <string name="logged_in">loggedin</string>
     <string name="LOGIN_PREFS">edu.uw.tacoma.jonahkh.fitnesstracker.PREFS</string>
     <string name="current_email">email</string>
+    <string name="current_workout">current workout</string>
+    <string name="WORKOUT_INFO">edu.uw.tacoma.jonahkh.fitnesstracker.WORKOUTINFO</string>
 </resources>

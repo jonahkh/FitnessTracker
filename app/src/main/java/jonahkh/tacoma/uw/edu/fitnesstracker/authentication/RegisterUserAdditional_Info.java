@@ -1,7 +1,6 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker;
+package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -15,12 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.Integer;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 
 /**

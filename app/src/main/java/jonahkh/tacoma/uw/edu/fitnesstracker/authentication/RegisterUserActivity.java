@@ -1,8 +1,7 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker;
+package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,6 +16,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
  * Created by Hector on 4/26/2016.

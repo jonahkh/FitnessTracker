@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.RegisterUserAdditional_Info"
+    tools:context=".authentication.RegisterUserAdditional_Info"
     android:weightSum="1">
 
 
