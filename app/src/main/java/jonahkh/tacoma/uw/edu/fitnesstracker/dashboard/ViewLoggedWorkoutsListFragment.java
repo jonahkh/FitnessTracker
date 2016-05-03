@@ -9,13 +9,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyPreDefinedWorkoutRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyWeightWorkoutRecyclerViewAdapter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,41 +29,36 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnLoggedWeightWorkoutsListFragmentInteractionListener}
  * interface.
  */
-public class PreDefinedWorkoutFragment extends Fragment {
-    /** The url to fetch data from the mysql server. */
+public class ViewLoggedWorkoutsListFragment extends Fragment {
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=predefinedworkouts";
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
+            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=loggedweightworkouts";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+
+    private OnLoggedWeightWorkoutsListFragmentInteractionListener mListener;
+    private List<WeightWorkout> mWorkoutList;
     private RecyclerView mRecyclerView;
-    private List<PreDefinedWorkout> mWorkoutList;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PreDefinedWorkoutFragment() {
+    public ViewLoggedWorkoutsListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weightworkout_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_logged_workouts_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -73,20 +69,20 @@ public class PreDefinedWorkoutFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
         }
+
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        String param = "&email=" + getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                Context.MODE_PRIVATE).getString(getString(R.string.current_email),
+                "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
-            DownloadPreDefinedWorkoutsTask task = new DownloadPreDefinedWorkoutsTask();
-            task.execute(new String[]{WORKOUT_URL});
-        } else {
-            Toast.makeText(view.getContext(),
-                    "No network connection available. Cannot display workouts",
-                    Toast.LENGTH_SHORT) .show();
+            DownloadWorkoutsTask task = new DownloadWorkoutsTask();
+            task.execute(new String[]{WORKOUT_URL + param});
         }
-        mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
-
+        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
         return view;
     }
 
@@ -94,11 +90,11 @@ public class PreDefinedWorkoutFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnLoggedWeightWorkoutsListFragmentInteractionListener) {
+            mListener = (OnLoggedWeightWorkoutsListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnExerciseListFragmentInteractionListener");
+                    + " must implement OnLoggedWeightWorkoutsListFragmentInteractionListener");
         }
     }
 
@@ -118,11 +114,12 @@ public class PreDefinedWorkoutFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    public interface OnLoggedWeightWorkoutsListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(PreDefinedWorkout workout);
+        void onViewLoggedWeightWorkoutsListFragmentInteraction(WeightWorkout workout);
     }
-    private class DownloadPreDefinedWorkoutsTask extends AsyncTask<String, Void, String> {
+
+    private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {super.onPreExecute();}
 
@@ -144,7 +141,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                     }
 
                 } catch (Exception e) {
-                    response = "Unable to download the list of predefinedworkouts, Reason: "
+                    response = "Unable to download the list of exercises, Reason: "
                             + e.getMessage();
                 }
                 finally {
@@ -163,9 +160,9 @@ public class PreDefinedWorkoutFragment extends Fragment {
                         .show();
                 return;
             }
-            mWorkoutList = new ArrayList<PreDefinedWorkout>();
-//            mWorkoutList = new ArrayList<WeightWorkout>();
-            result = PreDefinedWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
+
+            mWorkoutList = new ArrayList<WeightWorkout>();
+            result = WeightWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
@@ -175,10 +172,8 @@ public class PreDefinedWorkoutFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
+                mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
             }
-
         }
-
     }
 }

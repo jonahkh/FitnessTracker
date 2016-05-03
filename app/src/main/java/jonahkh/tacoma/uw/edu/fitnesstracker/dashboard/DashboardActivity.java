@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-//import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,15 +18,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
-                    WeightWorkoutListFragment.OnListFragmentInteractionListener{
+                    WeightWorkoutListFragment.OnListFragmentInteractionListener,
+        ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener,
+        ExerciseFragment.OnExerciseListFragmentInteractionListener {
 
     private SharedPreferences mSharedPreferences;
-    private MyExerciseExpandableListAdapter mExerciseAdapter;
+//    private MyExerciseExpandableListAdapter mExerciseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class DashboardActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,10 +53,12 @@ public class DashboardActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         // TODO see if support lib
-        drawer.setDrawerListener(toggle);
+        assert drawer != null;
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
         Intent intent = getIntent();
     }
@@ -74,12 +80,33 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(WeightWorkout workout) {
-        // TODO implement this for view logged workouts
-        // When you select a recorded workout, goes to a new Fragment where you are able to view
-        // the exercises completed for that workout
+        // TODO This is for when you select a workout on the predefined workouts list
+        // When you select a workout, you are taken to a new fragment where you can see the list of
+        // exercises associated with that workout and your workout starts
+
+    }
+
+
+    @Override
+    public void onExerciseListFragmentInteraction(WeightWorkout workout) {
+//        Log.e("THIS WORKOUT", "here");
+//        Log.e("THIS WORKOUT", + workout.getWorkoutNumber() + "");
+//        ViewExercisesFragment fragment = new ViewExercisesFragment();
+//        fragment.setWorkout(workout);
+//        Log.e("This workout", workout.toString());
+//        Bundle args = new Bundle();
+//        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, fragment)
+//                .addToBackStack(null)
+//                .commit();
+
+    }
+
+    @Override
+    public void onViewLoggedWeightWorkoutsListFragmentInteraction(WeightWorkout workout) {
         final ViewExercisesFragment exercises = new ViewExercisesFragment();
-        exercises.setCurrentExercise(getSharedPreferences(getString(R.string.WORKOUT_INFO),
-                Context.MODE_PRIVATE).getString(getString(R.string.current_workout), "ERROR"));
+        exercises.setWorkout(workout);
         Bundle args = new Bundle();
         args.putSerializable(WeightWorkout.WORKOUT_SELECTED, exercises);
         getSupportFragmentManager().beginTransaction()
@@ -91,6 +118,7 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -137,7 +165,8 @@ public class DashboardActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.view_logged_workouts) {
-            WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
+//            WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
+            ViewLoggedWorkoutsListFragment fragment = new ViewLoggedWorkoutsListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
@@ -145,8 +174,10 @@ public class DashboardActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 }
