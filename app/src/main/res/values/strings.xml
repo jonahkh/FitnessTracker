@@ -80,6 +80,27 @@
         <item>December</item>
     </string-array>
 
+    <string-array name="gender_array">
+        <item>M</item>
+        <item>F</item>
+    </string-array>
+
+    <string-array name="actityLevel_array">
+        <item>Sedentary</item>
+        <item>Moderately active</item>
+        <item>Vigorously active</item>
+        <item>Extremly active</item>
+    </string-array>
+
+    <string-array name="daysToWorkout_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
 
     <string name="year_str">Year:</string>
     <string name="year_hint">Enter year of Birth (Ex: 1999)</string>
@@ -92,6 +113,9 @@
     <string name="cancel_str">Cancel</string>
     <string name="error_day_required">Choose a valid Date</string>
     <string name="error_month_required">Choose a Month</string>
+    <string name="gender_str">Gender:</string>
+    <string name="activityLv_str">Activity Level:</string>
+    <string name="dayToWorkout_str">Choose # of days to Workout:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

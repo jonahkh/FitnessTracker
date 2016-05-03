@@ -1,6 +1,8 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +59,14 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     private int mHeightIn;
 
+    private char mGender;
+
+    private String mActivityLevel;
+
+    private int mDaysToWorkout;
+
+    private SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +82,6 @@ public class RegisterUserActivity extends AppCompatActivity {
 
 
     public void addUserData(String url) {
-        // TODO to finish this
         AddUserTask task = new AddUserTask();
         task.execute(new String[]{url.toString()});
     }
@@ -101,7 +110,8 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     public void setUserAdditionInfo(byte[] photo, int dateDOB, int monthDOB, int yearDOB,
-                                    int weight, int heightFt, int heightIn) {
+                                    int weight, int heightFt, int heightIn, char gender,
+                                    String activityLevel, int daysToWorkout) {
         mPhoto = photo;
         mDateDOB = dateDOB;
         mMonthDOB = monthDOB;
@@ -109,12 +119,16 @@ public class RegisterUserActivity extends AppCompatActivity {
         mWeight = weight;
         mHeightFt = heightFt;
         mHeightIn = heightIn;
-        // TODO send user registration data to database;
+        mGender = gender;
+        mActivityLevel = activityLevel;
+        mDaysToWorkout = daysToWorkout;
         String messageDebug = "User Registering Info: "
                 + "\nName: " + mUserFirstName + " " + mUserLastName
                 + "\nemail: " + mUserEmail + "\nPassword: " + mUserPassword
                 + "\nDOB: " + mMonthDOB + "/" + mDateDOB + "/" + mYearDOB
-                + "\nWeight: " + mWeight + "\nHeight: " + mHeightFt + "'" + mHeightIn + "\"";
+                + "\nWeight: " + mWeight + "\nHeight: " + mHeightFt + "'" + mHeightIn + "\""
+                +"\nGender: " + mGender + "\nActivity Level: " + mActivityLevel
+                + "\nDays to workout: " + mDaysToWorkout;
         Log.i(TAG, messageDebug);
     }
 
@@ -157,6 +171,18 @@ public class RegisterUserActivity extends AppCompatActivity {
             sb.append("&heightIn=");
             sb.append(heightIn);
 
+            char gender = mGender;
+            sb.append("&gender=");
+            sb.append(URLEncoder.encode(String.valueOf(gender), "UTF-8"));
+
+            String activityLevel = mActivityLevel;
+            sb.append("&activityLevel=");
+            sb.append(URLEncoder.encode(activityLevel, "UTF-8"));
+
+            int daysToWorkout = mDaysToWorkout;
+            sb.append("&daysToWorkout=");
+            sb.append(daysToWorkout);
+
 //            $firstName = isset($_GET['firstName']) ? $_GET['firstName'] : '';
 //            $lastName = isset($_GET['lastName']) ? $_GET['lastName'] : '';
 //            $profilePhoto = isset($_GET['profilePhoto']) ? $_GET['profilePhoto'] : '';
@@ -174,7 +200,13 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
 
-    /** AsyncTask class called CourseAddAsyncTask that will allow us to call the service for adding a course. */
+    public String getUserEmail() {
+        return mUserEmail;
+    }
+
+
+    /** AsyncTask class called CourseAddAsyncTask that will allow us to call the service for adding
+     * user information. */
     private class AddUserTask extends AsyncTask<String, Void, String> {
 
 
@@ -236,10 +268,17 @@ public class RegisterUserActivity extends AppCompatActivity {
                                 .replace(R.id.activity_register_user_xml, userOtherInfo)
                                 .addToBackStack(null)
                                 .commit();
-                        redo = false;
+                        redo = !redo;
                     } else {
                         (Toast.makeText(getApplicationContext(),
                                 R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
+                        // Store user email and record that they are logged in
+                        mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                                , Context.MODE_PRIVATE);
+                        mSharedPreferences.edit().putString(getString(R.string.current_email), mUserEmail)
+                                .commit();
+                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).commit();
+
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);
                         getSupportFragmentManager().popBackStackImmediate();
