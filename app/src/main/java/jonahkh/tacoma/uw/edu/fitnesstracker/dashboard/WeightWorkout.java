@@ -68,7 +68,6 @@ public class WeightWorkout implements Serializable {
         mWorkoutName = workoutName;
         mExercises = new TreeMap<Exercise, List<WorkoutSet>>();
     }
-
     public WeightWorkout(String workoutName, int workoutNumber, String date) {
         mWorkoutName = workoutName;
         mWorkoutNumber = workoutNumber;

@@ -142,7 +142,5 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 view.setAdapter(mAdapter);
             }
         }
-
     }
-
 }

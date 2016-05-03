@@ -89,9 +89,9 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         TextView setView = (TextView) convertView.findViewById(R.id.set_number);
         TextView weightView = (TextView) convertView.findViewById(R.id.weight);
         TextView repsView = (TextView) convertView.findViewById(R.id.reps_performed);
-        setView.setText(Integer.toString(set.getSetNumber()));
-        weightView.setText(Integer.toString(set.getWeight()));
-        repsView.setText(Integer.toString(set.getReps()));
+        setView.setText("Set " + Integer.toString(set.getSetNumber()));
+        weightView.setText("Weight: " + Integer.toString(set.getWeight()));
+        repsView.setText("Reps: " + Integer.toString(set.getReps()));
         return convertView;
     }
 
