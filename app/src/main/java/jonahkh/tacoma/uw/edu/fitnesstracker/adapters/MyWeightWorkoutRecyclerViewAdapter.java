@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
@@ -20,12 +21,12 @@ import java.util.List;
  */
 public class MyWeightWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyWeightWorkoutRecyclerViewAdapter.ViewHolder> {
 
-    private final List<WeightWorkout> mValues;
+    private final List<Exercise> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyWeightWorkoutRecyclerViewAdapter(List<WeightWorkout> items, OnListFragmentInteractionListener listener) {
+    public MyWeightWorkoutRecyclerViewAdapter(List<Exercise> items, OnListFragmentInteractionListener listener) {
         if (items == null) {
-            items = new ArrayList<WeightWorkout>();
+            items = new ArrayList<>();
         }
         mValues = items;
         mListener = listener;
@@ -42,7 +43,7 @@ public class MyWeightWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyW
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getWorkoutName());
+        holder.mIdView.setText(mValues.get(position).getExerciseName());
         holder.mContentView.setText("");
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +67,7 @@ public class MyWeightWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyW
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public WeightWorkout mItem;
+        public Exercise mItem;
 
         public ViewHolder(View view) {
             super(view);

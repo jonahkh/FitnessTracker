@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,8 @@ import java.util.List;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyWeightWorkoutRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 /**
  * A fragment representing a list of Items.
@@ -42,7 +43,7 @@ public class WeightWorkoutListFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
-    private List<WeightWorkout> mWorkoutList;
+    private List<Exercise> mExerciseList;
     private WeightWorkout mCurrentWorkout;
     private SharedPreferences mSharedPreferences;
     /**
@@ -80,18 +81,20 @@ public class WeightWorkoutListFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        String param = "";
-        if (mCurrentWorkout != null) {
-            param = "&name=" + mCurrentWorkout.getWorkoutName();
+        // Retrieve current workout
+        if (mCurrentWorkout == null) {
+            ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
+            mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
+        String param = "&name=" + mCurrentWorkout.getWorkoutName();
 //        mSharedPreferences = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 //        String param = "&name=" + mSharedPreferences.getString(getString(R.string.current_email), "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{WORKOUT_URL + param});
         }
-//        mWorkoutList = new ArrayList<WeightWorkout>();
-        mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
+//        mExerciseList = new ArrayList<WeightWorkout>();
+        mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
 
         return view;
     }
@@ -126,7 +129,7 @@ public class WeightWorkoutListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(WeightWorkout workout);
+        void onListFragmentInteraction(Exercise exercise);
     }
     
     private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
@@ -171,8 +174,8 @@ public class WeightWorkoutListFragment extends Fragment {
                 return;
             }
 
-            mWorkoutList = new ArrayList<WeightWorkout>();
-            result = WeightWorkout.parsePreDefinedWorkoutJSON(result, mWorkoutList);
+            mExerciseList = new ArrayList<>();
+            result = WeightWorkout.parseWeightWorkoutlistExerciseJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
@@ -181,13 +184,11 @@ public class WeightWorkoutListFragment extends Fragment {
             }
 
             // Everything is good, show the list of courses.
-            if (!mWorkoutList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
+            if (!mExerciseList.isEmpty()) {
+                mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
 
 
             }
-
         }
-
     }
 }

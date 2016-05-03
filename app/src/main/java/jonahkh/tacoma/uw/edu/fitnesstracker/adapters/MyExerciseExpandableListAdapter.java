@@ -1,9 +1,13 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +15,33 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Map;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WorkoutSet;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WorkoutSet;
 
 /**
- * Created by jonah on 5/1/2016.
+ * An adapter for the view exercises list. The main list items will display the name of the
+ * exercises for the current workout and then expanding an exercise list item will display all of
+ * the sets for that exercise.
  */
 public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
-    private Map<Exercise, List<WorkoutSet>> mExerciseSets;
+
+    /** The activity that holds this adapter. */
     private Activity mContext;
+
+    /** The list of exercises for the selected workout. */
     private List<Exercise> mExercises;
 
-    public MyExerciseExpandableListAdapter(Activity context, List<Exercise> exercises,
-                                           Map<Exercise, List<WorkoutSet>> exerciseSets) {
+    /**
+     * Initialize a new MyExerciseExpandableListAdapter.
+     *
+     * @param context the Activity that holds this adapter
+     * @param exercises the list of exercises for the current workout
+     */
+    public MyExerciseExpandableListAdapter(Activity context, List<Exercise> exercises) {
         mExercises = exercises;
         mContext = context;
-        mExerciseSets = exerciseSets;
     }
     @Override
     public int getGroupCount() {
@@ -76,6 +88,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(exerciseName);
+
         return convertView;
     }
 
@@ -99,4 +112,5 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
 }

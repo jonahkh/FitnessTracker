@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ExerciseFragment;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.util.List;
 

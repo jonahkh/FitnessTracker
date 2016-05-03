@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
@@ -18,18 +23,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
+/**
+ * This class represents the Dashboard for the FitnessTracker application. It will display
+ * information including the last completed workout, the user's before and after pictures, and will
+ * allow the user to view and/or edit their statistics (weight, height, activity level, etc.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
+ */
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
         ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener,
         ExerciseFragment.OnExerciseListFragmentInteractionListener {
-
-    private SharedPreferences mSharedPreferences;
-//    private MyExerciseExpandableListAdapter mExerciseAdapter;
+    private WeightWorkout mCurrentWorkout;
+    private Bundle mSavedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +73,25 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
-        Intent intent = getIntent();
+        mSavedInstanceState = savedInstanceState;
     }
 
 
 
     @Override
-    public void onListFragmentInteraction(PreDefinedWorkout workout) {
+    public void onListFragmentInteraction(Exercise exercise) {
+
+    }
+
+
+    @Override
+    public void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout) {
+        // TODO This is for when you select a workout on the predefined workouts list
+        // When you select a workout, you are taken to a new fragment where you can see the list of
+        // exercises associated with that workout and your workout starts
+        mCurrentWorkout = workout;
         WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
-        weightWorkout.setName(workout.getName());
+        weightWorkout.setName(workout.getWorkoutName());
         Bundle args = new Bundle();
         args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
         getSupportFragmentManager().beginTransaction()
@@ -77,34 +100,51 @@ public class DashboardActivity extends AppCompatActivity
                 .commit();
     }
 
-
     @Override
-    public void onListFragmentInteraction(WeightWorkout workout) {
-        // TODO This is for when you select a workout on the predefined workouts list
-        // When you select a workout, you are taken to a new fragment where you can see the list of
-        // exercises associated with that workout and your workout starts
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable("current_workout", mCurrentWorkout);
+        super.onSaveInstanceState(savedInstanceState);
 
     }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.getSerializable("current_workout") != null) {
+            mCurrentWorkout = (WeightWorkout) savedInstanceState.getSerializable("current_workout");
+            Log.e("TAGAGAGA", mCurrentWorkout.getWorkoutName());
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void retrieveCurrentWorkout() {
+        onRestoreInstanceState(mSavedInstanceState);
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.e("RESUME", "onRRESUME");
+//        if (mSavedInstanceState != null) {
+//            onRestoreInstanceState(mSavedInstanceState);
+//        }
+//    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        Log.e("ONSTART", "onstart");
+//        onRestoreInstanceState(mSavedInstanceState);
+//    }
 
 
     @Override
     public void onExerciseListFragmentInteraction(WeightWorkout workout) {
-//        Log.e("THIS WORKOUT", "here");
-//        Log.e("THIS WORKOUT", + workout.getWorkoutNumber() + "");
-//        ViewExercisesFragment fragment = new ViewExercisesFragment();
-//        fragment.setWorkout(workout);
-//        Log.e("This workout", workout.toString());
-//        Bundle args = new Bundle();
-//        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack(null)
-//                .commit();
-
+        // TODO delete?
     }
 
     @Override
     public void onViewLoggedWeightWorkoutsListFragmentInteraction(WeightWorkout workout) {
+        mCurrentWorkout = workout;
         final ViewExercisesFragment exercises = new ViewExercisesFragment();
         exercises.setWorkout(workout);
         Bundle args = new Bundle();
@@ -126,10 +166,14 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
+    public WeightWorkout getCurrentWorkout() {
+        return mCurrentWorkout;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.delete, menu);
+        getMenuInflater().inflate(R.menu.dashboard_settings, menu);
         return true;
     }
 
@@ -142,9 +186,10 @@ public class DashboardActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
-            mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+            SharedPreferences preferences
+                    = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                     , Context.MODE_PRIVATE);
-            mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
+            preferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -153,7 +198,6 @@ public class DashboardActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -178,6 +222,7 @@ public class DashboardActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 
 }

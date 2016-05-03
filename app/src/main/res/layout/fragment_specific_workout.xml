@@ -2,14 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.SpecificWorkout">
+    tools:context=".dashboard.SpecificWorkoutFragment">
 
     <ExpandableListView
         android:id="@+id/specific_work_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:groupIndicator="@drawable/group_indicator">
     </ExpandableListView>
+    <!--android:indicatorRight="@drawable/carrot.png">-->
 
 
 </RelativeLayout>
