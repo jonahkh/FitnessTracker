@@ -76,7 +76,7 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
             super(view);
             mView = view;
 //            mWorkoutName = (ListView) view.findViewById(R.id.listView);
-            mContentView = (TextView) view.findViewById(R.id.workout_name);
+            mContentView = (TextView) view.findViewById(R.id.pre_defined_wo_name);
 //            mContentView = (ListView) view.findViewById(R.id.content);
         }
 
