@@ -8,10 +8,13 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -37,8 +40,9 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     private Map<Exercise, List<WorkoutSet>> mExercises;
     private List<WeightWorkout> mWorkoutList;
     private List<Exercise> mExerciseList;
-    private MyExerciseExpandableListAdapter mAdapter;
+    private BaseExpandableListAdapter mAdapter;
     private String mCurrentExercise;
+    private WeightWorkout mCurrentWorkout;
 
     public ViewExercisesFragment() {
         // Required empty public constructor
@@ -48,15 +52,20 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e("EXERCISEFRAG", "EXERCISEFRAG");
+//        Log.e("EXERCISEFRAG", "EXERCISEFRAG");
         View view = inflater.inflate(R.layout.fragment_view_exercises, container, false);
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.WORKOUT_INFO), Context.MODE_PRIVATE);
-        String param = "&email=" + pref.getString(getString(R.string.current_email), "Email does not exist")
-                + "&exercise=" + pref.getString(getString(R.string.current_workout), "Workout does not exist");
+        SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+        String param = "";
+        if (mCurrentWorkout != null) {
+            param = "&email=" + pref.getString(getString(R.string.current_email), "Email does not exist")
+//                + "&exercise=" + pref.getString(getString(R.string.current_workout), "Workout does not exist");
+                    + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
+        }
+        Log.e("EXERCISEFRAG", param);
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{EXERCISE_URL + param});
@@ -74,7 +83,9 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         mCurrentExercise = exerciseName;
     }
 
-
+    public void setWorkout(WeightWorkout workout) {
+        mCurrentWorkout = workout;
+    }
 
     private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
         @Override
@@ -118,8 +129,8 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 return;
             }
 
-            mWorkoutList = new ArrayList<WeightWorkout>();
-            result = WeightWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
+            mExerciseList = new ArrayList<Exercise>();
+            result = WeightWorkout.parseExercisesJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
@@ -128,7 +139,11 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
             }
 
             // Everything is good, show the list of courses.
-            if (!mWorkoutList.isEmpty()) {
+            if (!mExerciseList.isEmpty()) {
+                Log.e("SLDKFJSLJ", "HERE");
+                mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList, mExercises);
+                ExpandableListView view = (ExpandableListView) getActivity().findViewById(R.id.specific_work_list);
+                view.setAdapter(mAdapter);
 //                mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
             }
         }

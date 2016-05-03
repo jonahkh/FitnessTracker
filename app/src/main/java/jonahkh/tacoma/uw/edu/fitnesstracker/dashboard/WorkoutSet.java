@@ -84,4 +84,9 @@ public class WorkoutSet {
     public int getWeight() {
         return mWeight;
     }
+
+    @Override
+    public String toString() {
+        return "Reps: " + mReps + ", Weight: " + mWeight + ", Set Number: " + mSetNumber;
+    }
 }

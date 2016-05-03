@@ -3,6 +3,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
     public MyExerciseExpandableListAdapter(Activity context, List<Exercise> exercises,
                                            Map<Exercise, List<WorkoutSet>> exerciseSets) {
+        Log.e("THIS TAGA", exercises.toString());
         mExercises = exercises;
         mContext = context;
         mExerciseSets = exerciseSets;
@@ -37,7 +39,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mExerciseSets.get(mExercises.get(groupPosition)).size();
+        return mExercises.get(groupPosition).getSets().size();
     }
 
     @Override
@@ -47,7 +49,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mExerciseSets.get(mExercises.get(groupPosition)).get(childPosition);
+        return mExercises.get(groupPosition).getSets().get(childPosition);
     }
 
     @Override
@@ -66,14 +68,16 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {        String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.group_specific_workout, null);
         }
-        TextView item = (TextView) convertView.findViewById(R.id.exericse);
+        TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(exerciseName);
+        Log.e("TAGAA", "here");
         return convertView;
     }
 
@@ -87,14 +91,14 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         TextView setView = (TextView) convertView.findViewById(R.id.set_number);
         TextView weightView = (TextView) convertView.findViewById(R.id.weight);
         TextView repsView = (TextView) convertView.findViewById(R.id.reps_performed);
-        setView.setText(set.getSetNumber());
-        weightView.setText(set.getWeight());
-        repsView.setText(set.getReps());
+        setView.setText(Integer.toString(set.getSetNumber()));
+        weightView.setText(Integer.toString(set.getWeight()));
+        repsView.setText(Integer.toString(set.getReps()));
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }

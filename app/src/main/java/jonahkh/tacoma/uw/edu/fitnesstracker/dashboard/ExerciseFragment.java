@@ -31,6 +31,7 @@ public class ExerciseFragment extends Fragment {
     private int mColumnCount = 1;
     private OnExerciseListFragmentInteractionListener mListener;
     private List<Exercise> mExercises;
+    private List<WeightWorkout> mWorkoutList;
     private RecyclerView mRecyclerView;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,7 +75,7 @@ public class ExerciseFragment extends Fragment {
             // TODO: Delete this I think
             mExercises = new ArrayList<>();
             mExercises.add(new Exercise("DUMMY"));
-            recyclerView.setAdapter(new MyExerciseRecyclerViewAdapter(mExercises, mListener));
+            recyclerView.setAdapter(new MyExerciseRecyclerViewAdapter(mWorkoutList, mListener));
         }
         return view;
     }
@@ -109,6 +110,6 @@ public class ExerciseFragment extends Fragment {
      */
     public interface OnExerciseListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Exercise item);
+        void onExerciseListFragmentInteraction(WeightWorkout workout);
     }
 }

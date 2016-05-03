@@ -35,11 +35,15 @@ public class WeightWorkout implements Serializable {
     /** Name of the exercise in the weight workout table. */
     public static final String EXERCISE = "exercise";
 
+    /** Name of the workout number for this workout. */
+    public static final String NUMBER = "workoutNumber";
+
     /** Identifier for this Serializable object. */
     public static final String WORKOUT_SELECTED = "workout_selected";
 
-    /** Name of the workout number for this workout. */
-    public static final String WORKOUT_NUMBER = "workoutNubmer";
+    /** Name of the date in the weight workout table. */
+    public static final String DATE = "dateCompleted";
+
 
     /** Maps exercises for this workout to the sets performed. */
     private Map<Exercise, List<WorkoutSet>> mExercises;
@@ -48,8 +52,6 @@ public class WeightWorkout implements Serializable {
     private String mWorkoutName;
 
     private int mWorkoutNumber;
-
-
 
     private String mDate;
 
@@ -66,6 +68,13 @@ public class WeightWorkout implements Serializable {
         mWorkoutName = workoutName;
         mExercises = new TreeMap<Exercise, List<WorkoutSet>>();
     }
+
+    public WeightWorkout(String workoutName, int workoutNumber, String date) {
+        mWorkoutName = workoutName;
+        mWorkoutNumber = workoutNumber;
+        mDate = date;
+    }
+
 
     /**
      * Add a set to an exercise for this workout.
@@ -145,17 +154,69 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
-    public void setSharedPreferneces(Activity activity) {
-        mSharedPreferences = activity.getSharedPreferences(activity.getString(R.string.WORKOUT_INFO), Context.MODE_PRIVATE);
-    }
+//    public void setSharedPreferneces(Activity activity) {
+//        mSharedPreferences = activity.getSharedPreferences(activity.getString(R.string.WORKOUT_INFO), Context.MODE_PRIVATE);
+//    }
 
     /**
      * Parse the passed input and convert into a new weight workout.
      *
      * @param weightWorkoutJSON the input being parsed (pulled from database)
-     * @param weightWorkoutList the list being populated based on the input being parsed
+     * @param exerciseList the list being populated based on the input being parsed
      * @return null if no issues, otherwise return the error that occurred
      */
+    public static String parseExercisesJSON(String weightWorkoutJSON, List<Exercise> exerciseList) {
+        String reason = null;
+        Log.e("EXERCISE_TAG", weightWorkoutJSON);
+        if (weightWorkoutJSON != null) {
+            try {
+                JSONArray arr = new JSONArray(weightWorkoutJSON);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+//                    String workoutName = obj.getString(NAME);
+//                    Exercise exercise = new Exercise(obj.getString(Exercise.NAME));
+//                    WorkoutSet set = new WorkoutSet(exercise.getExerciseName(), obj.getInt(WorkoutSet.REPETITIONS),
+//                            obj.getInt(WorkoutSet.SET_NUMBER), obj.getInt(WorkoutSet.WEIGHT));
+//                    int check = checkContains(workoutName, weightWorkoutList);
+//                    if (check > -1) {
+//                        weightWorkoutList.get(check).addExercise(exercise, set);
+//                        weightWorkoutList.get(check).setWorkoutNumber(obj.getInt(NUMBER));
+//                    } else {
+//                        WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
+//                        weightWorkout.addExercise(exercise, set);
+//                        weightWorkoutList.add(weightWorkout);
+//                    }
+                    String exerciseName = obj.getString(Exercise.NAME);
+                    WorkoutSet set = new WorkoutSet(exerciseName,
+                            obj.getInt(WorkoutSet.REPETITIONS),
+                            obj.getInt(WorkoutSet.SET_NUMBER),
+                            obj.getInt(WorkoutSet.WEIGHT));
+                    int check =  checkContainsExercise(exerciseName, exerciseList);
+                    Log.e("CHECKIS", check + "");
+                    if (check > -1) {
+                        exerciseList.get(check).addSet(set);
+                    } else {
+                        Exercise exercise = new Exercise(exerciseName);
+                        exercise.addSet(set);
+                        exerciseList.add(exercise);
+                    }
+                }
+            } catch (JSONException e) {
+                reason =  "Unable to parse data, Reason: " + e.getMessage();
+            }
+        }
+        return reason;
+    }
+
+    private static int checkContainsExercise(String name, List<Exercise> exercises) {
+        for (int i = 0; i < exercises.size(); i++) {
+            if (name.equals(exercises.get(i).getExerciseName())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static String parseWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
         Log.e("EXERCISE_TAG", weightWorkoutJSON);
@@ -164,19 +225,9 @@ public class WeightWorkout implements Serializable {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    String workoutName = obj.getString(NAME);
-                    Exercise exercise = new Exercise(obj.getString(Exercise.NAME));
-                    WorkoutSet set = new WorkoutSet(exercise.getExerciseName(), obj.getInt(WorkoutSet.REPETITIONS),
-                            obj.getInt(WorkoutSet.SET_NUMBER), obj.getInt(WorkoutSet.WEIGHT));
-                    int check = checkContains(workoutName, weightWorkoutList);
-                    if (check > -1) {
-                        weightWorkoutList.get(check).addExercise(exercise, set);
-                        weightWorkoutList.get(check).setWorkoutNumber(obj.getInt(WORKOUT_NUMBER));
-                    } else {
-                        WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
-                        weightWorkout.addExercise(exercise, set);
-                        weightWorkoutList.add(weightWorkout);
-                    }
+                    WeightWorkout workout = new WeightWorkout(obj.getString(NAME),
+                            obj.getInt(NUMBER), obj.getString(DATE).toString());
+                    weightWorkoutList.add(workout);
                 }
             } catch (JSONException e) {
                 reason =  "Unable to parse data, Reason: " + e.getMessage();
@@ -208,6 +259,11 @@ public class WeightWorkout implements Serializable {
      */
     public Map<Exercise, List<WorkoutSet>> getExercises() {
         return mExercises;
+    }
+
+    @Override
+    public String toString() {
+        return mWorkoutName + ", " + mWorkoutNumber + ", " + mExercises.toString();
     }
 
 }

@@ -68,15 +68,15 @@ public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-//        public final ListView mIdView;
+//        public final ListView mWorkoutName;
         public final TextView mContentView;
         public PreDefinedWorkout mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-//            mIdView = (ListView) view.findViewById(R.id.listView);
-            mContentView = (TextView) view.findViewById(R.id.id);
+//            mWorkoutName = (ListView) view.findViewById(R.id.listView);
+            mContentView = (TextView) view.findViewById(R.id.pre_defined_wo_name);
 //            mContentView = (ListView) view.findViewById(R.id.content);
         }
 
