@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -43,7 +45,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     /** The list of predefined workouts. */
-    private List<PreDefinedWorkout> mWorkoutList;
+    private List<WeightWorkout> mWorkoutList;
 
     /** The adapter for this Fragment. */
     private BaseAdapter mAdapter;
@@ -110,7 +112,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(PreDefinedWorkout workout);
+        void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout);
     }
 
     /**
@@ -158,7 +160,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 return;
             }
             mWorkoutList = new ArrayList<>();
-            result = PreDefinedWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
+            result = WeightWorkout.parsePreDefinedWeightWorkoutJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)

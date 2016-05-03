@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +76,6 @@ public class ExerciseFragment extends Fragment {
 //            }
             // TODO: Delete this I think
             mExercises = new ArrayList<>();
-            mExercises.add(new Exercise("DUMMY"));
             recyclerView.setAdapter(new MyExerciseRecyclerViewAdapter(mWorkoutList, mListener));
         }
         return view;

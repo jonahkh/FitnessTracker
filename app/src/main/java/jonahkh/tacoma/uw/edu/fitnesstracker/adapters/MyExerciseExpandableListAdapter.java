@@ -17,8 +17,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WorkoutSet;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WorkoutSet;
 
 /**
  * An adapter for the view exercises list. The main list items will display the name of the
@@ -88,6 +88,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(exerciseName);
+
         return convertView;
     }
 
@@ -111,4 +112,5 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
 }

@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+package jonahkh.tacoma.uw.edu.fitnesstracker.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -7,12 +7,13 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 /**
  * This Fragment displays all of the exercises that have been completed for the currently selected
@@ -66,14 +69,18 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        SharedPreferences pref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+        SharedPreferences pref = getActivity()
+                .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
         String param = "";
-        if (mCurrentWorkout != null) {
-            param = "&email=" + pref.getString(getString(R.string.current_email), "Email does not exist")
-                    + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
+        if (mCurrentWorkout == null) {
+            ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
+            mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
-        Log.e("EXERCISEFRAG", param);
+            param = "&email=" + pref.getString(getString(R.string.current_email),
+                    "Email does not exist")
+                    + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
+
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(EXERCISE_URL + param);
@@ -136,8 +143,10 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                         .show();
                 return;
             }
-
             mExerciseList = new ArrayList<>();
+            if (mCurrentWorkout == null) {
+               mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
+            }
             result = WeightWorkout.parseExercisesJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
             if (result != null) {
@@ -149,9 +158,25 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
                 mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList);
-                ExpandableListView view = (ExpandableListView) getActivity().findViewById(R.id.specific_work_list);
+                ExpandableListView view = (ExpandableListView) getActivity()
+                        .findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
+                view.setGroupIndicator(getResources().getDrawable(R.drawable.group_indicator));
+                DisplayMetrics metrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = metrics.widthPixels;
+                view.setIndicatorBounds(width - 50, width - 5);
+
+//                Drawable drawable;
             }
+
+
+        }
+        public int getDipsFromPixel(float pixels) {
+            // Get the screen's density scale
+            final float scale = getResources().getDisplayMetrics().density;
+            // Convert the dps to pixels, based on density scale
+            return (int) (pixels * scale + 250.5f);
         }
     }
 }

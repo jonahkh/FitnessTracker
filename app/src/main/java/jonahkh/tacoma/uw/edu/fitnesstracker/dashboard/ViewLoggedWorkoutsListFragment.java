@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyViewLoggedWorkoutsRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -159,7 +161,7 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
                 return;
             }
 
-            mWorkoutList = new ArrayList<WeightWorkout>();
+            mWorkoutList = new ArrayList<>();
             result = WeightWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {

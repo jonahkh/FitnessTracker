@@ -3,7 +3,9 @@
  * Hector Diaz
  * TCSS 450 - Team 2
  */
-package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+package jonahkh.tacoma.uw.edu.fitnesstracker.types;
+
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,15 +93,35 @@ public class WeightWorkout implements Serializable {
         return mDate;
     }
 
-    public static String parsePreDefinedWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
+    public static String parsePreDefinedWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    WeightWorkout weightWorkout = new WeightWorkout(obj.getString(WeightWorkout.EXERCISE));
+                    WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
                     weightWorkoutList.add(weightWorkout);
+                }
+            } catch (JSONException e) {
+                reason =  "Unable to parse data, Reason: " + e.getMessage();
+            }
+
+        }
+        return reason;
+    }
+
+    public static String parseWeightWorkoutlistExerciseJSON(String weightWorkoutJSON,
+                                                            List<Exercise> exerciseList) {
+        String reason = null;
+        if (weightWorkoutJSON != null) {
+            try {
+                JSONArray arr = new JSONArray(weightWorkoutJSON);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+//                    WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
+                    Exercise exercise = new Exercise(obj.getString(EXERCISE));
+                    exerciseList.add(exercise);
                 }
             } catch (JSONException e) {
                 reason =  "Unable to parse data, Reason: " + e.getMessage();
@@ -122,6 +144,7 @@ public class WeightWorkout implements Serializable {
      */
     public static String parseExercisesJSON(String weightWorkoutJSON, List<Exercise> exerciseList) {
         String reason = null;
+        Log.e("WEEIGHT", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);

@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
+import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 /**
  * This class represents a layout adapter for the predefined workouts menu option.
@@ -23,7 +25,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 public class PreDefinedWorkoutAdapter extends BaseAdapter {
 
     /** The workouts to be added to the layout. */
-    private final List<PreDefinedWorkout> mValues;
+    private final List<WeightWorkout> mValues;
 
     /** The listener for the list. */
     private final PreDefinedWorkoutFragment.OnListFragmentInteractionListener mListener;
@@ -38,7 +40,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
      * @param items the list of predefined workouts
      * @param listener the listener for this adapter
      */
-    public PreDefinedWorkoutAdapter(Activity context, List<PreDefinedWorkout> items, PreDefinedWorkoutFragment.OnListFragmentInteractionListener listener) {
+    public PreDefinedWorkoutAdapter(Activity context, List<WeightWorkout> items, PreDefinedWorkoutFragment.OnListFragmentInteractionListener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -69,13 +71,13 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
             convertView = infalInflater.inflate(R.layout.fragment_predefinedworkout, null);
         }
         final ViewHolder holder = new ViewHolder(convertView);
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mContentView.setText(mValues.get(position).getWorkoutName());
         holder.mItem = mValues.get(position);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (null != mListener) {
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onPreDefinedWorkoutListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -92,7 +94,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
         /** The textview for the workout name. */
         public final TextView mContentView;
         /** The current predefined workout. */
-        public PreDefinedWorkout mItem;
+        public WeightWorkout mItem;
 
         /**
          * Initializes a new ViewHolder.
