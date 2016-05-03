@@ -52,7 +52,6 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        Log.e("EXERCISEFRAG", "EXERCISEFRAG");
         View view = inflater.inflate(R.layout.fragment_view_exercises, container, false);
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -62,10 +61,8 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         String param = "";
         if (mCurrentWorkout != null) {
             param = "&email=" + pref.getString(getString(R.string.current_email), "Email does not exist")
-//                + "&exercise=" + pref.getString(getString(R.string.current_workout), "Workout does not exist");
                     + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
         }
-        Log.e("EXERCISEFRAG", param);
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{EXERCISE_URL + param});
@@ -140,11 +137,9 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
 
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
-                Log.e("SLDKFJSLJ", "HERE");
                 mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList, mExercises);
                 ExpandableListView view = (ExpandableListView) getActivity().findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
-//                mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
             }
         }
 

@@ -139,7 +139,6 @@ public class WeightWorkoutListFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             for (String url : urls) {
                 try {
-                    Log.e("HERE", "In WeightWk;aklsdjfasd");
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
 

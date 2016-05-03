@@ -106,8 +106,6 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public void onViewLoggedWeightWorkoutsListFragmentInteraction(WeightWorkout workout) {
         final ViewExercisesFragment exercises = new ViewExercisesFragment();
-//        exercises.setCurrentExercise(getSharedPreferences(getString(R.string.WORKOUT_INFO),
-//                Context.MODE_PRIVATE).getString(getString(R.string.current_workout), "ERROR"));
         exercises.setWorkout(workout);
         Bundle args = new Bundle();
         args.putSerializable(WeightWorkout.WORKOUT_SELECTED, exercises);

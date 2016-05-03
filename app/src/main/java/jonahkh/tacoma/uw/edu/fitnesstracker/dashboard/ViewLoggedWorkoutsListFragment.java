@@ -78,7 +78,6 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
         String param = "&email=" + getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
-        Log.e("EMAIL_TAG", param);
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(new String[]{WORKOUT_URL + param});

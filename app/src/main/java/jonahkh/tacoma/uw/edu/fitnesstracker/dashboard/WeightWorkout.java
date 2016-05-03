@@ -137,7 +137,6 @@ public class WeightWorkout implements Serializable {
 
     public static String parsePreDefinedWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
-        Log.e("MYTAG", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
@@ -167,32 +166,17 @@ public class WeightWorkout implements Serializable {
      */
     public static String parseExercisesJSON(String weightWorkoutJSON, List<Exercise> exerciseList) {
         String reason = null;
-        Log.e("EXERCISE_TAG", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-//                    String workoutName = obj.getString(NAME);
-//                    Exercise exercise = new Exercise(obj.getString(Exercise.NAME));
-//                    WorkoutSet set = new WorkoutSet(exercise.getExerciseName(), obj.getInt(WorkoutSet.REPETITIONS),
-//                            obj.getInt(WorkoutSet.SET_NUMBER), obj.getInt(WorkoutSet.WEIGHT));
-//                    int check = checkContains(workoutName, weightWorkoutList);
-//                    if (check > -1) {
-//                        weightWorkoutList.get(check).addExercise(exercise, set);
-//                        weightWorkoutList.get(check).setWorkoutNumber(obj.getInt(NUMBER));
-//                    } else {
-//                        WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
-//                        weightWorkout.addExercise(exercise, set);
-//                        weightWorkoutList.add(weightWorkout);
-//                    }
                     String exerciseName = obj.getString(Exercise.NAME);
                     WorkoutSet set = new WorkoutSet(exerciseName,
                             obj.getInt(WorkoutSet.REPETITIONS),
                             obj.getInt(WorkoutSet.SET_NUMBER),
                             obj.getInt(WorkoutSet.WEIGHT));
                     int check =  checkContainsExercise(exerciseName, exerciseList);
-                    Log.e("CHECKIS", check + "");
                     if (check > -1) {
                         exerciseList.get(check).addSet(set);
                     } else {
@@ -219,7 +203,6 @@ public class WeightWorkout implements Serializable {
 
     public static String parseWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
-        Log.e("EXERCISE_TAG", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);

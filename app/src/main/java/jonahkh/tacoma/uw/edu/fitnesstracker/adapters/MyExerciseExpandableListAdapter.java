@@ -27,7 +27,6 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
     public MyExerciseExpandableListAdapter(Activity context, List<Exercise> exercises,
                                            Map<Exercise, List<WorkoutSet>> exerciseSets) {
-        Log.e("THIS TAGA", exercises.toString());
         mExercises = exercises;
         mContext = context;
         mExerciseSets = exerciseSets;
@@ -77,7 +76,6 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(exerciseName);
-        Log.e("TAGAA", "here");
         return convertView;
     }
 
