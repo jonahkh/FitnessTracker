@@ -130,13 +130,67 @@
             android:hint="@string/heightIn_hint" />
     </TableRow>
 
+    <!--Gender-->
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/gender_str"/>
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:id="@+id/gender_spinner"
+            android:entries="@array/gender_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
 
     </TableRow>
 
+    <!--Activity level-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/activityLv_str"/>
+        <Spinner
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:id="@+id/activtiyLv_spinner"
+            android:entries="@array/actityLevel_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/dayToWorkout_str"/>
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:id="@+id/daysToWorkout_spinner"
+            android:entries="@array/daysToWorkout_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+
+    </TableRow>
 
 
     <FrameLayout
@@ -145,8 +199,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="144dp"
-        android:layout_weight="1.05">
+        android:layout_height="65dp">
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
@@ -166,10 +219,9 @@
             android:layout_height="wrap_content"
             android:text="@string/register_str"
             android:id="@+id/registerUser_bt"
-            android:layout_marginRight="38dp"
-            android:layout_marginEnd="38dp"
-            android:layout_marginBottom="43dp"
-            android:layout_alignParentBottom="true"
+            android:layout_marginRight="34dp"
+            android:layout_marginEnd="34dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>

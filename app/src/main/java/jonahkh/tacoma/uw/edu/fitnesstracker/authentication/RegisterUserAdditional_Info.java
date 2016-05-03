@@ -1,6 +1,10 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,7 +17,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.Integer;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,12 +33,16 @@ import java.util.Date;
 import java.util.Locale;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RegisterUserAdditional_Info extends Fragment {
+
+    private final static String USER_DELETE_URL
+            = "http://cssgate.insttech.washington.edu/~_450atm2/deleteUser.php?";
 
     public final String TAG = "Reg Additional Info";
 
@@ -46,6 +62,14 @@ public class RegisterUserAdditional_Info extends Fragment {
 
     private int mHeightIn;
 
+    private char mGender;
+
+    private String mActivityLevel;
+
+    private int mDaysToWorkout;
+
+    private SharedPreferences mSharedPreferences;
+
     public RegisterUserAdditional_Info() {
         // Required empty public constructor
     }
@@ -55,7 +79,9 @@ public class RegisterUserAdditional_Info extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View myView = inflater.inflate(R.layout.fragment_register_user_additional__info, container, false);
+        final View myView = inflater.inflate(R.layout.fragment_register_user_additional__info,
+                container, false);
+
         Button register = (Button)myView.findViewById(R.id.registerUser_bt);
         register.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -66,28 +92,70 @@ public class RegisterUserAdditional_Info extends Fragment {
                 mWeight = getWeightEntered(myView);
                 mHeightFt = getHeightFt(myView);
                 mHeightIn = getHeightIn(myView);
+                mGender = getGender(myView);
+                mActivityLevel = getActivityLevel(myView);
+                mDaysToWorkout = getDaysToWorkout(myView);
                 if(mDateDOB != INVALID && mMonthDOB != INVALID && mYearDOB != INVALID
                         && mWeight != INVALID && mHeightFt != INVALID && mHeightIn != INVALID){
                     ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mPhoto, mDateDOB, mMonthDOB,
-                            mYearDOB, mWeight, mHeightFt, mHeightIn);
-
+                            mYearDOB, mWeight, mHeightFt, mHeightIn, mGender, mActivityLevel, mDaysToWorkout);
 
                     String url = ((RegisterUserActivity)getActivity()).buildAddUserAddtionaIfoURL();
                     ((RegisterUserActivity)getActivity()).addUserData(url);
-//                    boolean addedUserAddtionalInfo = ((RegisterUserActivity)getActivity()).mSuccesful;
+                }
+            }
+        });
+
+        Button cancelBut = (Button) myView.findViewById(R.id.registerUser_cancelBt);
+        cancelBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                // delete email and password from user
+                String email = ((RegisterUserActivity)getActivity()).getUserEmail();
+                String url = USER_DELETE_URL + "email=" + email;
+                DeleteUserTask task = new DeleteUserTask();
+                Log.i(TAG, url);
+                task.execute(new String[]{url});
+
+                // Load the login activity.
+                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        return myView;
+    }
+
+
+
+    //                    boolean addedUserAddtionalInfo = ((RegisterUserActivity)getActivity()).mSuccesful;
 //                    if(addedUserAddtionalInfo) {
-                        // Go to dashboard
+    // Go to dashboard
 //                        (Toast.makeText(getActivity().getApplicationContext(),
 //                                R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
 //                        Intent intent = new Intent(getActivity().getApplicationContext(), DashboardActivity.class);
 //                        startActivity(intent);
 //                        getActivity().getSupportFragmentManager().popBackStackImmediate();
 //                    }
-                }
-            }
-        });
 
-        return myView;
+    private int getDaysToWorkout(View myView) {
+        Spinner activitySpinner = (Spinner) myView.findViewById(R.id.daysToWorkout_spinner);
+        String numDays = activitySpinner.getSelectedItem().toString();
+        return Integer.parseInt(numDays);
+    }
+
+    private String getActivityLevel(View myView) {
+        Spinner activitySpinner = (Spinner) myView.findViewById(R.id.activtiyLv_spinner);
+        String activityLv = activitySpinner.getSelectedItem().toString();
+        return activityLv;
+    }
+
+
+    private char getGender(View myView) {
+        Spinner genderSpinner = (Spinner) myView.findViewById(R.id.gender_spinner);
+        String gender = genderSpinner.getSelectedItem().toString();
+        return gender.charAt(0);
     }
 
     private int getHeightIn(View myView) {
@@ -174,5 +242,73 @@ public class RegisterUserAdditional_Info extends Fragment {
         return monthSelec;
     }
 
+    /** AsyncTask class called CourseAddAsyncTask that will allow us to call the service for
+     * deleting a user. */
+    private class DeleteUserTask extends AsyncTask<String, Void, String> {
 
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to delete user, Reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+
+        /**
+         * It checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            // Something wrong with the network or the URL.
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String status = (String) jsonObject.get("result");
+                if (status.equals("success")) {
+
+                    // Store user email and record that they are logged in
+                    mSharedPreferences  = getActivity().getSharedPreferences(
+                            getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                    mSharedPreferences.edit().putString(getString(R.string.current_email), "")
+                            .commit();
+                    mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false)
+                            .commit();
+                } else {
+                    Log.e(TAG, "Failed to delete user, Reason: " + jsonObject.get("error"));
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Something wrong with the email" + e.getMessage());
+            }
+        }
+    }
 }
