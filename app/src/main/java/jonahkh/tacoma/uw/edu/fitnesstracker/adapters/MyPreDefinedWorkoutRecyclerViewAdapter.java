@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * An adapter
+ *
  * {@link RecyclerView.Adapter} that can display a {@link PreDefinedWorkout} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyPreDefinedWorkoutRecyclerViewAdapter.ViewHolder> {
 

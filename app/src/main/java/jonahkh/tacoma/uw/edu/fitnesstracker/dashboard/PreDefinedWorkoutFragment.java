@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
@@ -6,16 +11,14 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyPreDefinedWorkoutRecyclerViewAdapter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of PreDefined Workouts.
  * <p>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
@@ -36,13 +39,15 @@ public class PreDefinedWorkoutFragment extends Fragment {
     private static final String WORKOUT_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=predefinedworkouts";
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    /** The listener for this Fragment. */
     private OnListFragmentInteractionListener mListener;
-    private RecyclerView mRecyclerView;
+
+    /** The list of predefined workouts. */
     private List<PreDefinedWorkout> mWorkoutList;
+
+    /** The adapter for this Fragment. */
+    private BaseAdapter mAdapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -53,27 +58,13 @@ public class PreDefinedWorkoutFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weightworkout_list, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-        }
+        View view = inflater.inflate(R.layout.fragment_predefined_workouts_list, container, false);
+        // Check for network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -85,8 +76,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                     "No network connection available. Cannot display workouts",
                     Toast.LENGTH_SHORT) .show();
         }
-        mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
-
+        mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
         return view;
     }
 
@@ -122,6 +112,10 @@ public class PreDefinedWorkoutFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(PreDefinedWorkout workout);
     }
+
+    /**
+     * This class handles the interactions with the web service for this Fragment.
+     */
     private class DownloadPreDefinedWorkoutsTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {super.onPreExecute();}
@@ -163,8 +157,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                         .show();
                 return;
             }
-            mWorkoutList = new ArrayList<PreDefinedWorkout>();
-//            mWorkoutList = new ArrayList<WeightWorkout>();
+            mWorkoutList = new ArrayList<>();
             result = PreDefinedWorkout.parseWeightWorkoutJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
@@ -173,9 +166,12 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 return;
             }
 
-            // Everything is good, show the list of courses.
+            // Everything is good, show the list of workouts.
             if (!mWorkoutList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyPreDefinedWorkoutRecyclerViewAdapter(mWorkoutList, mListener));
+                mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
+                ListView view = (ListView) getActivity().findViewById(R.id.predefined_wo_list);
+                view.setAdapter(mAdapter);
+
             }
 
         }

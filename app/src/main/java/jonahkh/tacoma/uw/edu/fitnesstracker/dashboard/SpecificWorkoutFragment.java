@@ -1,5 +1,9 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
-
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,15 +14,17 @@ import android.view.ViewGroup;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * This Fragment is used to display the list of exercises for a workout.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
-public class SpecificWorkout extends Fragment {
+public class SpecificWorkoutFragment extends Fragment {
 
-
-    public SpecificWorkout() {
+    /** Initialize a new SpecificWorkoutFragment. */
+    public SpecificWorkoutFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

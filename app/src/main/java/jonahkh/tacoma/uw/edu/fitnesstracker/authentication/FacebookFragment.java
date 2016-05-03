@@ -1,21 +1,13 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageInstaller;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.media.session.MediaSessionManager;
 import android.os.Bundle;
-import android.service.textservice.SpellCheckerService;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -24,11 +16,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 

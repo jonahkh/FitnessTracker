@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment">
 
     <ListView
+        android:id="@+id/predefined_wo_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:background="@drawable/border"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:layout_height="wrap_content">
+    </ListView>
+        <!--android:background="@drawable/border"-->
+        <!--android:layout_gravity="center_horizontal" />-->
+</RelativeLayout>

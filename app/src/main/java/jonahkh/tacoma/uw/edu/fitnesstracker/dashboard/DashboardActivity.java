@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
@@ -7,7 +12,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,9 +22,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 
+/**
+ * This class represents the Dashboard for the FitnessTracker application. It will display
+ * information including the last completed workout, the user's before and after pictures, and will
+ * allow the user to view and/or edit their statistics (weight, height, activity level, etc.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
+ */
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
@@ -28,8 +39,6 @@ public class DashboardActivity extends AppCompatActivity
         ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener,
         ExerciseFragment.OnExerciseListFragmentInteractionListener {
 
-    private SharedPreferences mSharedPreferences;
-//    private MyExerciseExpandableListAdapter mExerciseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +69,6 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
-        Intent intent = getIntent();
     }
 
 
@@ -89,18 +97,6 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onExerciseListFragmentInteraction(WeightWorkout workout) {
-//        Log.e("THIS WORKOUT", "here");
-//        Log.e("THIS WORKOUT", + workout.getWorkoutNumber() + "");
-//        ViewExercisesFragment fragment = new ViewExercisesFragment();
-//        fragment.setWorkout(workout);
-//        Log.e("This workout", workout.toString());
-//        Bundle args = new Bundle();
-//        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack(null)
-//                .commit();
-
     }
 
     @Override
@@ -142,9 +138,10 @@ public class DashboardActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
-            mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+            SharedPreferences preferences
+                    = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                     , Context.MODE_PRIVATE);
-            mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
+            preferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -153,7 +150,6 @@ public class DashboardActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

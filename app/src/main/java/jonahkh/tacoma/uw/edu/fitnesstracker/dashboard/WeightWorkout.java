@@ -5,23 +5,12 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
  * This class stores information about weight workouts. Weight workouts store each exercise that
@@ -44,20 +33,14 @@ public class WeightWorkout implements Serializable {
     /** Name of the date in the weight workout table. */
     public static final String DATE = "dateCompleted";
 
-
-    /** Maps exercises for this workout to the sets performed. */
-    private Map<Exercise, List<WorkoutSet>> mExercises;
-
     /** The name of the current workout. */
     private String mWorkoutName;
 
+    /** The current workout number. */
     private int mWorkoutNumber;
 
+    /** The date this workout was completed. */
     private String mDate;
-
-    /** Shared preferences for this Fragment. */
-    private SharedPreferences mSharedPreferences;
-
 
     /**
      * Initialize a new Weight Workout.
@@ -66,27 +49,19 @@ public class WeightWorkout implements Serializable {
      */
     public WeightWorkout(String workoutName) {
         mWorkoutName = workoutName;
-        mExercises = new TreeMap<Exercise, List<WorkoutSet>>();
     }
+
+    /**
+     * Initializes a new Weight Workout given a name, number, and date.
+     *
+     * @param workoutName the name of this workout
+     * @param workoutNumber the number identifying this workout
+     * @param date the date this workout was completed
+     */
     public WeightWorkout(String workoutName, int workoutNumber, String date) {
         mWorkoutName = workoutName;
         mWorkoutNumber = workoutNumber;
         mDate = date;
-    }
-
-
-    /**
-     * Add a set to an exercise for this workout.
-     *
-     * @param exercise the exercise that a set was completed for
-     * @param set the information pertinent to the completed set
-     */
-    public void addExercise(Exercise exercise, WorkoutSet set) {
-        if (mExercises.containsKey(exercise)) {
-            mExercises.get(exercise).add(set);
-        } else {
-            mExercises.put(exercise, Arrays.asList(set));
-        }
     }
 
     /**
@@ -96,15 +71,6 @@ public class WeightWorkout implements Serializable {
      */
     public String getWorkoutName() {
         return mWorkoutName;
-    }
-
-    /**
-     * Set the workout number to the passed value.
-     *
-     * @param workoutNumber the workout number for this workout
-     */
-    public void setWorkoutNumber(int workoutNumber) {
-        mWorkoutNumber = workoutNumber;
     }
 
     /**
@@ -123,15 +89,6 @@ public class WeightWorkout implements Serializable {
      */
     public String getDate() {
         return mDate;
-    }
-
-    /**
-     * Set the date for this workout to the passed value.
-     *
-     * @param mDate the date this workout was completed
-     */
-    public void setDate(String mDate) {
-        this.mDate = mDate;
     }
 
     public static String parsePreDefinedWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
@@ -208,7 +165,7 @@ public class WeightWorkout implements Serializable {
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
                     WeightWorkout workout = new WeightWorkout(obj.getString(NAME),
-                            obj.getInt(NUMBER), obj.getString(DATE).toString());
+                            obj.getInt(NUMBER), obj.getString(DATE));
                     weightWorkoutList.add(workout);
                 }
             } catch (JSONException e) {
@@ -218,34 +175,9 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
-    /**
-     * Check if the passed list already contains the workout based on the passed workout name.
-     *
-     * @param workoutName the workout name being searched for
-     * @param workoutList the list of workouts being searched
-     * @return the index in the list if found, -1 otherwise
-     */
-    private static int checkContains(String workoutName, List<WeightWorkout> workoutList) {
-        for (int i = 0; i < workoutList.size(); i++) {
-            if (workoutName.equals(workoutList.get(i).getWorkoutName())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Return all of the exercises and their corresponding sets for this weight workout.
-     *
-     * @return all of the exercises and their corresponding sets for this weight workout.
-     */
-    public Map<Exercise, List<WorkoutSet>> getExercises() {
-        return mExercises;
-    }
-
     @Override
     public String toString() {
-        return mWorkoutName + ", " + mWorkoutNumber + ", " + mExercises.toString();
+        return mWorkoutName + ", " + mWorkoutNumber;
     }
 
 }

@@ -1,0 +1,113 @@
+package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+
+import android.app.Activity;
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+
+/**
+ * This class represents a layout adapter for the predefined workouts menu option.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
+ */
+public class PreDefinedWorkoutAdapter extends BaseAdapter {
+
+    /** The workouts to be added to the layout. */
+    private final List<PreDefinedWorkout> mValues;
+
+    /** The listener for the list. */
+    private final PreDefinedWorkoutFragment.OnListFragmentInteractionListener mListener;
+
+    /** The Activity that holds this adapter. */
+    private final Activity mContext;
+
+    /**
+     * Initialize a new PreDefinedWorkoutAdapter.
+     *
+     * @param context the activity for this adapter
+     * @param items the list of predefined workouts
+     * @param listener the listener for this adapter
+     */
+    public PreDefinedWorkoutAdapter(Activity context, List<PreDefinedWorkout> items, PreDefinedWorkoutFragment.OnListFragmentInteractionListener listener) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        mContext = context;
+        mValues = items;
+        mListener = listener;
+    }
+
+    @Override
+    public int getCount() {
+        return mValues.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mValues.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.fragment_predefinedworkout, null);
+        }
+        final ViewHolder holder = new ViewHolder(convertView);
+        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mItem = mValues.get(position);
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != mListener) {
+                    mListener.onListFragmentInteraction(holder.mItem);
+                }
+            }
+        });
+        return convertView;
+    }
+
+    /**
+     * This class represents a ViewHolder for the PreDefinedWorkoutAdapter.
+     */
+    class ViewHolder extends RecyclerView.ViewHolder {
+
+        /** The current View. */
+        public final View mView;
+        /** The textview for the workout name. */
+        public final TextView mContentView;
+        /** The current predefined workout. */
+        public PreDefinedWorkout mItem;
+
+        /**
+         * Initializes a new ViewHolder.
+         *
+         * @param view the current view
+         */
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+            mContentView = (TextView) view.findViewById(R.id.pre_defined_wo_name);
+        }
+
+        @Override
+        public String toString() {
+            return super.toString() + " '" + mContentView.getText() + "'";
+        }
+    }
+}
