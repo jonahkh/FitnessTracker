@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WorkoutSet;
 
 /**
  * Created by jonah on 5/1/2016.

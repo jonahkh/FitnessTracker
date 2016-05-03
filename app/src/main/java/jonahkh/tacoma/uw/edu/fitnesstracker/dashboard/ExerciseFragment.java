@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

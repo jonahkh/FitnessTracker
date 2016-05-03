@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyPreDefinedWorkoutRecyclerViewAdapter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

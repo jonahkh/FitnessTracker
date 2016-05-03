@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyWeightWorkoutRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

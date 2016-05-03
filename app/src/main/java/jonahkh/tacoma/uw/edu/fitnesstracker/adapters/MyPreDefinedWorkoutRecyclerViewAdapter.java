@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
+package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,36 +7,46 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment.OnListFragmentInteractionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Exercise} and makes a call to the
- * specified {@link ExerciseFragment.OnExerciseListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link PreDefinedWorkout} and makes a call to the
+ * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyExerciseRecyclerViewAdapter extends RecyclerView.Adapter<MyExerciseRecyclerViewAdapter.ViewHolder> {
+public class MyPreDefinedWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyPreDefinedWorkoutRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Exercise> mValues;
-    private final ExerciseFragment.OnExerciseListFragmentInteractionListener mListener;
+    private final List<PreDefinedWorkout> mValues;
+    private final OnListFragmentInteractionListener mListener;
 
-    public MyExerciseRecyclerViewAdapter(List<Exercise> items, ExerciseFragment.OnExerciseListFragmentInteractionListener listener) {
+
+    public MyPreDefinedWorkoutRecyclerViewAdapter(List<PreDefinedWorkout> items, OnListFragmentInteractionListener listener) {
+        if (items == null) {
+            items = new ArrayList<PreDefinedWorkout>();
+        }
         mValues = items;
         mListener = listener;
+
     }
+
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_exercise, parent, false);
+                .inflate(R.layout.fragment_predefinedworkout, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getExerciseName());
-        holder.mContentView.setText("");
+        holder.mContentView.setText(mValues.get(position).getName());
+//        holder.mContentView.setText(mValues.get(position).getType());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +60,7 @@ public class MyExerciseRecyclerViewAdapter extends RecyclerView.Adapter<MyExerci
         });
     }
 
+
     @Override
     public int getItemCount() {
         return mValues.size();
@@ -57,15 +68,16 @@ public class MyExerciseRecyclerViewAdapter extends RecyclerView.Adapter<MyExerci
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+//        public final ListView mIdView;
         public final TextView mContentView;
-        public Exercise mItem;
+        public PreDefinedWorkout mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+//            mIdView = (ListView) view.findViewById(R.id.listView);
+            mContentView = (TextView) view.findViewById(R.id.id);
+//            mContentView = (ListView) view.findViewById(R.id.content);
         }
 
         @Override

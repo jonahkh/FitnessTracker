@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
