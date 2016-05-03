@@ -12,10 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyViewLoggedWorkoutsRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedWorkoutsAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.io.BufferedReader;
@@ -50,6 +53,10 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
 
     /** The current adapter for this list. */
     private RecyclerView mRecyclerView;
+
+    /** The adapter for this Fragment. */
+    private BaseAdapter mAdapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -61,9 +68,9 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_logged_workouts_list, container, false);
-        mRecyclerView = (RecyclerView) view;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
+//        mRecyclerView = (RecyclerView) view;
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        // Check for network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -74,7 +81,8 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(WORKOUT_URL + param);
         }
-        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+//        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+        mAdapter = new ViewLoggedWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
         return view;
     }
 
@@ -162,7 +170,10 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+//                mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+                mAdapter = new ViewLoggedWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
+                ListView view = (ListView) getActivity().findViewById(R.id.logged_workouts_list);
+                view.setAdapter(mAdapter);
             }
         }
     }

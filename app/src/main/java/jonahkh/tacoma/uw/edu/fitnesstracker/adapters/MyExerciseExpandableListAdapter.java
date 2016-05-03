@@ -92,7 +92,7 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         final String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.group_specific_workout, null);
+            convertView = infalInflater.inflate(R.layout.group_exercise, null);
         }
         final TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);

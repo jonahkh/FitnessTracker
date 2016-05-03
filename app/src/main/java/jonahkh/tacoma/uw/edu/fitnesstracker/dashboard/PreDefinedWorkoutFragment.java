@@ -106,7 +106,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout);
     }
 
@@ -166,7 +165,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.predefined_wo_list);
                 view.setAdapter(mAdapter);
-
             }
 
         }

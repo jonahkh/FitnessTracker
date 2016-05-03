@@ -67,8 +67,8 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.fragment_predefinedworkout, null);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.fragment_predefinedworkout, null);
         }
         final ViewHolder holder = new ViewHolder(convertView);
         holder.mContentView.setText(mValues.get(position).getWorkoutName());

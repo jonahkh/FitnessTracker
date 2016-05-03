@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:icon="@drawable/drawer_icon">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
             android:title="@string/dashboard_home"
             android:icon="@drawable/ic_dashboard"/>
         <item
             android:id="@+id/nav_predefined_workouts"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_workout_template"
+
             android:title="@string/workout_templates" />
         <item
             android:id="@+id/view_logged_workouts"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_weight_workouts"
             android:title="@string/logged_weight_workouts" />
-        <item android:title="@string/logged_cardio_workouts"/>
+        <item
+            android:id="@+id/view_logged_cardio_workouts"
+            android:title="@string/logged_cardio_workouts"
+            android:icon="@drawable/ic_cardio_menu"/>
     </group>
 
 </menu>
