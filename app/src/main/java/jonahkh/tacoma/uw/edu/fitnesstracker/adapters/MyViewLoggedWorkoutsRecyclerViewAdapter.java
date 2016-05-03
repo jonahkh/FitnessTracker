@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
@@ -20,14 +25,30 @@ import java.util.List;
  */
 public class MyViewLoggedWorkoutsRecyclerViewAdapter extends RecyclerView.Adapter<MyViewLoggedWorkoutsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<WeightWorkout> mValues;
-    private final ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener mListener;
+    /** The date completed identifier. */
+    private static final String DATE = "Date Completed: ";
 
+    /** The workout number identifier. */
+    private static final String NUMBER = "Number: ";
+
+    /** The list of weight workouts for this user. */
+    private final List<WeightWorkout> mValues;
+
+    /** The listener for this adapter. */
+    private final ViewLoggedWorkoutsListFragment
+            .OnLoggedWeightWorkoutsListFragmentInteractionListener mListener;
+
+    /**
+     * Initialize a new MyViewLoggedWorkoutsRecyclerViewAdapter.
+     *
+     * @param items the list of weight workouts for this user
+     * @param listener the listener for this adapter
+     */
     public MyViewLoggedWorkoutsRecyclerViewAdapter(List<WeightWorkout> items,
                            ViewLoggedWorkoutsListFragment
                            .OnLoggedWeightWorkoutsListFragmentInteractionListener listener) {
         if (items == null) {
-            items = new ArrayList<WeightWorkout>();
+            items = new ArrayList<>();
         }
         mValues = items;
         mListener = listener;
@@ -44,8 +65,10 @@ public class MyViewLoggedWorkoutsRecyclerViewAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mWorkoutName.setText(mValues.get(position).getWorkoutName());
-        holder.mDateView.setText("Date Completed: " + mValues.get(position).getDate());
-        holder.mWorkoutNumber.setText("Number: " + Integer.toString(mValues.get(position).getWorkoutNumber()));
+        final String date = DATE + mValues.get(position).getDate();
+        final String number = NUMBER + mValues.get(position).getWorkoutNumber();
+        holder.mDateView.setText(date);
+        holder.mWorkoutNumber.setText(number);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,14 +87,31 @@ public class MyViewLoggedWorkoutsRecyclerViewAdapter extends RecyclerView.Adapte
         return mValues.size();
     }
 
+    /**
+     * This class handles the display for each list item of the completed workouts list.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        /** The view for this ViewHolder. */
         public final View mView;
+
+        /** Displays the workout name. */
         public final TextView mWorkoutName;
+
+        /** Displays the date this workout was completed. */
         public final TextView mDateView;
+
+        /** Displays the workout number for this workout. */
         public final TextView mWorkoutNumber;
 
+        /** The current Weight Workout. */
         public WeightWorkout mItem;
 
+        /**
+         * Initialize a new ViewHolder.
+         *
+         * @param view the view for this ViewHolder
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;

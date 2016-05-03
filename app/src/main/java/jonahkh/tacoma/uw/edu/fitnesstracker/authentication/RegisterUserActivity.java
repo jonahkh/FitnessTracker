@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -27,9 +28,9 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class RegisterUserActivity extends AppCompatActivity {
 
-    public final String TAG = "REGISTER ACTIVIY";
+    private final String TAG = "REGISTER ACTIVIY";
 
-    protected boolean redo = true;
+    private boolean redo = true;
 
     private final static String USER_ADDITIONAL_INFO_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
@@ -83,12 +84,16 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     public void addUserData(String url) {
         AddUserTask task = new AddUserTask();
-        task.execute(new String[]{url.toString()});
+        task.execute(url);
     }
 
     /**
      * Method to set the information of the user.
-     * @param theFirstName
+     *
+     * @param theFirstName the first name of the user
+     * @param theLastName the last name of the user
+     * @param theEmail the email of the user
+     * @param thePass the password for the user
      */
     public void setUserInformation(final String theFirstName, final String theLastName,
                                    final String theEmail, final String thePass) {
@@ -133,7 +138,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     /** method that will build the url for calling the AsyncTask.  */
-    protected String buildAddUserAddtionaIfoURL() {
+    String buildAddUserAddtionaIfoURL() {
 
         StringBuilder sb = new StringBuilder(USER_ADDITIONAL_INFO_ADD_URL);
 
@@ -153,7 +158,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
             byte[] profilePhoto = mPhoto;
             sb.append("&profilePhoto=");
-            sb.append(profilePhoto); // TODO might cause a problem;
+            sb.append(Arrays.toString(profilePhoto)); // TODO might cause a problem;
 
             String birthDay = "" + mYearDOB + "-" + mMonthDOB + "-" + mDateDOB;
             sb.append("&birthDay=");
@@ -209,12 +214,6 @@ public class RegisterUserActivity extends AppCompatActivity {
      * user information. */
     private class AddUserTask extends AsyncTask<String, Void, String> {
 
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -227,7 +226,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                     InputStream content = urlConnection.getInputStream();
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
+                    String s;
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
@@ -249,7 +248,7 @@ public class RegisterUserActivity extends AppCompatActivity {
          * exception is caught. It tries to call the parse Method and checks to see if it was successful.
          * If not, it displays the exception.
          *
-         * @param result
+         * @param result the result of this task
          */
         @Override
         protected void onPostExecute(String result) {
@@ -271,13 +270,13 @@ public class RegisterUserActivity extends AppCompatActivity {
                         redo = !redo;
                     } else {
                         (Toast.makeText(getApplicationContext(),
-                                R.string.registration_sucessful, Toast.LENGTH_SHORT)).show();
+                                R.string.registration_successful, Toast.LENGTH_SHORT)).show();
                         // Store user email and record that they are logged in
                         mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                                 , Context.MODE_PRIVATE);
                         mSharedPreferences.edit().putString(getString(R.string.current_email), mUserEmail)
-                                .commit();
-                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).commit();
+                                .apply();
+                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
 
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);

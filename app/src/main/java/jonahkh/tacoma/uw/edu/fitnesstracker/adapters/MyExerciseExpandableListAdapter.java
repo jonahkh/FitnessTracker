@@ -27,11 +27,20 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.types.WorkoutSet;
  */
 public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
+    /** Set number identifier for this set. */
+    private static final String SET = "Set ";
+
+    /** Weight identifier for this set. */
+    private static final String WEIGHT = "Weight: ";
+
+    /** Repetition identifier for this set. */
+    public static final String REPS = "Reps: ";
+
     /** The activity that holds this adapter. */
-    private Activity mContext;
+    private final Activity mContext;
 
     /** The list of exercises for the selected workout. */
-    private List<Exercise> mExercises;
+    private final List<Exercise> mExercises;
 
     /**
      * Initialize a new MyExerciseExpandableListAdapter.
@@ -80,12 +89,12 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
+        final String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.group_specific_workout, null);
         }
-        TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
+        final TextView item = (TextView) convertView.findViewById(R.id.this_exercise);
         item.setTypeface(null, Typeface.BOLD);
         item.setText(exerciseName);
 
@@ -99,12 +108,16 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.child_exercise, null);
         }
-        TextView setView = (TextView) convertView.findViewById(R.id.set_number);
-        TextView weightView = (TextView) convertView.findViewById(R.id.weight);
-        TextView repsView = (TextView) convertView.findViewById(R.id.reps_performed);
-        setView.setText("Set " + Integer.toString(set.getSetNumber()));
-        weightView.setText("Weight: " + Integer.toString(set.getWeight()));
-        repsView.setText("Reps: " + Integer.toString(set.getReps()));
+        final TextView setView = (TextView) convertView.findViewById(R.id.set_number);
+        final TextView weightView = (TextView) convertView.findViewById(R.id.weight);
+        final TextView repsView = (TextView) convertView.findViewById(R.id.reps_performed);
+        final String setText = SET + Integer.toString(set.getSetNumber());
+        final String weightText = WEIGHT + Integer.toString(set.getWeight());
+        final String repsText = "Reps: " + Integer.toString(set.getReps());
+
+        setView.setText(setText);
+        weightView.setText(weightText);
+        repsView.setText(repsText);
         return convertView;
     }
 

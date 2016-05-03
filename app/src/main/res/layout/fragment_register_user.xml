@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/req_field"
-        android:id="@+id/req_field_text"
         android:layout_gravity="center_horizontal" />
 
     <EditText

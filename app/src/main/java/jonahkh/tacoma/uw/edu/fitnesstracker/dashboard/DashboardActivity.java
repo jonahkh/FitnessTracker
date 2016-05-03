@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,8 +38,7 @@ public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
-        ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener,
-        ExerciseFragment.OnExerciseListFragmentInteractionListener {
+        ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener {
     private WeightWorkout mCurrentWorkout;
     private Bundle mSavedInstanceState;
 
@@ -49,6 +47,7 @@ public class DashboardActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -64,8 +63,6 @@ public class DashboardActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
-        // TODO see if support lib
         assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -111,35 +108,12 @@ public class DashboardActivity extends AppCompatActivity
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.getSerializable("current_workout") != null) {
             mCurrentWorkout = (WeightWorkout) savedInstanceState.getSerializable("current_workout");
-            Log.e("TAGAGAGA", mCurrentWorkout.getWorkoutName());
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
 
     public void retrieveCurrentWorkout() {
         onRestoreInstanceState(mSavedInstanceState);
-    }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Log.e("RESUME", "onRRESUME");
-//        if (mSavedInstanceState != null) {
-//            onRestoreInstanceState(mSavedInstanceState);
-//        }
-//    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        Log.e("ONSTART", "onstart");
-//        onRestoreInstanceState(mSavedInstanceState);
-//    }
-
-
-    @Override
-    public void onExerciseListFragmentInteraction(WeightWorkout workout) {
-        // TODO delete?
     }
 
     @Override
@@ -189,7 +163,7 @@ public class DashboardActivity extends AppCompatActivity
             SharedPreferences preferences
                     = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                     , Context.MODE_PRIVATE);
-            preferences.edit().putBoolean(getString(R.string.logged_in), false).commit();
+            preferences.edit().putBoolean(getString(R.string.logged_in), false).apply();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();

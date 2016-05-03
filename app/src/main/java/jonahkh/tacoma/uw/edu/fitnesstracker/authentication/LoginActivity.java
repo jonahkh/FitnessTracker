@@ -69,9 +69,6 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /* Id to identity READ_CONTACTS permission request. */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
     /** Url to attempt user login. */
     private static final String USER_URL = "http://cssgate.insttech.washington.edu/~_450atm2/login.php?";
 
@@ -123,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
 
-                // Hide the regisgter button
+                // Hide the register button
                 //regBut.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
                 startActivity(intent);
@@ -132,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        assert mEmailSignInButton != null;
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
 
         // Set up permissions
         permissions.add("email");
@@ -168,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onResume() {
         super.onResume();
         CallbackManager callback = CallbackManager.Factory.create();
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
 
         // Set up permissions
         permissions.add("email");
@@ -332,7 +330,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
 
@@ -366,14 +363,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmail = email;
             mPassword = password;
         }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            HttpURLConnection urlConnection = null;
             StringBuilder url = new StringBuilder(USER_URL);
             try {
                 // Build url
@@ -381,10 +373,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 url.append(URLEncoder.encode(mEmail, "UTF-8"));
                 url.append("&pwd=");
                 url.append(URLEncoder.encode(mPassword, "UTF-8"));
-                Log.i("CREDENTIALS__", url.toString());
                 // Establish network access
                 URL urlObject = new URL(USER_URL + url.toString());
-                urlConnection = (HttpURLConnection) urlObject.openConnection();
+                HttpURLConnection urlConnection =  (HttpURLConnection) urlObject.openConnection();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
                 String s = buffer.readLine();
@@ -411,8 +402,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                         , Context.MODE_PRIVATE);
                 mSharedPreferences.edit().putString(getString(R.string.current_email), mEmail)
-                        .commit();
-                mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).commit();
+                        .apply();
+                mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
                 finish();
                 Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(intent);
