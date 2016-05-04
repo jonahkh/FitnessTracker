@@ -71,6 +71,13 @@ public class DashboardActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
         mSavedInstanceState = savedInstanceState;
+
+        // Display of personal data
+        DashBoardDisplay dashView = new DashBoardDisplay();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, dashView)
+                .addToBackStack(null)
+                .commit();
     }
 
 
@@ -190,6 +197,7 @@ public class DashboardActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
