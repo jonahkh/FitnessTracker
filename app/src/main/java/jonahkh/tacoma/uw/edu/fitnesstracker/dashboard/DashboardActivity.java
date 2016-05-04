@@ -8,6 +8,8 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
@@ -42,7 +45,7 @@ public class DashboardActivity extends AppCompatActivity
         ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener {
     private WeightWorkout mCurrentWorkout;
     private Bundle mSavedInstanceState;
-    private DashBoardDisplay mDashView;
+    private DashBoardDisplay mDashView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +76,37 @@ public class DashboardActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
         mSavedInstanceState = savedInstanceState;
-
+        if (mDashView == null) {
+            Log.e("EFRROR", "ERKJLKJSDLKJF");
+        }
         // Display of personal data
-        mDashView = new DashBoardDisplay();
-        getSupportFragmentManager().beginTransaction()
+        if (mDashView == null) {
+            mDashView = new DashBoardDisplay();
+                getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, mDashView)
                 .addToBackStack(null)
                 .commit();
+        }
+    }
+
+    /**
+     * Returns if the user's device is connected to the network.
+     *
+     * @param message the message to display if network is not connected
+     * @return true if the user's device is connected to the network
+     */
+    public boolean isNetworkConnected(String message) {
+        // Check for network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            Toast.makeText(this,
+                    "No network connection available. Cannot display " + message,
+                    Toast.LENGTH_SHORT) .show();
+            return false;
+        }
+        return true;
     }
 
 

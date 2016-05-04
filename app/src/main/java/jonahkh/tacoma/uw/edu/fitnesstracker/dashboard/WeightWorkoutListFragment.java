@@ -78,18 +78,19 @@ public class WeightWorkoutListFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) view;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         // Retrieve current workout
         if (mCurrentWorkout == null) {
             ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
         String param = "&name=" + mCurrentWorkout.getWorkoutName();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(WORKOUT_URL + param);
+        } else {
+            Toast.makeText(view.getContext(),
+                    "No network connection available. Cannot display workouts",
+                    Toast.LENGTH_SHORT) .show();
         }
         mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
 

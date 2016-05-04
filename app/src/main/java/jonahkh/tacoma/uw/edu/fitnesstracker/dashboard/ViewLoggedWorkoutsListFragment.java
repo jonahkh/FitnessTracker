@@ -68,20 +68,13 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_logged_workouts_list, container, false);
-//        mRecyclerView = (RecyclerView) view;
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        // Check for network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         String param = "&email=" + getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(WORKOUT_URL + param);
         }
-//        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
         mAdapter = new ViewLoggedWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
         return view;
     }

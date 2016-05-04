@@ -138,4 +138,6 @@
     <string name="logged_weight_workouts">Logged Weight Workouts</string>
     <string name="logged_cardio_workouts">Logged Cardio Workouts</string>
     <string name="logout">Logout</string>
+    <string name="workouts">Workouts</string>
+    <string name="exercises">Exercises</string>
 </resources>

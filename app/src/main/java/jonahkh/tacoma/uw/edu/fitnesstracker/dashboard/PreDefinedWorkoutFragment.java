@@ -62,16 +62,9 @@ public class PreDefinedWorkoutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_predefined_workouts_list, container, false);
         // Check for network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadPreDefinedWorkoutsTask task = new DownloadPreDefinedWorkoutsTask();
             task.execute(WORKOUT_URL);
-        } else {
-            Toast.makeText(view.getContext(),
-                    "No network connection available. Cannot display workouts",
-                    Toast.LENGTH_SHORT) .show();
         }
         mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
         return view;
