@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.EditPersonalInformation">
+
+    <!--Weight-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/enter_weightStr"/>
+
+        <EditText
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:gravity="center_horizontal"
+            android:hint="@string/weight_hint"
+            android:id="@+id/epi_weight" />
+    </TableRow>
+
+    <!--Activity level-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/activityLv_str"/>
+        <Spinner
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:id="@+id/epi_activtiyLv_spinner"
+            android:entries="@array/actityLevel_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+    </TableRow>
+
+    <!--Number of days to workout-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/dayToWorkout_str"/>
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:id="@+id/epi_daysToWorkout_spinner"
+            android:entries="@array/daysToWorkout_array"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
+    </TableRow>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_str"
+            android:id="@+id/epi_cancelBt"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="150dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/save_str"
+            android:id="@+id/epi_save"
+            android:layout_marginRight="34dp"
+            android:layout_marginEnd="34dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+</LinearLayout>

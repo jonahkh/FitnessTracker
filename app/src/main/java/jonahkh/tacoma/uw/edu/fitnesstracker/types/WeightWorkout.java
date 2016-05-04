@@ -60,7 +60,7 @@ public class WeightWorkout implements Serializable {
      * @param workoutNumber the number identifying this workout
      * @param date the date this workout was completed
      */
-    private WeightWorkout(String workoutName, int workoutNumber, String date) {
+    public WeightWorkout(String workoutName, int workoutNumber, String date) {
         mWorkoutName = workoutName;
         mWorkoutNumber = workoutNumber;
         mDate = date;

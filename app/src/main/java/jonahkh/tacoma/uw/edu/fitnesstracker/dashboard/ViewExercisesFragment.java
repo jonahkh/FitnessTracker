@@ -163,8 +163,6 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 int width = metrics.widthPixels;
                 view.setIndicatorBounds(width - getDipsFromPixel(10), width - getDipsFromPixel(-50));
             }
-
-
         }
 
         /**
