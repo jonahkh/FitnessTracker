@@ -1,13 +1,16 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,22 +33,32 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
 import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of WeightWorkouts. All of the predefined workouts from the
+ * database are displayed as well as all of the custom made workouts that are stored locally.
+ * Selecting one of the workouts allows a user to start a workout where they can record the
+ * exercises/sets they complete.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class WeightWorkoutListFragment extends Fragment {
+
+    /** The url to retrieve information from the database for this app. */
     private static final String WORKOUT_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=weightworkouts";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
 
+    /** The listener for this list. */
     private OnListFragmentInteractionListener mListener;
+
+    /** The adapter for this list. */
     private RecyclerView mRecyclerView;
+
+    /** The current list of exercises. */
     private List<Exercise> mExerciseList;
+
+    /** The current list of workouts. */
     private WeightWorkout mCurrentWorkout;
-    private SharedPreferences mSharedPreferences;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -53,11 +66,6 @@ public class WeightWorkoutListFragment extends Fragment {
     public WeightWorkoutListFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     public void setName(String name) {
         mCurrentWorkout = new WeightWorkout(name);
@@ -68,16 +76,8 @@ public class WeightWorkoutListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weightworkout_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-        }
+        mRecyclerView = (RecyclerView) view;
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -87,13 +87,10 @@ public class WeightWorkoutListFragment extends Fragment {
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
         String param = "&name=" + mCurrentWorkout.getWorkoutName();
-//        mSharedPreferences = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-//        String param = "&name=" + mSharedPreferences.getString(getString(R.string.current_email), "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
-            task.execute(new String[]{WORKOUT_URL + param});
+            task.execute(WORKOUT_URL + param);
         }
-//        mExerciseList = new ArrayList<WeightWorkout>();
         mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
 
         return view;
@@ -133,9 +130,7 @@ public class WeightWorkoutListFragment extends Fragment {
     }
     
     private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
-        
+
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -148,7 +143,7 @@ public class WeightWorkoutListFragment extends Fragment {
                     InputStream content = urlConnection.getInputStream();
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
+                    String s;
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
@@ -175,7 +170,7 @@ public class WeightWorkoutListFragment extends Fragment {
             }
 
             mExerciseList = new ArrayList<>();
-            result = WeightWorkout.parseWeightWorkoutlistExerciseJSON(result, mExerciseList);
+            result = WeightWorkout.parseWeightWorkoutListExerciseJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)

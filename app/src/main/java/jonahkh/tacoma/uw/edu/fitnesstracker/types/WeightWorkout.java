@@ -21,22 +21,22 @@ import java.util.List;
 public class WeightWorkout implements Serializable {
 
     /** Name of the workout in the weight workout table. */
-    public static final String NAME = "workoutName";
+    private static final String NAME = "workoutName";
 
     /** Name of the exercise in the weight workout table. */
-    public static final String EXERCISE = "exercise";
+    private static final String EXERCISE = "exercise";
 
     /** Name of the workout number for this workout. */
-    public static final String NUMBER = "workoutNumber";
+    private static final String NUMBER = "workoutNumber";
 
     /** Identifier for this Serializable object. */
     public static final String WORKOUT_SELECTED = "workout_selected";
 
     /** Name of the date in the weight workout table. */
-    public static final String DATE = "dateCompleted";
+    private static final String DATE = "dateCompleted";
 
     /** The name of the current workout. */
-    private String mWorkoutName;
+    private final String mWorkoutName;
 
     /** The current workout number. */
     private int mWorkoutNumber;
@@ -60,7 +60,7 @@ public class WeightWorkout implements Serializable {
      * @param workoutNumber the number identifying this workout
      * @param date the date this workout was completed
      */
-    public WeightWorkout(String workoutName, int workoutNumber, String date) {
+    private WeightWorkout(String workoutName, int workoutNumber, String date) {
         mWorkoutName = workoutName;
         mWorkoutNumber = workoutNumber;
         mDate = date;
@@ -111,7 +111,7 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
-    public static String parseWeightWorkoutlistExerciseJSON(String weightWorkoutJSON,
+    public static String parseWeightWorkoutListExerciseJSON(String weightWorkoutJSON,
                                                             List<Exercise> exerciseList) {
         String reason = null;
         if (weightWorkoutJSON != null) {
@@ -131,10 +131,6 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
-//    public void setSharedPreferneces(Activity activity) {
-//        mSharedPreferences = activity.getSharedPreferences(activity.getString(R.string.WORKOUT_INFO), Context.MODE_PRIVATE);
-//    }
-
     /**
      * Parse the passed input and convert into a new weight workout.
      *
@@ -144,7 +140,6 @@ public class WeightWorkout implements Serializable {
      */
     public static String parseExercisesJSON(String weightWorkoutJSON, List<Exercise> exerciseList) {
         String reason = null;
-        Log.e("WEEIGHT", weightWorkoutJSON);
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);

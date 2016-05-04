@@ -7,12 +7,17 @@
     android:weightSum="1">
 
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" />
+
     <ImageButton
         android:layout_width="150dp"
         android:layout_height="130dp"
-        android:id="@+id/registerUser_imageButton"
         android:layout_gravity="center|top"
-        android:backgroundTint="@color/com_facebook_blue"
+        android:background="@color/com_facebook_blue"
+        android:contentDescription="@string/register_user"
         android:src="@android:drawable/ic_menu_camera"/>
 
     <TextView
@@ -193,9 +198,9 @@
     </TableRow>
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></FrameLayout>
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"></FrameLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -7,7 +7,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -44,7 +43,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 public class ViewExercisesFragment extends Fragment implements Serializable {
 
     /** The url for the web service to access the database that contains the exercises. */
-    public static final String EXERCISE_URL
+    private static final String EXERCISE_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=exercise";
 
     /** The Exercises being displayed. */
@@ -72,7 +71,7 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         SharedPreferences pref = getActivity()
                 .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
-        String param = "";
+        String param;
         if (mCurrentWorkout == null) {
             ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
@@ -103,8 +102,6 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
      * This class handles all interactions with the web service pertaining to this Fragment.
      */
     private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
 
         @Override
         protected String doInBackground(String... urls) {
@@ -161,17 +158,21 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 ExpandableListView view = (ExpandableListView) getActivity()
                         .findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
-                view.setGroupIndicator(getResources().getDrawable(R.drawable.group_indicator));
                 DisplayMetrics metrics = new DisplayMetrics();
                 getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
                 int width = metrics.widthPixels;
-                view.setIndicatorBounds(width - 50, width - 5);
-
-//                Drawable drawable;
+                view.setIndicatorBounds(width - getDipsFromPixel(10), width - getDipsFromPixel(-50));
             }
 
 
         }
+
+        /**
+         * Converts the passed value to pixels (integer).
+         *
+         * @param pixels the value being converted
+         * @return the converted value
+         */
         public int getDipsFromPixel(float pixels) {
             // Get the screen's density scale
             final float scale = getResources().getDisplayMetrics().density;

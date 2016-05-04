@@ -7,13 +7,8 @@
     <string name="action_sign_in">Sign In</string>
     <string name="register_form">Register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="facebook_app_id">861040667339792</string>
 
     <!-- related to register a user -->
@@ -25,7 +20,7 @@
     <string name="next_button">Next</string>
     <string name="req_field">* Required Field</string>
     <string name="password_mis_match">The password did not match!</string>
-    <string name="registration_sucessful">Registatrion Sucessful</string>
+    <string name="registration_successful">Registatrion Successful</string>
     <string name="addImageString">Add Image (optional)</string>
     <string name="birthDay">Date of Birth:</string>
 
@@ -89,7 +84,7 @@
         <item>Sedentary</item>
         <item>Moderately active</item>
         <item>Vigorously active</item>
-        <item>Extremly active</item>
+        <item>Extremely active</item>
     </string-array>
 
     <string-array name="daysToWorkout_array">
@@ -116,7 +111,7 @@
     <string name="gender_str">Gender:</string>
     <string name="activityLv_str">Activity Level:</string>
     <string name="dayToWorkout_str">Choose # of days to Workout:</string>
-
+    <string name="register_user">register user</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_delete">Fitness Tracker</string>
@@ -128,6 +123,9 @@
     <string name="logged_in">loggedin</string>
     <string name="LOGIN_PREFS">edu.uw.tacoma.jonahkh.fitnesstracker.PREFS</string>
     <string name="current_email">email</string>
-    <string name="current_workout">current workout</string>
-    <string name="WORKOUT_INFO">edu.uw.tacoma.jonahkh.fitnesstracker.WORKOUTINFO</string>
+    <string name="dashboard_home">Home</string>
+    <string name="workout_templates">Workout Templates</string>
+    <string name="logged_weight_workouts">Logged Weight Workouts</string>
+    <string name="logged_cardio_workouts">Logged Cardio Workouts</string>
+    <string name="logout">Logout</string>
 </resources>

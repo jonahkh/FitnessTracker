@@ -23,16 +23,16 @@ public class WorkoutSet {
     public static final String WEIGHT = "weight";
 
     /** The current exercise name. */
-    private String mExerciseName;
+    private final String mExerciseName;
 
     /** The reps performed. */
-    private int mReps;
+    private final int mReps;
 
     /** The set number. */
-    private int mSetNumber;
+    private final int mSetNumber;
 
     /** The weight used for this set. */
-    private int mWeight;
+    private final int mWeight;
 
     /**
      * Initialize a new WorkoutSet.

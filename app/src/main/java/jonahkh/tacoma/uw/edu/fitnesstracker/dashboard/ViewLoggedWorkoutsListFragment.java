@@ -12,10 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyViewLoggedWorkoutsRecyclerViewAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedWorkoutsAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
 
 import java.io.BufferedReader;
@@ -27,20 +30,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of Logged Workouts. Logged workouts display the workout name, the
+ * date completed, and the workout number (unique for each workout for each user). Selecting one of
+ * the logged workouts allows you to view all of the exercises completed for that workout and the
+ * sets pertinent to that exercise.
  * <p>
  * Activities containing this fragment MUST implement the {@link OnLoggedWeightWorkoutsListFragmentInteractionListener}
  * interface.
  */
 public class ViewLoggedWorkoutsListFragment extends Fragment {
-    private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=loggedweightworkouts";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
 
+    /** The url to access the database for this application. */
+    private static final String WORKOUT_URL
+            = "http://cssgate.insttech.washington.edu/" +
+            "~_450atm2/workouts.php?cmd=loggedweightworkouts";
+
+    /** The listener for this Fragment. */
     private OnLoggedWeightWorkoutsListFragmentInteractionListener mListener;
+
+    /** The list of completed workouts for this user. */
     private List<WeightWorkout> mWorkoutList;
+
+    /** The current adapter for this list. */
     private RecyclerView mRecyclerView;
+
+    /** The adapter for this Fragment. */
+    private BaseAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -50,28 +65,12 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_logged_workouts_list, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
-        }
-
+//        mRecyclerView = (RecyclerView) view;
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        // Check for network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -80,9 +79,10 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
                 "Email does not exist");
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
-            task.execute(new String[]{WORKOUT_URL + param});
+            task.execute(WORKOUT_URL + param);
         }
-        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+//        mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+        mAdapter = new ViewLoggedWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
         return view;
     }
 
@@ -120,8 +120,6 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
     }
 
     private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
 
         @Override
         protected String doInBackground(String... urls) {
@@ -135,7 +133,7 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
                     InputStream content = urlConnection.getInputStream();
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
+                    String s;
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
@@ -172,7 +170,10 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+//                mRecyclerView.setAdapter(new MyViewLoggedWorkoutsRecyclerViewAdapter(mWorkoutList, mListener));
+                mAdapter = new ViewLoggedWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
+                ListView view = (ListView) getActivity().findViewById(R.id.logged_workouts_list);
+                view.setAdapter(mAdapter);
             }
         }
     }

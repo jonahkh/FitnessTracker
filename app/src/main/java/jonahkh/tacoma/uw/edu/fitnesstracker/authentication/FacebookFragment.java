@@ -55,7 +55,7 @@ public class FacebookFragment extends Fragment {
                 Log.e("TAG", "ERROR");
             }
         });
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
         permissions.add("email");
         permissions.add("public_profile");
         permissions.add("user_friends");

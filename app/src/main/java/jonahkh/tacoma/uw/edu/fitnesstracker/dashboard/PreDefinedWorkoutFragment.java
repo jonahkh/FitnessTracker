@@ -58,11 +58,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_predefined_workouts_list, container, false);
@@ -72,7 +67,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             DownloadPreDefinedWorkoutsTask task = new DownloadPreDefinedWorkoutsTask();
-            task.execute(new String[]{WORKOUT_URL});
+            task.execute(WORKOUT_URL);
         } else {
             Toast.makeText(view.getContext(),
                     "No network connection available. Cannot display workouts",
@@ -111,7 +106,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout);
     }
 
@@ -119,8 +113,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
      * This class handles the interactions with the web service for this Fragment.
      */
     private class DownloadPreDefinedWorkoutsTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
 
         @Override
         protected String doInBackground(String... urls) {
@@ -134,7 +126,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                     InputStream content = urlConnection.getInputStream();
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
+                    String s;
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
@@ -173,7 +165,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.predefined_wo_list);
                 view.setAdapter(mAdapter);
-
             }
 
         }

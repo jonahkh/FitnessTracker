@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 
 
 /**
@@ -44,11 +43,11 @@ public class RegisterUserAdditional_Info extends Fragment {
     private final static String USER_DELETE_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/deleteUser.php?";
 
-    public final String TAG = "Reg Additional Info";
+    private final String TAG = "Reg Additional Info";
 
-    public final int INVALID = -1;
+    private final int INVALID = -1;
 
-    private byte[] mPhoto = null;
+    private final byte[] mPhoto = null;
 
     private int mDateDOB;
 
@@ -115,7 +114,7 @@ public class RegisterUserAdditional_Info extends Fragment {
                 String url = USER_DELETE_URL + "email=" + email;
                 DeleteUserTask task = new DeleteUserTask();
                 Log.i(TAG, url);
-                task.execute(new String[]{url});
+                task.execute(url);
 
                 // Load the login activity.
                 Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
@@ -146,9 +145,8 @@ public class RegisterUserAdditional_Info extends Fragment {
     }
 
     private String getActivityLevel(View myView) {
-        Spinner activitySpinner = (Spinner) myView.findViewById(R.id.activtiyLv_spinner);
-        String activityLv = activitySpinner.getSelectedItem().toString();
-        return activityLv;
+        return ((Spinner) myView.findViewById(R.id.activtiyLv_spinner))
+                .getSelectedItem().toString();
     }
 
 
@@ -220,7 +218,7 @@ public class RegisterUserAdditional_Info extends Fragment {
         return daySelec;
     }
 
-    public int getMonthSelected(View v) {
+    private int getMonthSelected(View v) {
         Spinner monthSpinner = (Spinner) v.findViewById(R.id.month_spinner);
         String tempMonth = monthSpinner.getSelectedItem().toString();
         if(tempMonth.equals("Month")){
@@ -248,11 +246,6 @@ public class RegisterUserAdditional_Info extends Fragment {
 
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
         protected String doInBackground(String... urls) {
             String response = "";
             HttpURLConnection urlConnection = null;
@@ -264,7 +257,7 @@ public class RegisterUserAdditional_Info extends Fragment {
                     InputStream content = urlConnection.getInputStream();
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
+                    String s;
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
@@ -286,7 +279,7 @@ public class RegisterUserAdditional_Info extends Fragment {
          * exception is caught. It tries to call the parse Method and checks to see if it was successful.
          * If not, it displays the exception.
          *
-         * @param result
+         * @param result the result of this task
          */
         @Override
         protected void onPostExecute(String result) {
@@ -300,9 +293,9 @@ public class RegisterUserAdditional_Info extends Fragment {
                     mSharedPreferences  = getActivity().getSharedPreferences(
                             getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
                     mSharedPreferences.edit().putString(getString(R.string.current_email), "")
-                            .commit();
+                            .apply();
                     mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), false)
-                            .commit();
+                            .apply();
                 } else {
                     Log.e(TAG, "Failed to delete user, Reason: " + jsonObject.get("error"));
                 }

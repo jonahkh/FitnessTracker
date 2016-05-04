@@ -22,7 +22,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class RegisterUserFragment extends Fragment {
 
-    public final String TAG = "Register User Fragment";
+    private final String TAG = "Register User Fragment";
 
     private final static String USER_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUser.php?";
@@ -63,7 +63,7 @@ public class RegisterUserFragment extends Fragment {
                    passwordsMatch = checkPasswordMatching();
                 }
 
-                // successful registeration
+                // successful registration
                 if(passwordsMatch) {//passwordsMatch
                     ((RegisterUserActivity)getActivity()).setUserInformation(
                             mFirstName.getText().toString(),
