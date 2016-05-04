@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
@@ -64,28 +65,25 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         SharedPreferences pref = getActivity()
                 .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
-        String param;
         if (mCurrentWorkout == null) {
             ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
-            param = "&email=" + pref.getString(getString(R.string.current_email),
+        String param = "&email=" + pref.getString(getString(R.string.current_email),
                     "Email does not exist")
                     + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
 
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.exercises))) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
             task.execute(EXERCISE_URL + param);
         }
         mExerciseList = new ArrayList<>();
         mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList);
+//        inflater.inflate(R.layout., container, false);
         return inflater.inflate(R.layout.fragment_view_exercises, container, false);
     }
 
@@ -155,6 +153,7 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
                 mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList);
+                LayoutInflater inflater;
                 ExpandableListView view = (ExpandableListView) getActivity()
                         .findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
