@@ -120,6 +120,7 @@
     <string name="dateCompleted_Str">Date Completed: </string>
     <string name="workoutNumber_Str">Workout Number: </string>
     <string name="viewLog_Str">View Workout</string>
+    <string name="save_str">Save</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

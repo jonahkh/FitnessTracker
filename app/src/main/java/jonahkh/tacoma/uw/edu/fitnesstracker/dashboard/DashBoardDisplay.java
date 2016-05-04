@@ -80,9 +80,9 @@ public class DashBoardDisplay extends Fragment {
     private int mUserDaysToWorkout;
 
     private View myView;
-    private int mWorkoutNum;
-    private String mWorkoutName;
-    private String mDateCompleted;
+    private int mWorkoutNum = -1;
+    private String mWorkoutName = "None to Display";
+    private String mDateCompleted = "N/A";
 
 
     public DashBoardDisplay() {
@@ -102,15 +102,32 @@ public class DashBoardDisplay extends Fragment {
         viewLogBut.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ViewExercisesFragment exercises = new ViewExercisesFragment();
-                exercises.setWorkout(new WeightWorkout(mWorkoutName, mWorkoutNum, mDateCompleted));
+                if(mWorkoutNum != -1) {
+                    ViewExercisesFragment exercises = new ViewExercisesFragment();
+                    exercises.setWorkout(new WeightWorkout(mWorkoutName, mWorkoutNum, mDateCompleted));
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, exercises)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "No Logged Workout to Display"
+                            , Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
+
+        Button editBut = (Button)myView.findViewById(R.id.dashB_editPersonalBt);
+        editBut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View c) {
+                EditPersonalInformation edit = new EditPersonalInformation();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, exercises)
+                        .replace(R.id.fragment_container, edit)
                         .addToBackStack(null)
                         .commit();
             }
         });
-
         return myView;
     }
 
@@ -190,7 +207,6 @@ public class DashBoardDisplay extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
-
             try {
                 JSONArray arr = new JSONArray(result);
                 for (int i = 0; i < arr.length(); i++) {
@@ -213,7 +229,7 @@ public class DashBoardDisplay extends Fragment {
                     setPersonalDataView();
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "Unable to parse data, Reason: " + e.getMessage());
+                Log.e(TAG, "1: Unable to parse data, Reason: " + e.getMessage());
             }
         }
     }
@@ -254,7 +270,10 @@ public class DashBoardDisplay extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
-
+            if(result.equals("")) {
+                setUserLastLoggedWorkoutView();
+                return;
+            }
             try {
                 JSONArray arr = new JSONArray(result);
                 for (int i = 0; i < arr.length(); i++) {
@@ -265,7 +284,7 @@ public class DashBoardDisplay extends Fragment {
                     setUserLastLoggedWorkoutView();
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "Unable to parse data, Reason: " + e.getMessage());
+                Log.e(TAG, "2: Unable to parse data, Reason: " + e.getMessage());
             }
         }
     }

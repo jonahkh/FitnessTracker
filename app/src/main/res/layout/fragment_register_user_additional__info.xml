@@ -80,7 +80,7 @@
             android:hint="@string/year_hint" />
     </TableRow>
 
-    <!--Height-->
+    <!--Weight-->
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -174,9 +174,9 @@
             android:entries="@array/actityLevel_array"
             android:textSize="15sp"
             android:textColor="#000000"/>
-
     </TableRow>
 
+    <!--Number of days to workout-->
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -194,13 +194,7 @@
             android:entries="@array/daysToWorkout_array"
             android:textSize="15sp"
             android:textColor="#000000"/>
-
     </TableRow>
-
-
-    <!--<FrameLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"></FrameLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"

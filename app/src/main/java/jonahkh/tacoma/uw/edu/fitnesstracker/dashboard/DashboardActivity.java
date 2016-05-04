@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity
         ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener {
     private WeightWorkout mCurrentWorkout;
     private Bundle mSavedInstanceState;
+    private DashBoardDisplay mDashView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +75,9 @@ public class DashboardActivity extends AppCompatActivity
         mSavedInstanceState = savedInstanceState;
 
         // Display of personal data
-        DashBoardDisplay dashView = new DashBoardDisplay();
+        mDashView = new DashBoardDisplay();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, dashView)
+                .replace(R.id.fragment_container, mDashView)
                 .addToBackStack(null)
                 .commit();
     }
@@ -196,6 +198,19 @@ public class DashboardActivity extends AppCompatActivity
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
+        } else if(id == R.id.nav_home) {
+            if(mDashView != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, mDashView)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                mDashView = new DashBoardDisplay();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, mDashView)
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
 
 
