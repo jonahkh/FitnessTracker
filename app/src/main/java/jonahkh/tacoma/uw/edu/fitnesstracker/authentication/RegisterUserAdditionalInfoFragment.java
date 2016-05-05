@@ -102,7 +102,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         final View myView = inflater.inflate(R.layout.fragment_register_user_additional__info,
                 container, false);
-
+        Log.i(TAG, "HERERERERERERER");
         Button register = (Button)myView.findViewById(R.id.registerUser_bt);
         register.setOnClickListener(new View.OnClickListener(){
             @Override

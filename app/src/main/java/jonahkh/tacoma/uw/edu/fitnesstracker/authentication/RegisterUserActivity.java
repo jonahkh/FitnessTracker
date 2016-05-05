@@ -282,6 +282,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                                 .replace(R.id.activity_register_user_xml, userOtherInfo)
                                 .addToBackStack(null)
                                 .commit();
+
                         redo = !redo;
                     } else {
                         (Toast.makeText(getApplicationContext(),
