@@ -27,62 +27,108 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
+ * Fragment used to Display the personal information of the user.
  * A simple {@link Fragment} subclass.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class DashboardDisplayFragment extends Fragment {
 
-    public static final String FIRST_NAME = "firstName";
+//    /** First name field of database. */
+//    public static final String FIRST_NAME = "firstName";
+//
+//    /** Last name field of database. */
+//    public static final String LAST_NAME = "lastName";
+//
+//    /** Photo field of database. */
+//    public static final String PROFILE_PHOTO = "profilePhoto";
+//
+//    /** Birthday field of database. */
+//    public static final String BIRTHDAY = "birthDay";
 
-    public static final String LAST_NAME = "lastName";
+    /** Weight field of database. */
+    public static final String WEIGHT = "weigth"; // Misspelled in the database :)
 
-    public static final String PROFILE_PHOTO = "profilePhoto";
+//    /** Height feet field of database. */
+//    public static final String HEIGHT_FT = "heightFt";
+//
+//    /** Height inches field of database. */
+//    public static final String HEIGHT_IN = "heightIn";
+//
+//    /** Gender field of database. */
+//    public static final String GENDER = "gender";
 
-    public static final String BIRTHDAY = "birthDay";
-
-    public static final String WEIGHT = "weigth";
-
-    public static final String HEIGHT_FT = "heightFt";
-
-    public static final String HEIGHT_IN = "heightIn";
-
-    public static final String GENDER = "gender";
-
+    /** Activity level field of database. */
     public static final String ACTIVITY_LEVEL = "activityLevel";
 
+    /** Days to workout field of database. */
     public static final String DAYS_TO_WORKOUT = "daysToWorkout";
 
+    /** Workout number field of database. */
     public static final String WORKOUT_NUMBER = "workoutNumber";
 
+    /** Workout name field of database. */
     public static final String WORKOUT_NAME = "workoutName";
 
+    /** Date of workout completed field of database. */
     public static final String DATE_COMPLETED = "dateCompleted";
 
+    /** URL used get user additional information from database. */
     private static final String USER_INFO
             = "http://cssgate.insttech.washington.edu/~_450atm2/additionalInfo.php?";
 
+    /** URL used get users last logged workout information from database. */
     private static final String USER_LAST_LOGGED_WORKOUT
             = "http://cssgate.insttech.washington.edu/~_450atm2/getLastUserWorkout.php?";
 
+    /** Tag used for debugging. */
     private static final String TAG = "Dash Board Display";
 
+    /** Users email. */
     private String mUserEmail;
-    private String mUserFirstName;
-    private String mUserLastName;
-    private byte[] mUserProfilePhoto;
-    private String mUserBirhtDay;
+
+//    private String mUserFirstName;
+//    private String mUserLastName;
+//    private byte[] mUserProfilePhoto;
+//    private String mUserBirhtDay;
+
+    /** Users weight. */
     private int mUserWeight;
-    private int mUserHeightFt;
-    private int mUserHeightIn;
-    private String mUserGender;
+
+//    private int mUserHeightFt;
+//    private int mUserHeightIn;
+//    private String mUserGender;
+
+
+    /** Users activity level. */
     private String mUserActivityLevel;
+
+    /** Number of days the user works out. */
     private int mUserDaysToWorkout;
 
+    /** The current View. */
     private View myView;
+
+    /**
+     * Users last logged workout number. Default value is negative one, value gets switched
+     * if data available.
+     */
     private int mWorkoutNum = -1;
+
+    /**
+     * Users last logged workout name. Default value is "None to Displa", value gets switched
+     *  if data available.
+     */
     private String mWorkoutName = "None to Display";
+
+    /**
+     * Users last logged workout date. Default value is "N/A", value gets switched
+     *  if data available.
+     */
     private String mDateCompleted = "N/A";
 
-
+    /** Required empty public constructor */
     public DashboardDisplayFragment() {
         // Required empty public constructor
     }
@@ -129,17 +175,22 @@ public class DashboardDisplayFragment extends Fragment {
         return myView;
     }
 
+    /** Sets the view of the users last logged workout. */
     private void setUserLastLoggedWorkoutView() {
         TextView name = (TextView)myView.findViewById(R.id.dashB_workoutName);
-        name.setText(" " + mWorkoutName);
+        name.setText(" " + mWorkoutName); // not concatenation, is a space to separate data
 
         TextView date = (TextView)myView.findViewById(R.id.dashB_workoutDate);
-        date.setText(" " + mDateCompleted);
+        date.setText(" " + mDateCompleted); // not concatenation, is a space to separate data
 
         TextView number = (TextView)myView.findViewById(R.id.dashB_workoutNumber);
-        number.setText(" " + mWorkoutNum);
+        number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
     }
 
+    /**
+     * Method to launch the UserLastLoggedWorkoutTask and get the last logged workout out of
+     * the database. Also, it sets its fields when UserLastLoggedWorkoutTask is called.
+     */
     private void setUserLastLoggedWorkout() {
         String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
         Log.i(TAG, url);
@@ -147,6 +198,10 @@ public class DashboardDisplayFragment extends Fragment {
         task.execute(new String[]{url});
     }
 
+    /**
+     * Method to launch the DownloadUserInfoTask and get the additional information of the user
+     * from the database.
+     */
     private void setFieldsPersonalInformation() {
         mUserEmail = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
@@ -157,21 +212,24 @@ public class DashboardDisplayFragment extends Fragment {
         task.execute(new String[]{url});
     }
 
+    /** Sets the personal information View. */
     private void setPersonalDataView() {
         TextView weight = (TextView) myView.findViewById(R.id.dashB_weightV);
-        weight.setText("" + mUserWeight);
+        weight.setText("" + mUserWeight); // Concatenating to make it a string.
 
         TextView activity = (TextView) myView.findViewById(R.id.dashB_activityLevelV);
-        activity.setText("" + mUserActivityLevel);
+        activity.setText(mUserActivityLevel);
 
         TextView daysWorkingOut = (TextView) myView.findViewById(R.id.dashB_daysWorkingOutV);
-        daysWorkingOut.setText("" + mUserDaysToWorkout);
+        daysWorkingOut.setText("" + mUserDaysToWorkout); // Concatenating to make it a string.
     }
 
     /** Private class to download user personal information */
     private class DownloadUserInfoTask extends AsyncTask<String, Void, String> {
         @Override
-        protected void onPreExecute() {super.onPreExecute();}
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -193,8 +251,7 @@ public class DashboardDisplayFragment extends Fragment {
                 } catch (Exception e) {
                     response = "Unable to download user additional information, Reason: "
                             + e.getMessage();
-                }
-                finally {
+                } finally {
                     if (urlConnection != null)
                         urlConnection.disconnect();
                 }
@@ -209,19 +266,19 @@ public class DashboardDisplayFragment extends Fragment {
                 JSONArray arr = new JSONArray(result);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    mUserFirstName = obj.getString(FIRST_NAME);
-                    mUserLastName = obj.getString(LAST_NAME);
-                    Object temp = obj.get(PROFILE_PHOTO);
-                    if(temp.equals(null)) {
-                        mUserProfilePhoto = null;
-                    } else {
-                        mUserProfilePhoto = (byte[]) temp;
-                    }
-                    mUserBirhtDay = obj.getString(BIRTHDAY);
+//                    mUserFirstName = obj.getString(FIRST_NAME);
+//                    mUserLastName = obj.getString(LAST_NAME);
+//                    Object temp = obj.get(PROFILE_PHOTO);
+//                    if(temp.equals(null)) {
+//                        mUserProfilePhoto = null;
+//                    } else {
+//                        mUserProfilePhoto = (byte[]) temp;
+//                    }
+//                    mUserBirhtDay = obj.getString(BIRTHDAY);
                     mUserWeight = obj.getInt(WEIGHT);
-                    mUserHeightFt = obj.getInt(HEIGHT_FT);
-                    mUserHeightIn = obj.getInt(HEIGHT_IN);
-                    mUserGender = obj.getString(GENDER);
+//                    mUserHeightFt = obj.getInt(HEIGHT_FT);
+//                    mUserHeightIn = obj.getInt(HEIGHT_IN);
+//                    mUserGender = obj.getString(GENDER);
                     mUserActivityLevel = obj.getString(ACTIVITY_LEVEL);
                     mUserDaysToWorkout = obj.getInt(DAYS_TO_WORKOUT);
                     setPersonalDataView();
@@ -232,6 +289,8 @@ public class DashboardDisplayFragment extends Fragment {
         }
     }
 
+
+    /** Private class to get the information about the last logged workout from user. */
     private class UserLastLoggedWorkoutTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {super.onPreExecute();}
