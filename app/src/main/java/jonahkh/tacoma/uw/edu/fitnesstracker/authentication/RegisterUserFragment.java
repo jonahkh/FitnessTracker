@@ -18,21 +18,37 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 
 /**
+ * Fragment used to enter users information when registering.
  * A simple {@link Fragment} subclass.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class RegisterUserFragment extends Fragment {
 
+    /** Tag used for debugging. */
     private final String TAG = "Register User Fragment";
 
+    /** URL used to add the user information to the database. */
     private final static String USER_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUser.php?";
 
+    /** Users First name view. */
     private EditText mFirstName;
+
+    /** Users Last name view. */
     private EditText mLastName;
+
+    /** Users email view. */
     private EditText mEmail;
+
+    /** User password view. */
     private EditText mPassword;
+
+    /** User confirm password view. */
     private EditText mConfirmPassword;
 
+    /** Required empty public constructor */
     public RegisterUserFragment() {
         // Required empty public constructor
     }
@@ -41,7 +57,6 @@ public class RegisterUserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register_user, container, false);
         mFirstName = (EditText) v.findViewById(R.id.add_user_first_name);
@@ -54,8 +69,6 @@ public class RegisterUserFragment extends Fragment {
         addUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String url = buildCourseURL(v);
-//                mListener.addUser(url);
 
                 boolean fieldNotNull = checkRequirements();
                 boolean passwordsMatch = false;
@@ -64,7 +77,7 @@ public class RegisterUserFragment extends Fragment {
                 }
 
                 // successful registration
-                if(passwordsMatch) {//passwordsMatch
+                if(passwordsMatch) {//password does match
                     ((RegisterUserActivity)getActivity()).setUserInformation(
                             mFirstName.getText().toString(),
                             mLastName.getText().toString(),
@@ -72,13 +85,6 @@ public class RegisterUserFragment extends Fragment {
                             mPassword.getText().toString());
                     String addUserURL = buildAddUserURL();
                     ((RegisterUserActivity)getActivity()).addUserData(addUserURL);
-//                    boolean addedUser = ((RegisterUserActivity)getActivity()).mSuccesful;
-//                    Log.i(TAG, "Continue: " + addedUser);
-//                    if(addedUser) {
-//                        ((RegisterUserActivity)getActivity()).getUserAdditionalInfo();
-//                    } else {
-//                        mEmail.requestFocus();
-//                    }
                 }
             }
         });
