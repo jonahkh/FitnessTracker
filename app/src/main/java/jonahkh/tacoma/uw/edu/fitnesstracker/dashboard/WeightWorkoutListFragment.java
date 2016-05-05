@@ -35,9 +35,9 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
  * database are displayed as well as all of the custom made workouts that are stored locally.
  * Selecting one of the workouts allows a user to start a workout where they can record the
  * exercises/sets they complete.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class WeightWorkoutListFragment extends Fragment {
 
@@ -65,6 +65,11 @@ public class WeightWorkoutListFragment extends Fragment {
     }
 
 
+    /**
+     * Set the workout name to the passed value.
+     *
+     * @param name the new name for this workout
+     */
     public void setName(String name) {
         mCurrentWorkout = new WeightWorkout(name);
     }

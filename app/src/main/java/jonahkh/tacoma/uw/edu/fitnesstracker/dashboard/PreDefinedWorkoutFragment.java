@@ -25,9 +25,9 @@ import java.util.List;
 
 /**
  * A fragment representing a list of PreDefined Workouts.
- * <p>
- * Activities containing this fragment MUST implement the {@link PreDefinedWorkoutListener}
- * interface.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class PreDefinedWorkoutFragment extends Fragment {
     /** The url to fetch data from the mysql server. */

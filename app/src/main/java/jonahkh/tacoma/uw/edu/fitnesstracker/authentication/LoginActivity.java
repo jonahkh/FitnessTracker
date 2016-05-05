@@ -62,7 +62,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email/password. Also allows you to register for the app.
  *
  * @author Jonah Howard
  * @author Hector Diaz
@@ -75,13 +75,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /* Keep track of the login task to ensure we can cancel it if requested. */
     private UserLoginTask mAuthTask = null;
 
-    // UI references.
+    /** Text field for the user's email. */
     private AutoCompleteTextView mEmailView;
+
+    /** Text field for the user's password. */
     private EditText mPasswordView;
+
+    /** View that displays the progress when the app is attempting to verify credentials. */
     private View mProgressView;
+
+    /** View representing the login form. */
     private View mLoginFormView;
+
+    /** The login button. */
     private LoginButton mLoginButton;
+
+    /** The Facebook login button. */
     private FacebookActivity mFacebook;
+
+    /** The shared preferences. */
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -142,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
         List<String> permissions = new ArrayList<>();
 
-        // Set up permissions
+        // Set up permissions for Facebook
         permissions.add("email");
         permissions.add("public_profile");
         permissions.add("user_friends");
@@ -159,11 +171,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent i = new Intent(this, DashboardActivity.class);
             startActivity(i);
             finish();
-//            DashboardDisplayFragment mDashView = new DashboardDisplayFragment();
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, mDashView)
-//                    .addToBackStack(null)
-//                    .commit();
         }
     }
 
@@ -328,6 +335,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
+    /**
+     * Email profile query.
+     */
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -337,7 +347,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
     }
 
-
+    /**
+     * Adds the list of emails to the adapter for the email view.
+     *
+     * @param emailAddressCollection list of emails
+     */
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -364,6 +378,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         /** Determines if there is a current network connection. Default value is true. */
         private boolean networkAccess = true;
 
+        /**
+         * Initialize a new UserLoginTask.
+         *
+         * @param email the email to be verified
+         * @param password the password to be verified
+         */
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
