@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".authentication.RegisterUserAdditional_Info"
+    tools:context=".authentication.RegisterUserAdditionalInfoFragment"
     android:weightSum="1">
 
 

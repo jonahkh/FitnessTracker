@@ -3,9 +3,7 @@
  * Hector Diaz
  * TCSS 450 - Team 2
  */
-package jonahkh.tacoma.uw.edu.fitnesstracker.types;
-
-import android.util.Log;
+package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +15,9 @@ import java.util.List;
 /**
  * This class stores information about weight workouts. Weight workouts store each exercise that
  * was performed for that workout and how many sets for each workout were completed.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class WeightWorkout implements Serializable {
 
@@ -93,6 +94,14 @@ public class WeightWorkout implements Serializable {
         return mDate;
     }
 
+    /**
+     * Parses JSON and converts to a new Weight workout that is displayed for the Workout Templates
+     * menu option. Populates the passed list with all created Weight Workouts.
+     *
+     * @param weightWorkoutJSON the JSON being parsed
+     * @param weightWorkoutList the WeightWorkout list being populated
+     * @return null if the parsing was successful, otherwise returns an error message
+     */
     public static String parsePreDefinedWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
         if (weightWorkoutJSON != null) {
@@ -111,6 +120,14 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
+    /**
+     * Parses JSON and converts to a new Exercise. Populates the passed list with all created
+     * Exercises.
+     *
+     * @param weightWorkoutJSON The JSON being parsed
+     * @param exerciseList the exercise list being populated
+     * @return null if the parsing was successful, otherwise returns an error message
+     */
     public static String parseWeightWorkoutListExerciseJSON(String weightWorkoutJSON,
                                                             List<Exercise> exerciseList) {
         String reason = null;
@@ -119,7 +136,6 @@ public class WeightWorkout implements Serializable {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-//                    WeightWorkout weightWorkout = new WeightWorkout(obj.getString(NAME));
                     Exercise exercise = new Exercise(obj.getString(EXERCISE));
                     exerciseList.add(exercise);
                 }
@@ -151,6 +167,7 @@ public class WeightWorkout implements Serializable {
                             obj.getInt(WorkoutSet.SET_NUMBER),
                             obj.getInt(WorkoutSet.WEIGHT));
                     int check =  checkContainsExercise(exerciseName, exerciseList);
+                    // If the list already contains the exercise, just add a new set
                     if (check > -1) {
                         exerciseList.get(check).addSet(set);
                     } else {
@@ -166,6 +183,13 @@ public class WeightWorkout implements Serializable {
         return reason;
     }
 
+    /**
+     * Checks if the passed list already contains the exercise.
+     *
+     * @param name
+     * @param exercises
+     * @return
+     */
     private static int checkContainsExercise(String name, List<Exercise> exercises) {
         for (int i = 0; i < exercises.size(); i++) {
             if (name.equals(exercises.get(i).getExerciseName())) {
@@ -175,6 +199,14 @@ public class WeightWorkout implements Serializable {
         return -1;
     }
 
+    /**
+     * Parse the passed JSON input and converts into a new WeightWorkout. Populates the passed list
+     * with these created Weight Workouts.
+     *
+     * @param weightWorkoutJSON the data being parsed
+     * @param weightWorkoutList the list being populated
+     * @return null if the parsing was successful, otherwise return the error message
+     */
     public static String parseWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
         String reason = null;
         if (weightWorkoutJSON != null) {

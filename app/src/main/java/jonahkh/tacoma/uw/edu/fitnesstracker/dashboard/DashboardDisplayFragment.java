@@ -22,16 +22,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyViewLoggedWorkoutsRecyclerViewAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DashBoardDisplay extends Fragment {
+public class DashboardDisplayFragment extends Fragment {
 
     public static final String FIRST_NAME = "firstName";
 
@@ -85,7 +83,7 @@ public class DashBoardDisplay extends Fragment {
     private String mDateCompleted = "N/A";
 
 
-    public DashBoardDisplay() {
+    public DashboardDisplayFragment() {
         // Required empty public constructor
     }
 
@@ -121,7 +119,7 @@ public class DashBoardDisplay extends Fragment {
         editBut.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View c) {
-                EditPersonalInformation edit = new EditPersonalInformation();
+                EditPersonalInformationFragment edit = new EditPersonalInformationFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, edit)
                         .addToBackStack(null)

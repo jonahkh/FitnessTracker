@@ -7,8 +7,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,26 +18,21 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyExerciseExpandableListAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.LoggedExerciseAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * This Fragment displays all of the exercises that have been completed for the currently selected
  * workout in the View Logged Workouts menu option.
  *
- * A simple {@link Fragment} subclass.
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class ViewExercisesFragment extends Fragment implements Serializable {
 
@@ -78,11 +71,11 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                     + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
 
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.exercises))) {
-            DownloadWorkoutsTask task = new DownloadWorkoutsTask();
+            DownloadExercisesTask task = new DownloadExercisesTask();
             task.execute(EXERCISE_URL + param);
         }
         mExerciseList = new ArrayList<>();
-        mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList);
+        mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
 //        inflater.inflate(R.layout., container, false);
         return inflater.inflate(R.layout.fragment_view_exercises, container, false);
     }
@@ -99,35 +92,11 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     /**
      * This class handles all interactions with the web service pertaining to this Fragment.
      */
-    private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
+    private class DownloadExercisesTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s;
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to download the list of exercises, Reason: "
-                            + e.getMessage();
-                }
-                finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
+            return DashboardActivity.doInBackgroundHelper(urls);
         }
 
         @Override
@@ -152,11 +121,12 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
 
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
-                mAdapter = new MyExerciseExpandableListAdapter(getActivity(), mExerciseList);
+                mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
                 LayoutInflater inflater;
                 ExpandableListView view = (ExpandableListView) getActivity()
                         .findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
+                // Set the indicator bounds for the expandable list item (displayed as an arrow)
                 DisplayMetrics metrics = new DisplayMetrics();
                 getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
                 int width = metrics.widthPixels;
@@ -170,7 +140,7 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
          * @param pixels the value being converted
          * @return the converted value
          */
-        public int getDipsFromPixel(float pixels) {
+        private int getDipsFromPixel(float pixels) {
             // Get the screen's density scale
             final float scale = getResources().getDisplayMetrics().density;
             // Convert the dps to pixels, based on density scale

@@ -107,7 +107,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         // Takes you back to the previous fragment by popping the current fragment out.
 //        getSupportFragmentManager().popBackStackImmediate();
 //
-//        RegisterUserAdditional_Info userOtherInfo = new RegisterUserAdditional_Info();
+//        RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
 //        getSupportFragmentManager().beginTransaction()
 //                .replace(R.id.activity_register_user_xml, userOtherInfo)
 //                .addToBackStack(null)
@@ -262,7 +262,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 //                            .show();
                     getSupportFragmentManager().popBackStackImmediate();
                     if(redo) {
-                        RegisterUserAdditional_Info userOtherInfo = new RegisterUserAdditional_Info();
+                        RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.activity_register_user_xml, userOtherInfo)
                                 .addToBackStack(null)

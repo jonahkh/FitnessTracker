@@ -3,7 +3,7 @@
  * Hector Diaz
  * TCSS 450 - Team 2
  */
-package jonahkh.tacoma.uw.edu.fitnesstracker.types;
+package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

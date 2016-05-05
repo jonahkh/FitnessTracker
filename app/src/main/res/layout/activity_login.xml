@@ -81,7 +81,7 @@
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->
                 <!--android:id="@+id/facebook_fragment"-->
-                <!--android:name="jonahkh.tacoma.uw.edu.fitnesstracker.authentication.FacebookFragment"-->
+                <!--android:name="jonahkh.tacoma.uw.edu.fitnesstracker.ignore.FacebookFragment"-->
                 <!--&gt;</fragment>-->
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"

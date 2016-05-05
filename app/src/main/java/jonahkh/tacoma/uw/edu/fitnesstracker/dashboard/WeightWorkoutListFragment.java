@@ -6,8 +6,6 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,9 +26,9 @@ import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyWeightWorkoutRecyclerViewAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * A fragment representing a list of WeightWorkouts. All of the predefined workouts from the
@@ -85,14 +83,14 @@ public class WeightWorkoutListFragment extends Fragment {
         }
         String param = "&name=" + mCurrentWorkout.getWorkoutName();
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
-            DownloadWorkoutsTask task = new DownloadWorkoutsTask();
+            DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask();
             task.execute(WORKOUT_URL + param);
         } else {
             Toast.makeText(view.getContext(),
                     "No network connection available. Cannot display workouts",
                     Toast.LENGTH_SHORT) .show();
         }
-        mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
+        mRecyclerView.setAdapter(new WeightWorkoutAdapter(mExerciseList, mListener));
 
         return view;
     }
@@ -126,11 +124,13 @@ public class WeightWorkoutListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Exercise exercise);
     }
-    
-    private class DownloadWorkoutsTask extends AsyncTask<String, Void, String> {
+
+    /**
+     * This class handles all of the web service interaction for the WeightWorkoutL
+     */
+    private class DownloadWeightWorkoutsTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -181,7 +181,7 @@ public class WeightWorkoutListFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
-                mRecyclerView.setAdapter(new MyWeightWorkoutRecyclerViewAdapter(mExerciseList, mListener));
+                mRecyclerView.setAdapter(new WeightWorkoutAdapter(mExerciseList, mListener));
 
 
             }

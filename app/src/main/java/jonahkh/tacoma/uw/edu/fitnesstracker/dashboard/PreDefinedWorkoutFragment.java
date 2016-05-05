@@ -6,8 +6,6 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,20 +18,15 @@ import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A fragment representing a list of PreDefined Workouts.
  * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link PreDefinedWorkoutListener}
  * interface.
  */
 public class PreDefinedWorkoutFragment extends Fragment {
@@ -42,7 +35,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
             = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=predefinedworkouts";
 
     /** The listener for this Fragment. */
-    private OnListFragmentInteractionListener mListener;
+    private PreDefinedWorkoutListener mListener;
 
     /** The list of predefined workouts. */
     private List<WeightWorkout> mWorkoutList;
@@ -74,8 +67,8 @@ public class PreDefinedWorkoutFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof PreDefinedWorkoutListener) {
+            mListener = (PreDefinedWorkoutListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnExerciseListFragmentInteractionListener");
@@ -98,8 +91,8 @@ public class PreDefinedWorkoutFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout);
+    public interface PreDefinedWorkoutListener {
+        void onPreDefinedWorkoutInteraction(WeightWorkout workout);
     }
 
     /**
@@ -109,31 +102,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s;
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to download the list of predefinedworkouts, Reason: "
-                            + e.getMessage();
-                }
-                finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
+            return DashboardActivity.doInBackgroundHelper(urls);
         }
 
         @Override

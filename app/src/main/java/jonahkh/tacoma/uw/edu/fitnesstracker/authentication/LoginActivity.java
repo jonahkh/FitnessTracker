@@ -58,7 +58,6 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashBoardDisplay;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
@@ -160,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent i = new Intent(this, DashboardActivity.class);
             startActivity(i);
             finish();
-//            DashBoardDisplay mDashView = new DashBoardDisplay();
+//            DashboardDisplayFragment mDashView = new DashboardDisplayFragment();
 //            getSupportFragmentManager().beginTransaction()
 //                    .replace(R.id.fragment_container, mDashView)
 //                    .addToBackStack(null)

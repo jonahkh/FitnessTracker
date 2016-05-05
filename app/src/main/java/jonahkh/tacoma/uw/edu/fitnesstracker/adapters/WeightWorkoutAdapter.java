@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyWeightWorkoutRecyclerViewAdapter extends RecyclerView.Adapter<MyWeightWorkoutRecyclerViewAdapter.ViewHolder> {
+public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdapter.ViewHolder> {
 
     private final List<Exercise> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyWeightWorkoutRecyclerViewAdapter(List<Exercise> items, OnListFragmentInteractionListener listener) {
+    public WeightWorkoutAdapter(List<Exercise> items, OnListFragmentInteractionListener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
