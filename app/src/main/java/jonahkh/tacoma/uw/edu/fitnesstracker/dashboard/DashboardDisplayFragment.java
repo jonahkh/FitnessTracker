@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
@@ -17,18 +22,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
- * Fragment used to Display the personal information of the user.
- * A simple {@link Fragment} subclass.
+ * Fragment used to Display the personal information of the user. This information is displayed on
+ * the dashboard. The user has the option to edit their weight, activity level, and number of days
+ * they workout per week.
  *
  * @author Jonah Howard
  * @author Hector Diaz
@@ -87,7 +87,7 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** Users email. */
     private String mUserEmail;
-
+//    For later implementation
 //    private String mUserFirstName;
 //    private String mUserLastName;
 //    private byte[] mUserProfilePhoto;
@@ -233,30 +233,7 @@ public class DashboardDisplayFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to download user additional information, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
+            return DashboardActivity.doInBackgroundHelper(urls);
         }
 
         @Override
@@ -297,31 +274,7 @@ public class DashboardDisplayFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to download user last logged workout, Reason: "
-                            + e.getMessage();
-                }
-                finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
+            return DashboardActivity.doInBackgroundHelper(urls);
         }
 
         @Override

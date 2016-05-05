@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -121,7 +122,6 @@ public class DashboardActivity extends AppCompatActivity
         }
         return true;
     }
-
 
 
     @Override
