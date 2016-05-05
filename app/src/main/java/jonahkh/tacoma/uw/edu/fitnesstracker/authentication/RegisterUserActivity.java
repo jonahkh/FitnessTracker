@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 import android.content.Context;
@@ -24,7 +29,9 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
- * Activity used to register a User.
+ * Activity used to register a User. In order to register, a user must enter in their first and last
+ * name, email, and a password. The email must not already be registered and the user must enter
+ * their password twice to confirm they are correct.
  *
  * @author Jonah Howard
  * @author Hector Diaz
@@ -83,7 +90,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** Users activity level. */
     private String mActivityLevel;
 
-    /** Number of days the user worksout. */
+    /** Number of days the user works out. */
     private int mDaysToWorkout;
 
     @Override
@@ -163,55 +170,45 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     /** Method that will build the url for calling the AsyncTask.  */
-    String buildAddUserAdditionaIfoURL() {
+    public String buildAddUserAdditionaIfoURL() {
 
         StringBuilder sb = new StringBuilder(USER_ADDITIONAL_INFO_ADD_URL);
 
         try {
-            String email = mUserEmail;
             sb.append("email=");
-            sb.append(email);
+            sb.append(mUserEmail);
 
 
-            String firstName = mUserFirstName;
             sb.append("&firstName=");
-            sb.append(URLEncoder.encode(firstName, "UTF-8"));
+            sb.append(URLEncoder.encode(mUserFirstName, "UTF-8"));
 
-            String lastName = mUserLastName;
             sb.append("&lastName=");
-            sb.append(URLEncoder.encode(lastName, "UTF-8"));
+            sb.append(URLEncoder.encode(mUserLastName, "UTF-8"));
 
-            byte[] profilePhoto = mPhoto;
             sb.append("&profilePhoto=");
-            sb.append(Arrays.toString(profilePhoto));
+            sb.append(Arrays.toString(mPhoto));
 
             String birthDay = "" + mYearDOB + "-" + mMonthDOB + "-" + mDateDOB;
             sb.append("&birthDay=");
             sb.append(URLEncoder.encode(birthDay, "UTF-8"));
 
-            int weight = mWeight;
             sb.append("&weight=");
-            sb.append(weight);
+            sb.append(mWeight);
 
-            int heightFt = mHeightFt;
             sb.append("&heightFt=");
-            sb.append(heightFt);
+            sb.append(mHeightFt);
 
-            int heightIn = mHeightIn;
             sb.append("&heightIn=");
-            sb.append(heightIn);
+            sb.append(mHeightIn);
 
-            char gender = mGender;
             sb.append("&gender=");
-            sb.append(URLEncoder.encode(String.valueOf(gender), "UTF-8"));
+            sb.append(URLEncoder.encode(String.valueOf(mGender), "UTF-8"));
 
-            String activityLevel = mActivityLevel;
             sb.append("&activityLevel=");
-            sb.append(URLEncoder.encode(activityLevel, "UTF-8"));
+            sb.append(URLEncoder.encode(mActivityLevel, "UTF-8"));
 
-            int daysToWorkout = mDaysToWorkout;
             sb.append("&daysToWorkout=");
-            sb.append(daysToWorkout);
+            sb.append(mDaysToWorkout);
             Log.i(TAG, sb.toString());
         }
         catch(Exception e) {
