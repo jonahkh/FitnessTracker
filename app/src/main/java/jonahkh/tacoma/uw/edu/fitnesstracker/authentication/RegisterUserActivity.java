@@ -24,11 +24,13 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
- * Created by Hector on 4/26/2016.
+ * Activity used to register a User.
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class RegisterUserActivity extends AppCompatActivity {
 
-    private final String TAG = "REGISTER ACTIVIY";
+    private final String TAG = "Register Activity";
 
     private boolean redo = true;
 
@@ -66,8 +68,6 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     private int mDaysToWorkout;
 
-    private SharedPreferences mSharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,17 +103,6 @@ public class RegisterUserActivity extends AppCompatActivity {
         mUserPassword = thePass;
     }
 
-    protected void getUserAdditionalInfo() {
-        // Takes you back to the previous fragment by popping the current fragment out.
-//        getSupportFragmentManager().popBackStackImmediate();
-//
-//        RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.activity_register_user_xml, userOtherInfo)
-//                .addToBackStack(null)
-//                .commit();
-    }
-
     public void setUserAdditionInfo(byte[] photo, int dateDOB, int monthDOB, int yearDOB,
                                     int weight, int heightFt, int heightIn, char gender,
                                     String activityLevel, int daysToWorkout) {
@@ -138,7 +127,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     /** method that will build the url for calling the AsyncTask.  */
-    String buildAddUserAddtionaIfoURL() {
+    String buildAddUserAdditionaIfoURL() {
 
         StringBuilder sb = new StringBuilder(USER_ADDITIONAL_INFO_ADD_URL);
 
@@ -158,7 +147,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
             byte[] profilePhoto = mPhoto;
             sb.append("&profilePhoto=");
-            sb.append(Arrays.toString(profilePhoto)); // TODO might cause a problem;
+            sb.append(Arrays.toString(profilePhoto));
 
             String birthDay = "" + mYearDOB + "-" + mMonthDOB + "-" + mDateDOB;
             sb.append("&birthDay=");
@@ -187,15 +176,6 @@ public class RegisterUserActivity extends AppCompatActivity {
             int daysToWorkout = mDaysToWorkout;
             sb.append("&daysToWorkout=");
             sb.append(daysToWorkout);
-
-//            $firstName = isset($_GET['firstName']) ? $_GET['firstName'] : '';
-//            $lastName = isset($_GET['lastName']) ? $_GET['lastName'] : '';
-//            $profilePhoto = isset($_GET['profilePhoto']) ? $_GET['profilePhoto'] : '';
-//            $birthDay = isset($_GET['birthDay']) ? $_GET['birthDay'] : '';
-//            $weight = isset($_GET['weight']) ? $_GET['weight'] : '';
-//            $heightFt = isset($_GET['heightFt']) ? $_GET['heightFt'] : '';
-//            $heightIn = isset($_GET['heightIn']) ? $_GET['heightIn'] : '';
-
             Log.i(TAG, sb.toString());
         }
         catch(Exception e) {
@@ -272,11 +252,12 @@ public class RegisterUserActivity extends AppCompatActivity {
                         (Toast.makeText(getApplicationContext(),
                                 R.string.registration_successful, Toast.LENGTH_SHORT)).show();
                         // Store user email and record that they are logged in
-                        mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
-                                , Context.MODE_PRIVATE);
-                        mSharedPreferences.edit().putString(getString(R.string.current_email), mUserEmail)
+                        SharedPreferences mSharedPreferences  = getSharedPreferences
+                                (getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                        mSharedPreferences.edit().putString(getString(R.string.current_email),
+                                mUserEmail).apply();
+                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true)
                                 .apply();
-                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
 
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);
@@ -298,20 +279,3 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 }
-
-
-// TODO lunch the new fragment for additional infor and close userAddFragment after next click;
-//        -- From fragment to activty:
-//
-//        ((YourActivityClassName)getActivity()).yourPublicMethod();
-//
-//        -- From activity to fragment:
-//
-//        FragmentManager fm = getSupportFragmentManager();
-//
-//        //if you added fragment via layout xml
-//        YourFragmentClass fragment = (YourFragmentClass)fm.findFragmentById(R.id.your_fragment_id);
-//        fragment.yourPublicMethod();
-//        If you added fragment via code and used a tag string when you added your fragment, use findFragmentByTag instead:
-//
-//        YourFragmentClass fragment = (YourFragmentClass)fm.findFragmentByTag("yourTag");

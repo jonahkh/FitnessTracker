@@ -99,7 +99,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
                     ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mPhoto, mDateDOB, mMonthDOB,
                             mYearDOB, mWeight, mHeightFt, mHeightIn, mGender, mActivityLevel, mDaysToWorkout);
 
-                    String url = ((RegisterUserActivity)getActivity()).buildAddUserAddtionaIfoURL();
+                    String url = ((RegisterUserActivity)getActivity()).buildAddUserAdditionaIfoURL();
                     ((RegisterUserActivity)getActivity()).addUserData(url);
                 }
             }
