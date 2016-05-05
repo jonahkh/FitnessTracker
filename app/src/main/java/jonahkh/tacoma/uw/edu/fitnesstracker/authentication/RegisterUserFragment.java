@@ -2,6 +2,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,7 +77,6 @@ public class RegisterUserFragment extends Fragment {
                    passwordsMatch = checkPasswordMatching();
                 }
 
-                // successful registration
                 if(passwordsMatch) {//password does match
                     ((RegisterUserActivity)getActivity()).setUserInformation(
                             mFirstName.getText().toString(),
@@ -92,6 +92,11 @@ public class RegisterUserFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Checks whether the password and confirm passwords fields match.
+     *
+     * @return Whether the password and confirm passwords fields match.
+     */
     private boolean checkPasswordMatching() {
         if(!mPassword.getEditableText().toString().
                 equals(mConfirmPassword.getEditableText().toString())){
@@ -103,6 +108,11 @@ public class RegisterUserFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Checks whether all required fields have data.
+     *
+     * @return Whether all required fields have data.
+     */
     private boolean checkRequirements() {
         boolean notEmpty = true;
         // checking that fields are not empty
@@ -134,7 +144,12 @@ public class RegisterUserFragment extends Fragment {
         return notEmpty;
     }
 
-    /** method that will build the url for calling the AsyncTask.  */
+    /**
+     * Method that will build the url for calling the AsyncTask.
+     *
+     * @return rl for calling the AsyncTask.
+     */
+    @NonNull
     private String buildAddUserURL() {
 
         StringBuilder sb = new StringBuilder(USER_ADD_URL);
