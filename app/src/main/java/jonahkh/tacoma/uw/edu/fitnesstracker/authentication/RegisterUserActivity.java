@@ -25,15 +25,22 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
  * Activity used to register a User.
+ *
  * @author Jonah Howard
  * @author Hector Diaz
  */
 public class RegisterUserActivity extends AppCompatActivity {
 
+    /** Tag used for debugging. */
     private final String TAG = "Register Activity";
 
+    /**
+     *  Boolean value used for lunching AdditionalInformationFragment after entering
+     *  user first information.
+     */
     private boolean redo = true;
 
+    /** URL used to add the user information to database. */
     private final static String USER_ADDITIONAL_INFO_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
 
@@ -46,26 +53,37 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** Users email. */
     private String mUserEmail = "";
 
+    /** User password. */
     private String mUserPassword = "";
 
+    /** Users photo, null for now for this stage of project.*/
     private byte[] mPhoto;
 
+    /** Users Date from his/hers DOB.*/
     private int mDateDOB;
 
+    /** Users Month from his/hers DOB.*/
     private int mMonthDOB;
 
+    /** Users year from his/hers DOB.*/
     private int mYearDOB;
 
+    /** Users weight. */
     private int mWeight;
 
+    /** Users Height in Feet. */
     private int mHeightFt;
 
+    /** Users Height in Inches. */
     private int mHeightIn;
 
+    /** Users gender. */
     private char mGender;
 
+    /** Users activity level. */
     private String mActivityLevel;
 
+    /** Number of days the user worksout. */
     private int mDaysToWorkout;
 
     @Override
@@ -81,7 +99,11 @@ public class RegisterUserActivity extends AppCompatActivity {
                 .commit();
     }
 
-
+    /**
+     * Method used to register the User to User Database Table.
+     *
+     * @param url Url used to lunch the AddUserTask class.
+     */
     public void addUserData(String url) {
         AddUserTask task = new AddUserTask();
         task.execute(url);
@@ -103,6 +125,20 @@ public class RegisterUserActivity extends AppCompatActivity {
         mUserPassword = thePass;
     }
 
+    /**
+     * Method used to set the Users additional information.
+     *
+     * @param photo Users photo. In this version it's null.
+     * @param dateDOB Users Date from his/hers DOB.
+     * @param monthDOB Users Month from his/hers DOB.
+     * @param yearDOB Users Year from his/hers DOB.
+     * @param weight Users weight.
+     * @param heightFt Users Height in Feet.
+     * @param heightIn Users Height in Inches.
+     * @param gender Users Gender.
+     * @param activityLevel Users activity level.
+     * @param daysToWorkout Number of days the users workouts.
+     */
     public void setUserAdditionInfo(byte[] photo, int dateDOB, int monthDOB, int yearDOB,
                                     int weight, int heightFt, int heightIn, char gender,
                                     String activityLevel, int daysToWorkout) {
@@ -126,7 +162,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         Log.i(TAG, messageDebug);
     }
 
-    /** method that will build the url for calling the AsyncTask.  */
+    /** Method that will build the url for calling the AsyncTask.  */
     String buildAddUserAdditionaIfoURL() {
 
         StringBuilder sb = new StringBuilder(USER_ADDITIONAL_INFO_ADD_URL);
@@ -184,13 +220,17 @@ public class RegisterUserActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-
+    /**
+     * Gets the users email.
+     *
+     * @return Returns the users email.
+     */
     public String getUserEmail() {
         return mUserEmail;
     }
 
 
-    /** AsyncTask class called CourseAddAsyncTask that will allow us to call the service for adding
+    /** AsyncTask class called AddUserTask that will allow us to call the service for adding
      * user information. */
     private class AddUserTask extends AsyncTask<String, Void, String> {
 
@@ -237,11 +277,9 @@ public class RegisterUserActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
-//                    Toast.makeText(getApplicationContext(), "User successfully added!"
-//                            , Toast.LENGTH_LONG)
-//                            .show();
                     getSupportFragmentManager().popBackStackImmediate();
                     if(redo) {
+                        // Launch the RegisterUserAdditionalInfoFragment to get the additional information.
                         RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.activity_register_user_xml, userOtherInfo)
@@ -252,13 +290,13 @@ public class RegisterUserActivity extends AppCompatActivity {
                         (Toast.makeText(getApplicationContext(),
                                 R.string.registration_successful, Toast.LENGTH_SHORT)).show();
                         // Store user email and record that they are logged in
-                        SharedPreferences mSharedPreferences  = getSharedPreferences
+                        SharedPreferences sharedPreferences  = getSharedPreferences
                                 (getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                        mSharedPreferences.edit().putString(getString(R.string.current_email),
+                        sharedPreferences.edit().putString(getString(R.string.current_email),
                                 mUserEmail).apply();
-                        mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true)
+                        sharedPreferences.edit().putBoolean(getString(R.string.logged_in), true)
                                 .apply();
-
+                        // Registration complete go to dashboard.
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         startActivity(intent);
                         getSupportFragmentManager().popBackStackImmediate();
