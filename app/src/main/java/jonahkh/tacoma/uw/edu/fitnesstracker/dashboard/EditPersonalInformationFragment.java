@@ -1,9 +1,16 @@
+/*
+ * TCSS 450 FitnessTracker
+ * Jonah Howard
+ * Hector Diaz
+ */
+
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,29 +36,40 @@ import java.net.URLEncoder;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
 /**
+ * Fragment used to edit the personal information of the user.
  * A simple {@link Fragment} subclass.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class EditPersonalInformationFragment extends Fragment {
 
+    /** URL used get update user additional information from database. */
     private static final String USER_INFO
             = "http://cssgate.insttech.washington.edu/~_450atm2/updateUserData.php?";
 
+    /** Tag used for debugging. */
     public static final String TAG = "Edit Personal Info";
 
+    /** Field used to check that all the required information is entered. */
     private final int INVALID = -1;
 
+    /** Users weight. */
     private int mWeight;
 
+    /** Users activity level. */
     private String mActivityLevel;
 
+    /** Number of days the user works out. */
     private int mDaysToWorkout;
 
+    /** Users email. */
     private String mUserEmail;
 
+    /** Required empty public constructor */
     public EditPersonalInformationFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +107,7 @@ public class EditPersonalInformationFragment extends Fragment {
                     }
                     Log.i(TAG, url);
                     UpdateUserDataTask task = new UpdateUserDataTask();
-                    task.execute(new String[]{url});
+                    task.execute(url);
                 }
             }
         });
@@ -97,6 +115,12 @@ public class EditPersonalInformationFragment extends Fragment {
         return myView;
     }
 
+    /**
+     * Gets the users weight entered.
+     *
+     * @param myView The view.
+     * @return The users weight entered.
+     */
     private int getWeightEntered(View myView) {
         TextView weightV = (TextView) myView.findViewById(R.id.epi_weight);
         if(TextUtils.isEmpty(weightV.getEditableText())){
@@ -109,38 +133,55 @@ public class EditPersonalInformationFragment extends Fragment {
         return temp;
     }
 
+    /**
+     * Gets the activity level selected by user.
+     *
+     * @param myView The view.
+     * @return The activity level selected by user.
+     */
     private String getActivityLevel(View myView) {
         return ((Spinner) myView.findViewById(R.id.epi_activtiyLv_spinner))
                 .getSelectedItem().toString();
     }
 
+    /**
+     * Gets the number of days the user entered to workout.
+     *
+     * @param myView The view.
+     * @return The number of days the users workout.
+     */
     private int getDaysToWorkout(View myView) {
         Spinner activitySpinner = (Spinner) myView.findViewById(R.id.epi_daysToWorkout_spinner);
         String numDays = activitySpinner.getSelectedItem().toString();
         return Integer.parseInt(numDays);
     }
 
+    /**
+     * Gets the url needed to launch the UpdateUserDataTask.
+     *
+     * @return The URL needed to launch the UpdateUserDataTask.
+     *
+     * @throws UnsupportedEncodingException Incase the activity level cannot be converted to string.
+     */
+    @NonNull
     private String getUrl() throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder(USER_INFO);
         sb.append("email=");
         sb.append(mUserEmail);
 
-        int weight = mWeight;
         sb.append("&weight=");
-        sb.append(weight);
+        sb.append(mWeight);
 
-        int daysToWorkout = mDaysToWorkout;
         sb.append("&daysToWorkout=");
-        sb.append(daysToWorkout);
+        sb.append(mDaysToWorkout);
 
-        String activityLevel = mActivityLevel;
         sb.append("&activityLevel=");
-        sb.append(URLEncoder.encode(activityLevel, "UTF-8"));
+        sb.append(URLEncoder.encode(mActivityLevel, "UTF-8"));
 
         return sb.toString();
     }
 
-    /** AsyncTask class called CourseAddAsyncTask that will allow us to call the service for adding
+    /** AsyncTask class called UpdateUserDataTask that will allow us to call the update
      * user information. */
     private class UpdateUserDataTask extends AsyncTask<String, Void, String> {
 
