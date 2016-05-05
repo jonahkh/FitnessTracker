@@ -14,7 +14,7 @@ import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * This class represents a layout adapter for the predefined workouts menu option.
@@ -28,7 +28,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
     private final List<WeightWorkout> mValues;
 
     /** The listener for the list. */
-    private final PreDefinedWorkoutFragment.OnListFragmentInteractionListener mListener;
+    private final PreDefinedWorkoutFragment.PreDefinedWorkoutListener mListener;
 
     /** The Activity that holds this adapter. */
     private final Activity mContext;
@@ -40,7 +40,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
      * @param items the list of predefined workouts
      * @param listener the listener for this adapter
      */
-    public PreDefinedWorkoutAdapter(Activity context, List<WeightWorkout> items, PreDefinedWorkoutFragment.OnListFragmentInteractionListener listener) {
+    public PreDefinedWorkoutAdapter(Activity context, List<WeightWorkout> items, PreDefinedWorkoutFragment.PreDefinedWorkoutListener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -77,7 +77,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 if (null != mListener) {
-                    mListener.onPreDefinedWorkoutListFragmentInteraction(holder.mItem);
+                    mListener.onPreDefinedWorkoutInteraction(holder.mItem);
                 }
             }
         });

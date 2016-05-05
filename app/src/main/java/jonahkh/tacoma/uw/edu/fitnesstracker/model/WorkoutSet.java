@@ -4,7 +4,7 @@
  * TCSS 450 - Team 2
  */
 
-package jonahkh.tacoma.uw.edu.fitnesstracker.types;
+package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
 /**
  * Represents a workout set. Sets are created when the user clicks on an exercise during a workout.

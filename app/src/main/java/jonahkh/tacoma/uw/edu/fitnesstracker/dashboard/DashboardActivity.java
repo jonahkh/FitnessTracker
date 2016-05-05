@@ -25,10 +25,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * This class represents the Dashboard for the FitnessTracker application. It will display
@@ -40,12 +46,18 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
  */
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                    PreDefinedWorkoutFragment.OnListFragmentInteractionListener,
+        PreDefinedWorkoutFragment.PreDefinedWorkoutListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
-        ViewLoggedWorkoutsListFragment.OnLoggedWeightWorkoutsListFragmentInteractionListener {
+        ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
+
+    /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
+
+    /** The SavedInstanceState. Used to restore data when the app is rotated. */
     private Bundle mSavedInstanceState;
-    private DashBoardDisplay mDashView = null;
+
+    /** The Fragment for the dashboard home page. */
+    private DashboardDisplayFragment mDashView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +93,7 @@ public class DashboardActivity extends AppCompatActivity
         }
         // Display of personal data
         if (mDashView == null) {
-            mDashView = new DashBoardDisplay();
+            mDashView = new DashboardDisplayFragment();
                 getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, mDashView)
                 .addToBackStack(null)
@@ -113,13 +125,12 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
-
+        // To be implemented in the next phase
     }
 
 
     @Override
-    public void onPreDefinedWorkoutListFragmentInteraction(WeightWorkout workout) {
-        // TODO This is for when you select a workout on the predefined workouts list
+    public void onPreDefinedWorkoutInteraction(WeightWorkout workout) {
         // When you select a workout, you are taken to a new fragment where you can see the list of
         // exercises associated with that workout and your workout starts
         mCurrentWorkout = workout;
@@ -148,12 +159,16 @@ public class DashboardActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    /**
+     * Retrieves the current workout if the app was restarted unexpectedly (if the user changes the
+     * screen orientation).
+     */
     public void retrieveCurrentWorkout() {
         onRestoreInstanceState(mSavedInstanceState);
     }
 
     @Override
-    public void onViewLoggedWeightWorkoutsListFragmentInteraction(WeightWorkout workout) {
+    public void LoggedWeightWorkoutInteraction(WeightWorkout workout) {
         mCurrentWorkout = workout;
         final ViewExercisesFragment exercises = new ViewExercisesFragment();
         exercises.setWorkout(workout);
@@ -176,6 +191,11 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Return the current WeightWorkout.
+     *
+     * @return the current weight workout
+     */
     public WeightWorkout getCurrentWorkout() {
         return mCurrentWorkout;
     }
@@ -219,7 +239,6 @@ public class DashboardActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.view_logged_workouts) {
-//            WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
             ViewLoggedWorkoutsListFragment fragment = new ViewLoggedWorkoutsListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -232,7 +251,7 @@ public class DashboardActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
             } else {
-                mDashView = new DashBoardDisplay();
+                mDashView = new DashboardDisplayFragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, mDashView)
                         .addToBackStack(null)
@@ -247,6 +266,39 @@ public class DashboardActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Helper method for all AsyncTask inner classes. Connects to the web service and extracts
+     * data according to the url.
+     *
+     * @param urls the urls being passed to the web service
+     * @return an empty String if the connection was successful, otherwise returns the error
+     *          message received
+     */
+    public static String doInBackgroundHelper(String...urls) {
+        String response = "";
+        HttpURLConnection urlConnection = null;
+        for (String url : urls) {
+            try {
+                URL urlObject = new URL(url);
+                urlConnection = (HttpURLConnection) urlObject.openConnection();
 
+                InputStream content = urlConnection.getInputStream();
 
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                String s;
+                while ((s = buffer.readLine()) != null) {
+                    response += s;
+                }
+
+            } catch (Exception e) {
+                response = "Unable to download the list of exercises, Reason: "
+                        + e.getMessage();
+            }
+            finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+        }
+        return response;
+    }
 }

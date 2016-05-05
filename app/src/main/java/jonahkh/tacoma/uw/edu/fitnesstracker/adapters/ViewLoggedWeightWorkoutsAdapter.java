@@ -13,14 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.PreDefinedWorkoutFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewLoggedWorkoutsListFragment;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
  * Created by jonah on 5/3/2016.
  */
-public class ViewLoggedWorkoutsAdapter extends BaseAdapter {
+public class ViewLoggedWeightWorkoutsAdapter extends BaseAdapter {
 
     /** The workout number identifier. */
     private static final String NUMBER = "Number: ";
@@ -29,22 +28,20 @@ public class ViewLoggedWorkoutsAdapter extends BaseAdapter {
     private final List<WeightWorkout> mValues;
 
     /** The listener for the list. */
-    private final ViewLoggedWorkoutsListFragment
-            .OnLoggedWeightWorkoutsListFragmentInteractionListener mListener;
+    private final ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener mListener;
 
     /** The Activity that holds this adapter. */
     private final Activity mContext;
 
     /**
-     * Initializes a new ViewLoggedWorkoutsAdapter.
+     * Initializes a new ViewLoggedWeightWorkoutsAdapter.
      *
      * @param context the activity for this adapter
      * @param items the list of weight workouts
      * @param listener the listener for this adapter
      */
-    public ViewLoggedWorkoutsAdapter(Activity context, List<WeightWorkout> items,
-                             ViewLoggedWorkoutsListFragment
-                             .OnLoggedWeightWorkoutsListFragmentInteractionListener listener) {
+    public ViewLoggedWeightWorkoutsAdapter(Activity context, List<WeightWorkout> items,
+                                           ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -86,7 +83,7 @@ public class ViewLoggedWorkoutsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 if (null != mListener) {
-                    mListener.onViewLoggedWeightWorkoutsListFragmentInteraction(holder.mItem);
+                    mListener.LoggedWeightWorkoutInteraction(holder.mItem);
                 }
             }
         });

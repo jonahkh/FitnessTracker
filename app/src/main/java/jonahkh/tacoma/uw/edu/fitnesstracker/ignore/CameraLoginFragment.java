@@ -1,4 +1,4 @@
-package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
+package jonahkh.tacoma.uw.edu.fitnesstracker.ignore;
 
 
 import android.content.Context;

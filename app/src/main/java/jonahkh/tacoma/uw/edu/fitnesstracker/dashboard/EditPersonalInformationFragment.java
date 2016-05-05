@@ -2,7 +2,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,12 +27,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.RegisterUserAdditional_Info;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditPersonalInformation extends Fragment {
+public class EditPersonalInformationFragment extends Fragment {
 
     private static final String USER_INFO
             = "http://cssgate.insttech.washington.edu/~_450atm2/updateUserData.php?";
@@ -51,7 +48,7 @@ public class EditPersonalInformation extends Fragment {
 
     private String mUserEmail;
 
-    public EditPersonalInformation() {
+    public EditPersonalInformationFragment() {
         // Required empty public constructor
     }
 

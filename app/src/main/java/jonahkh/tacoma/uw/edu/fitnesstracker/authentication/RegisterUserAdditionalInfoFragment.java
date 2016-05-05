@@ -38,7 +38,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegisterUserAdditional_Info extends Fragment {
+public class RegisterUserAdditionalInfoFragment extends Fragment {
 
     private final static String USER_DELETE_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/deleteUser.php?";
@@ -69,7 +69,7 @@ public class RegisterUserAdditional_Info extends Fragment {
 
     private SharedPreferences mSharedPreferences;
 
-    public RegisterUserAdditional_Info() {
+    public RegisterUserAdditionalInfoFragment() {
         // Required empty public constructor
     }
 

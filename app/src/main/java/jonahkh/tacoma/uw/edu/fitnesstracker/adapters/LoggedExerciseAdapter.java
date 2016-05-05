@@ -17,15 +17,18 @@ import android.widget.TextView;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.types.WorkoutSet;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.WorkoutSet;
 
 /**
  * An adapter for the view exercises list. The main list items will display the name of the
  * exercises for the current workout and then expanding an exercise list item will display all of
  * the sets for that exercise.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
-public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
+public class LoggedExerciseAdapter extends BaseExpandableListAdapter {
 
     /** Set number identifier for this set. */
     private static final String SET = "Set ";
@@ -43,12 +46,12 @@ public class MyExerciseExpandableListAdapter extends BaseExpandableListAdapter {
     private final List<Exercise> mExercises;
 
     /**
-     * Initialize a new MyExerciseExpandableListAdapter.
+     * Initialize a new LoggedExerciseAdapter.
      *
      * @param context the Activity that holds this adapter
      * @param exercises the list of exercises for the current workout
      */
-    public MyExerciseExpandableListAdapter(Activity context, List<Exercise> exercises) {
+    public LoggedExerciseAdapter(Activity context, List<Exercise> exercises) {
         mExercises = exercises;
         mContext = context;
     }

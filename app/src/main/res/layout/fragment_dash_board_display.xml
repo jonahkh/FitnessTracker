@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/dashBoardDisplay"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashBoardDisplay">
+    tools:context=".dashboard.DashboardDisplayFragment">
 
     <ScrollView
         android:layout_width="match_parent"
