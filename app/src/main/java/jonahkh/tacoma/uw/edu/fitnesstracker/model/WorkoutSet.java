@@ -10,6 +10,9 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.model;
  * Represents a workout set. Sets are created when the user clicks on an exercise during a workout.
  * They enter the weight used and how many repetitions they performed and this class generates a
  * set number for that set based on how many sets have been performed for that exercise.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class WorkoutSet {
 

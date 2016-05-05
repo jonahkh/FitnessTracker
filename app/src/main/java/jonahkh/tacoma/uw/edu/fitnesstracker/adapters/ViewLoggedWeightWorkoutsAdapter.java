@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
@@ -17,7 +22,10 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewLoggedWorkoutsListFrag
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
- * Created by jonah on 5/3/2016.
+ * This is an adapter for the ViewLoggedWorkouts list. Populates the list with its contents.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class ViewLoggedWeightWorkoutsAdapter extends BaseAdapter {
 

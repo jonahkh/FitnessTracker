@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -28,9 +29,9 @@ import java.util.List;
  * date completed, and the workout number (unique for each workout for each user). Selecting one of
  * the logged workouts allows you to view all of the exercises completed for that workout and the
  * sets pertinent to that exercise.
- * <p>
- * Activities containing this fragment MUST implement the {@link LoggedWeightWorkoutsInteractListener}
- * interface.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class ViewLoggedWorkoutsListFragment extends Fragment {
 

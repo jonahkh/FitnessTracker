@@ -1,3 +1,8 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
@@ -15,15 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link WeightWorkout} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * An adapter for the list of weight workouts.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdapter.ViewHolder> {
 
+    /** The list of exercises to be displayed. */
     private final List<Exercise> mValues;
+
+    /** The listener for this adapter. */
     private final OnListFragmentInteractionListener mListener;
 
+    /**
+     * Initialize a new WeightWorkoutAdapter.
+     *
+     * @param items list of exercises to be populated
+     * @param listener listener for this adapter
+     */
     public WeightWorkoutAdapter(List<Exercise> items, OnListFragmentInteractionListener listener) {
         if (items == null) {
             items = new ArrayList<>();
@@ -63,12 +78,28 @@ public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdap
         return mValues.size();
     }
 
+    /**
+     * Holds all of the view elements for each list item for this adapter.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        /** The view holding all of the elements for this list item. */
         public final View mView;
+
+        /** TextView holding the exercise name. */
         public final TextView mIdView;
+
+        /** TextView holding the content. */
         public final TextView mContentView;
+
+        /** The exercise for this list item. */
         public Exercise mItem;
 
+        /**
+         * Initialize a new ViewHolder.
+         *
+         * @param view the view that the elements will be added to
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;
