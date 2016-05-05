@@ -6,12 +6,6 @@
     tools:context=".authentication.RegisterUserAdditionalInfoFragment"
     android:weightSum="1">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView" />
-
     <ImageButton
         android:layout_width="150dp"
         android:layout_height="130dp"
