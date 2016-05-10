@@ -45,7 +45,6 @@ public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdap
         }
         mValues = items;
         mListener = listener;
-
     }
 
     @Override
@@ -59,7 +58,7 @@ public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdap
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getExerciseName());
-        holder.mContentView.setText("");
+        holder.mContentView.setText("ex");
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

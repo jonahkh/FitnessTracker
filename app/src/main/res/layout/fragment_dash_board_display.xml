@@ -1,208 +1,372 @@
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--android:id="@+id/dashBoardDisplay"-->
+    <!--android:scrollbarAlwaysDrawVerticalTrack="true"-->
+    <!--tools:context=".dashboard.DashboardDisplayFragment">-->
+
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_centerHorizontal="true">-->
+
+                <!--&lt;!&ndash;Personal Information&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_centerHorizontal="true">-->
+
+                    <!--<RelativeLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="36dp">-->
+                        <!--<Button-->
+                            <!--style="?android:attr/buttonStyleSmall"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="@string/edit_str"-->
+                            <!--android:id="@+id/dashB_editPersonalBt"-->
+                            <!--android:layout_gravity="left|center_vertical"-->
+                            <!--android:layout_alignParentTop="true"-->
+                            <!--android:layout_alignParentLeft="true"-->
+                            <!--android:layout_alignParentStart="true"-->
+                            <!--android:background="@android:color/transparent"-->
+                            <!--android:textColor="@android:color/holo_blue_dark"/>-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                            <!--android:text="@string/personal_infoStr"-->
+                            <!--android:layout_gravity="right|center_vertical"-->
+                            <!--android:layout_marginRight="51dp"-->
+                            <!--android:layout_marginEnd="51dp"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:layout_alignParentRight="true"-->
+                            <!--android:layout_alignParentEnd="true" />-->
+                    <!--</RelativeLayout>-->
+
+                    <!--<TableRow-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="5dp">-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:text="@string/enter_weightStr"/>-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:id="@+id/dashB_weightV"-->
+                            <!--android:layout_marginLeft="10dp"/>-->
+                    <!--</TableRow>-->
+                    <!--<TableRow-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:text="@string/activityLv_str"/>-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:id="@+id/dashB_activityLevelV"-->
+                            <!--android:layout_marginLeft="10dp"/>-->
+                    <!--</TableRow>-->
+                    <!--<TableRow-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:text="@string/daysWoinkigOut_str"/>-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                            <!--android:id="@+id/dashB_daysWorkingOutV"-->
+                            <!--android:layout_marginLeft="10dp"/>-->
+                    <!--</TableRow>-->
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Last Logged workout&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="20dp">-->
+
+                    <!--<RelativeLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="36dp">-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                            <!--android:text="@string/lastLoggedWorkout_Str"-->
+                            <!--android:layout_gravity="right|center_vertical"-->
+                            <!--android:layout_marginRight="51dp"-->
+                            <!--android:layout_marginEnd="51dp"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:layout_alignParentRight="true"-->
+                            <!--android:layout_alignParentEnd="true" />-->
+                    <!--</RelativeLayout>-->
+                    <!--<LinearLayout-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="5dp">-->
+
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content">-->
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="15sp"-->
+                                <!--android:text="@string/workoutName_Str"/>-->
+
+                            <!--<TextView-->
+                                <!--android:id="@+id/dashB_workoutName"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="15sp" />-->
+                        <!--</TableRow>-->
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content">-->
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="15sp"-->
+                                <!--android:text="@string/dateCompleted_Str" />-->
+
+                            <!--<TextView-->
+                                <!--android:id="@+id/dashB_workoutDate"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_below="@+id/workout_name"-->
+                                <!--android:textSize="15sp"/>-->
+                        <!--</TableRow>-->
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content">-->
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="15sp"-->
+                                <!--android:text="@string/workoutNumber_Str" />-->
+
+                            <!--<TextView-->
+                                <!--android:id="@+id/dashB_workoutNumber"-->
+                                <!--android:textSize="15sp"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"/>-->
+                        <!--</TableRow>-->
+                        <!--<GridLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content">-->
+                            <!--<Button-->
+                                <!--style="?android:attr/buttonStyleSmall"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="@string/viewLog_Str"-->
+                                <!--android:id="@+id/dasbB_viewLog_bt"-->
+                                <!--android:layout_row="0"-->
+                                <!--android:layout_column="2"-->
+                                <!--android:background="@android:color/transparent"-->
+                                <!--android:textColor="@android:color/holo_blue_dark"/>-->
+                        <!--</GridLayout>-->
+                    <!--</LinearLayout>-->
+                <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+<!--</LinearLayout>-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     android:id="@+id/dashBoardDisplay"
+    android:orientation="vertical"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
     tools:context=".dashboard.DashboardDisplayFragment">
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="36dp">
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_str"
+            android:id="@+id/dashB_editPersonalBt"
+            android:layout_gravity="left|center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_blue_dark"/>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/personal_infoStr"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="90dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/weight_dash"
+            android:text="@string/enter_weightStr"/>
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/dashB_weightV"
+            android:layout_toRightOf="@+id/weight_dash"
+            android:paddingLeft="5dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/act_lvl"
+            android:text="@string/activityLv_str"/>
 
-                <!--Personal Information-->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/dashB_activityLevelV"
+            android:layout_toRightOf="@+id/act_lvl"
+            android:paddingLeft="5dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/wrkout"
+            android:text="@string/daysWoinkigOut_str"/>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="36dp">
-                        <Button
-                            style="?android:attr/buttonStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/edit_str"
-                            android:id="@+id/dashB_editPersonalBt"
-                            android:layout_gravity="left|center_vertical"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:background="@android:color/transparent"
-                            android:textColor="@android:color/holo_blue_dark"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/dashB_daysWorkingOutV"
+            android:layout_toRightOf="@+id/wrkout"
+            android:paddingLeft="5dp"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/lastLoggedWorkout_Str"
+        android:paddingTop="10dp"
+        android:gravity="center_horizontal"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:id="@+id/wrkname"
+            android:text="@string/workoutName_Str"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/personal_infoStr"
-                            android:layout_gravity="right|center_vertical"
-                            android:layout_marginRight="51dp"
-                            android:layout_marginEnd="51dp"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
+        <TextView
+            android:id="@+id/dashB_workoutName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/wrkname"
+            android:paddingLeft="5dp"
+            android:textSize="15sp" />
+    </RelativeLayout>
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:id="@+id/datecompleted"
+            android:text="@string/dateCompleted_Str" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="@string/enter_weightStr"/>
+        <TextView
+            android:id="@+id/dashB_workoutDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/datecompleted"
+            android:paddingLeft="5dp"
+            android:textSize="15sp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="@string/workoutNumber_Str"
+            android:id="@+id/wrknum"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:id="@+id/dashB_weightV"
-                            android:layout_marginLeft="10dp"/>
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/dashB_workoutNumber"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:layout_toRightOf="@+id/wrknum"/>
+    </RelativeLayout>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/viewLog_Str"
+        android:id="@+id/dasbB_viewLog_bt"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/holo_blue_dark"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="@string/activityLv_str"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:id="@+id/dashB_activityLevelV"
-                            android:layout_marginLeft="10dp"/>
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="@string/daysWoinkigOut_str"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:id="@+id/dashB_daysWorkingOutV"
-                            android:layout_marginLeft="10dp"/>
-                    </TableRow>
-
-                </LinearLayout>
-
-                <!--Last Logged workout-->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="36dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/lastLoggedWorkout_Str"
-                            android:layout_gravity="right|center_vertical"
-                            android:layout_marginRight="51dp"
-                            android:layout_marginEnd="51dp"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp"
-                                android:text="@string/workoutName_Str"/>
-
-                            <TextView
-                                android:id="@+id/dashB_workoutName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp" />
-                        </TableRow>
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp"
-                                android:text="@string/dateCompleted_Str" />
-
-                            <TextView
-                                android:id="@+id/dashB_workoutDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/workout_name"
-                                android:textSize="15sp"/>
-                        </TableRow>
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp"
-                                android:text="@string/workoutNumber_Str" />
-
-                            <TextView
-                                android:id="@+id/dashB_workoutNumber"
-                                android:textSize="15sp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                        </TableRow>
-                        <GridLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <Button
-                                style="?android:attr/buttonStyleSmall"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/viewLog_Str"
-                                android:id="@+id/dasbB_viewLog_bt"
-                                android:layout_row="0"
-                                android:layout_column="2"
-                                android:background="@android:color/transparent"
-                                android:textColor="@android:color/holo_blue_dark"/>
-                        </GridLayout>
-                    </LinearLayout>
-                </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>
+
