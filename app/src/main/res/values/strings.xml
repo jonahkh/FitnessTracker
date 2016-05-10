@@ -99,7 +99,7 @@
 
     <string name="year_str">Year:</string>
     <string name="year_hint">Enter year of Birth (Ex: 1999)</string>
-    <string name="enter_weightStr">Weight:</string>
+    <string name="enter_weightStr">Weight:  </string>
     <string name="weight_hint">Enter your weight (Ex: 160)lbs</string>
     <string name="height_str">Height:</string>
     <string name="heightFt_hint">Feet</string>
