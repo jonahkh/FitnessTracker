@@ -233,6 +233,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... urls) {
+            // TODO simplify, only need to send url, don't need to receive data
             String response = "";
             HttpURLConnection urlConnection = null;
             for (String url : urls) {

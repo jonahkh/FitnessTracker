@@ -5,22 +5,24 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,9 +98,22 @@ public class WeightWorkoutListFragment extends Fragment {
                     Toast.LENGTH_SHORT) .show();
         }
         mRecyclerView.setAdapter(new WeightWorkoutAdapter(mExerciseList, mListener));
-
+        // Handle when the user presses the back button
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                    onExit();
+                    return true;
+                }
+                return false;
+            }
+        });
         return view;
     }
+
 
 
     @Override
@@ -167,5 +182,24 @@ public class WeightWorkoutListFragment extends Fragment {
 
             }
         }
+    }
+
+    private void onExit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Exit this workout?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
+                getActivity().onBackPressed();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
+        });
+        Dialog alert = builder.create();
+            alert.show();
     }
 }
