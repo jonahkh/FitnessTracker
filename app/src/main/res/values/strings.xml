@@ -132,6 +132,8 @@
     <string name="action_settings">Settings</string>
     <string name="logged_in">loggedin</string>
     <string name="LOGIN_PREFS">edu.uw.tacoma.jonahkh.fitnesstracker.PREFS</string>
+    <string name="CURRENT_WORKOUT">edu.uw.tacoma.jonahkh.fitnesstracker.CURRENT_WORKOUT</string>
+    <string name="current_set">current_set</string>
     <string name="current_email">email</string>
     <string name="dashboard_home">Home</string>
     <string name="workout_templates">Workout Templates</string>

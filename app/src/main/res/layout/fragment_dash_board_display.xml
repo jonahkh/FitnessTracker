@@ -221,7 +221,7 @@
             android:layout_height="wrap_content"
             android:text="@string/edit_str"
             android:id="@+id/dashB_editPersonalBt"
-            android:layout_gravity="left|center_vertical"
+            android:layout_gravity="center_horizontal"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

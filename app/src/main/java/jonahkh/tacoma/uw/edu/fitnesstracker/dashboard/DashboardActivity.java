@@ -5,17 +5,22 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
-import android.app.FragmentManager;
+import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +29,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -60,6 +67,9 @@ public class DashboardActivity extends AppCompatActivity
     /** The Fragment for the dashboard home page. */
     private DashboardDisplayFragment mDashView = null;
 
+    /** Shared preferences for this activity. */
+    private SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +100,7 @@ public class DashboardActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
         mSavedInstanceState = savedInstanceState;
-        if (mDashView == null) {
-            Log.e("EFRROR", "ERKJLKJSDLKJF");
-        }
+
         // Display of personal data
         if (mDashView == null) {
             mDashView = new DashboardDisplayFragment();
@@ -101,6 +109,8 @@ public class DashboardActivity extends AppCompatActivity
                 .addToBackStack(null)
                 .commit();
         }
+        mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
+                , Context.MODE_PRIVATE);
     }
 
     /**
@@ -127,22 +137,101 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
         // To be implemented in the next phase
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+//        inflater.inflate(findViewById(R.id.add_exercise));
+        final View v = inflater.inflate(R.layout.add_exercise_dialog, null);
+        final EditText weight = (EditText) v.findViewById(R.id.enter_weight);
+        final EditText reps = (EditText) v.findViewById(R.id.enter_reps);
+        builder.setView(v);
+        builder.setTitle("Enter Set Information");
+        final Dialog dialog = builder.create();
+        Button addSet = (Button) v.findViewById(R.id.add_set);
+
+        addSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkValidData(weight, reps)) {
+                    Toast.makeText(getApplicationContext(), "Set Successfully added!", Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+        Button cancel = (Button) v.findViewById(R.id.cancel_set);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Toast.makeText(getApplicationContext(), "Set not added!", Toast.LENGTH_LONG).show();
+            }
+        });
+        dialog.show();
+    }
+
+    private boolean checkValidData(EditText weight, EditText reps) {
+        boolean check = true;
+//        System.out.println(weight.getText().toString());
+        if (weight.getText().toString().equals("")
+                || Integer.parseInt(weight.getText().toString()) < 0) {
+            weight.setError("Invalid data! Must be positive or zero!");
+            check = false;
+        }
+        if (reps.getText().toString().equals("")
+                || Integer.parseInt(reps.getText().toString()) < 0) {
+            reps.setError("Invalid data! Must be positive or zero!");
+            check = false;
+        }
+        return check;
+    }
+
+    private boolean checkEmptyFields(EditText weight, EditText reps) {
+        boolean check = true;
+        if (weight.getText() == null || weight.getText().toString().equals("")) {
+            weight.setError("Required");
+            check =  false;
+        }
+        if (reps.getText() == null || reps.getText().equals("")) {
+            reps.setError("Required");
+            check = false;
+        }
+        return check;
     }
 
 
     @Override
-    public void onPreDefinedWorkoutInteraction(WeightWorkout workout) {
+    public void onPreDefinedWorkoutInteraction(final WeightWorkout workout) {
         // When you select a workout, you are taken to a new fragment where you can see the list of
         // exercises associated with that workout and your workout starts
-        mCurrentWorkout = workout;
-        WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
-        weightWorkout.setName(workout.getWorkoutName());
-        Bundle args = new Bundle();
-        args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, weightWorkout)
-                .addToBackStack(null)
-                .commit();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            mCurrentWorkout = workout;
+            builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
+            builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    mCurrentWorkout = workout;
+                    WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
+                    weightWorkout.setName(mCurrentWorkout.getWorkoutName());
+                    Bundle args = new Bundle();
+                    args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, weightWorkout)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    // Do nothing
+                }
+        });
+        mSharedPreferences.edit().putInt(getString(R.string.current_set), 0);
+        Dialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -292,8 +381,7 @@ public class DashboardActivity extends AppCompatActivity
                 }
 
             } catch (Exception e) {
-                response = "Unable to download the list of exercises, Reason: "
-                        + e.getMessage();
+                response = "Network connection unavailable, please try again later";
             }
             finally {
                 if (urlConnection != null)
@@ -302,4 +390,6 @@ public class DashboardActivity extends AppCompatActivity
         }
         return response;
     }
+
+
 }

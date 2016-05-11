@@ -121,7 +121,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                         .show();
                 return;
             }
-
+            mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
             // Everything is good, show the list of workouts.
             if (!mWorkoutList.isEmpty()) {
                 mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
