@@ -68,6 +68,7 @@
     </TableRow>
 
     <RelativeLayout
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="65dp">
         <Button
@@ -90,7 +91,6 @@
             android:id="@+id/epi_save"
             android:layout_marginRight="34dp"
             android:layout_marginEnd="34dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
     </RelativeLayout>

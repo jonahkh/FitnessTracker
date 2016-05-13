@@ -33,6 +33,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.facebook.AccessToken;
@@ -55,6 +57,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -87,6 +91,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /** View representing the login form. */
     private View mLoginFormView;
 
+    /** Determines if the user would like to remain logged in. */
+    private CheckBox mCheckBox;
+
     /** The login button. */
     private LoginButton mLoginButton;
 
@@ -95,6 +102,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /** The shared preferences. */
     private SharedPreferences mSharedPreferences;
+
+    /** Callback manager for Facebook login. */
+    private CallbackManager mCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +120,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
         });
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -148,10 +160,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
+        mCallback = CallbackManager.Factory.create();
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, (Arrays.asList("public_profile", "email")));
+
         List<String> permissions = new ArrayList<>();
 
         // Set up permissions for Facebook
@@ -177,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onResume() {
         super.onResume();
-        CallbackManager callback = CallbackManager.Factory.create();
+
         List<String> permissions = new ArrayList<>();
 
         // Set up permissions
@@ -194,7 +208,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Log.e("FBOOK", profile.getFirstName());
         }
 
-        mLoginButton.registerCallback(callback, new FacebookCallback<LoginResult>() {
+        mLoginButton.registerCallback(mCallback, new FacebookCallback<LoginResult>() {
             private ProfileTracker mProfileTracker;
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -222,6 +236,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Log.e("TAG", "ERROR");
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallback.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -426,9 +446,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Store user email and record that they are logged in
                 mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                         , Context.MODE_PRIVATE);
-                mSharedPreferences.edit().putString(getString(R.string.current_email), mEmail)
-                        .apply();
-                mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
+                mSharedPreferences.edit().putString(getString(R.string.current_email), mEmail).apply();
+                if (mCheckBox.isChecked()) {
+                    mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
+                }
                 finish();
                 Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(intent);

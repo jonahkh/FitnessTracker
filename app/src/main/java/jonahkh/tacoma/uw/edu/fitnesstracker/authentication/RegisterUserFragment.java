@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,18 @@ public class RegisterUserFragment extends Fragment {
                     String addUserURL = buildAddUserURL();
                     ((RegisterUserActivity)getActivity()).addUserData(addUserURL);
                 }
+            }
+        });
+        v.setFocusableInTouchMode(true);
+        v.requestFocus();
+        v.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
             }
         });
 

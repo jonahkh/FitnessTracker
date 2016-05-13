@@ -61,6 +61,22 @@
                 android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stay_logged_in"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Keep me logged in"
+                    android:paddingLeft="5dp"
+                    android:layout_toRightOf="@+id/stay_logged_in"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/email_sign_in_button"
@@ -93,4 +109,12 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
