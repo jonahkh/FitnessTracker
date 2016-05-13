@@ -7,16 +7,13 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,6 +181,9 @@ public class WeightWorkoutListFragment extends Fragment {
         }
     }
 
+    /**
+     * Verify with the user that they want to exit the current workout.
+     */
     private void onExit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Exit this workout?");
@@ -191,6 +191,7 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
+                ((DashboardActivity) getActivity()).setFirstAddedExercise(true);
                 getActivity().onBackPressed();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,9 +64,7 @@ public class DashboardActivity extends AppCompatActivity
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
         ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
 
-    /** The url to start a new workout. */
-    public static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/weightWorkout.php?";
+
     /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
 
@@ -83,6 +82,15 @@ public class DashboardActivity extends AppCompatActivity
 
     /** The current workout number. */
     private int mWorkoutNum;
+
+    /** The current set number for a weight workout. */
+    private int mSetNum = 1;
+
+    /** True if the current workout being performed has not logged any exercises. */
+    private boolean mFirstExercise = true;
+
+    /** The dialog for adding a set. */
+    private AddSetFragment mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +133,15 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
-        mCurrentEmail = getSharedPreferences(getString(R.string.LOGIN_PREFS)
-                , Context.MODE_PRIVATE).getString(getString(R.string.current_email),
-                "Email does not exist");
-
     }
 
+    public boolean getFirstAddedExercise() {
+        return mFirstExercise;
+    }
+
+    public void setFirstAddedExercise(final boolean bool) {
+        mFirstExercise = bool;
+    }
     /**
      * Returns if the user's device is connected to the network.
      *
@@ -154,114 +165,32 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
-        // To be implemented in the next phase
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        String url = DashboardDisplayFragment.USER_LAST_LOGGED_WORKOUT + "email"  + mCurrentEmail;
-        GetWorkoutNumber task = new GetWorkoutNumber();
-        task.execute(url);
-        final View v = inflater.inflate(R.layout.add_exercise_dialog, null);
-        final EditText weight = (EditText) v.findViewById(R.id.enter_weight);
-        final EditText reps = (EditText) v.findViewById(R.id.enter_reps);
-        builder.setView(v);
-        builder.setTitle("Enter Set Information");
-        final Dialog dialog = builder.create();
-        Button addSet = (Button) v.findViewById(R.id.add_set);
-        addSet.setOnClickListener(new View.OnClickListener() {
-            private boolean isFirst = true;
-            @Override
-            public void onClick(View v) {
-                if (checkValidData(weight, reps)) {
-                    if (isFirst) {
-                        Log.e("HERE", "HERE");
-                        AddWorkoutTask newTask = new AddWorkoutTask();
-                        newTask.execute(buildUrl());
-                        isFirst = false;
-                    }
-
-                    Toast.makeText(getApplicationContext(), "Set Successfully added!", Toast.LENGTH_LONG).show();
-                    dialog.dismiss();
-                }
-            }
-        });
-        Button cancel = (Button) v.findViewById(R.id.cancel_set);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                Toast.makeText(getApplicationContext(), "Set not added!", Toast.LENGTH_LONG).show();
-            }
-        });
-        dialog.show();
-    }
-
-    private String buildUrl() {
-        StringBuilder url = new StringBuilder(WORKOUT_URL);
-        url.append("&num=");
-        url.append(mWorkoutNum);
-
-        url.append("&name=");
-        url.append(mCurrentWorkout.getWorkoutName());
-
-        url.append("&email=");
-        url.append(mCurrentEmail);
-
-        url.append("&date=");
-        url.append("");
-        return url.toString();
-    }
-
-    /**
-     * Checks that the user has entered valid data.
-     *
-     * @param weight the weight edit text
-     * @param reps the reps edit text
-     * @return true if the data was valid, false otherwise
-     */
-    private boolean checkValidData(EditText weight, EditText reps) {
-        boolean check = true;
-        if (weight.getText().toString().equals("")
-                || Integer.parseInt(weight.getText().toString()) < 0) {
-            weight.setError("Invalid data! Must be positive or zero!");
-            check = false;
-        }
-        if (reps.getText().toString().equals("")
-                || Integer.parseInt(reps.getText().toString()) < 0) {
-            reps.setError("Invalid data! Must be positive or zero!");
-            check = false;
-        }
-        return check;
+        mDialog.setExerciseName(exercise.getExerciseName());
+        mDialog.show(getSupportFragmentManager(), "AddSetFragment");
     }
 
     @Override
     public void onPreDefinedWorkoutInteraction(final WeightWorkout workout) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            mCurrentWorkout = workout;
-            builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
-            builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    mCurrentWorkout = workout;
-                    WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
-                    weightWorkout.setName(mCurrentWorkout.getWorkoutName());
-                    Bundle args = new Bundle();
-                    args.putSerializable(WeightWorkout.WORKOUT_SELECTED, workout);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, weightWorkout)
-                            .addToBackStack(null)
-                            .commit();
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // Do nothing
-                }
+        builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mCurrentWorkout = workout;
+                WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
+                weightWorkout.setName(mCurrentWorkout.getWorkoutName());
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, weightWorkout)
+                        .addToBackStack(null)
+                        .commit();
+                mDialog = new AddSetFragment();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
         });
         mSharedPreferences.edit().putInt(getString(R.string.current_set), 0);
         Dialog alert = builder.create();
@@ -425,54 +354,6 @@ public class DashboardActivity extends AppCompatActivity
         return response;
     }
 
-    /** Private class to get the information about the last logged workout from user. */
-    private class AddWorkoutTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
 
-        @Override
-        protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Something wrong with the network or the URL.
-            try {
-                JSONArray arr = new JSONArray(result);
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    mWorkoutNum = obj.getInt(DashboardDisplayFragment.WORKOUT_NUMBER);
-                }
-            } catch (JSONException e) {
-                Log.e("Dashboard", e.getStackTrace().toString());
-            }
-        }
-    }
-
-    /** Private class to get the information about the last logged workout from user. */
-    private class GetWorkoutNumber extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Something wrong with the network or the URL.
-            try {
-                JSONArray arr = new JSONArray(result);
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    mWorkoutNum = obj.getInt(DashboardDisplayFragment.WORKOUT_NUMBER);
-                }
-            } catch (JSONException e) {
-                Log.e("Dashboard", e.getStackTrace().toString());
-            }
-        }
-    }
 
 }
