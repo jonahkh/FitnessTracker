@@ -191,7 +191,7 @@ public class WeightWorkoutListFragment extends Fragment {
      * @param exercise the name of the exercise
      */
     public void addExercise(final String exercise) {
-        mExerciseList.add(new Exercise(exercise));
+        mExerciseList.add(new Exercise(exercise.trim()));
         mAdapter.notifyDataSetChanged();
 //        view.setAdapter(mAdapter);
     }
