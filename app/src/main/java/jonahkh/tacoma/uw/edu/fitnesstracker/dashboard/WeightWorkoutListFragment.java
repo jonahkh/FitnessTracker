@@ -106,16 +106,15 @@ public class WeightWorkoutListFragment extends Fragment {
             }
         } else {    // A custom workout is being performed
             mExerciseList = new ArrayList<>();
-            Button button = (Button) view.findViewById(R.id.add_exercise_button);
-            setDialog();
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mDialog.show();
-                }
-            });
         }
-
+        Button button = (Button) view.findViewById(R.id.add_exercise_button);
+        setDialog();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.show();
+            }
+        });
         mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
         // Handle when the user presses the back button
         ListView list = (ListView)  view.findViewById(R.id.custom_workout_list);
@@ -156,16 +155,23 @@ public class WeightWorkoutListFragment extends Fragment {
         addExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addExercise(mExercise.getText().toString());
-                Log.e("ERROR", mExercise.getText().toString());
-                mExercise.setText("");
-                dialog.dismiss();
+                String text = mExercise.getText().toString();
+                if (null == text || text.length() < 1) {
+                    mExercise.setError("Required Field!");
+                } else {
+                    addExercise(mExercise.getText().toString());
+                    Log.e("ERROR", mExercise.getText().toString());
+                    mExercise.setText("");
+                    dialog.dismiss();
+                }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mExercise.setText("");
+                Toast.makeText(getActivity().getApplicationContext(), "Exercise not added!",
+                        Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
@@ -173,7 +179,6 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 mExercise.setText("");
-                Toast.makeText(getActivity().getApplicationContext(), "Exercise not added!", Toast.LENGTH_LONG).show();
             }
         });
         mDialog = dialog;
