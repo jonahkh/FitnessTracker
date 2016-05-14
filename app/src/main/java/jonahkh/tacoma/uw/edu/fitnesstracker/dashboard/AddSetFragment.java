@@ -78,7 +78,7 @@ public class AddSetFragment extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = dashboard.getLayoutInflater();
         final GetWorkoutNumber task = new GetWorkoutNumber();
-        final View v = inflater.inflate(R.layout.add_exercise_dialog, null);
+        final View v = inflater.inflate(R.layout.add_set_dialog, null);
         final EditText weight = (EditText) v.findViewById(R.id.enter_weight);
         final EditText reps = (EditText) v.findViewById(R.id.enter_reps);
         final Button addSet = (Button) v.findViewById(R.id.add_set);
@@ -228,7 +228,6 @@ public class AddSetFragment extends DialogFragment {
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
                     num = obj.getInt(DashboardDisplayFragment.WORKOUT_NUMBER);
-                    Log.e("TAG", num + "");
                     if (num > mWorkoutNum) {
                         mWorkoutNum = num;
                     }

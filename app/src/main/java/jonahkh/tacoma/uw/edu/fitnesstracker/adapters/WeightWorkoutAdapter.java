@@ -1,82 +1,97 @@
-/*
- * Jonah Howard
- * Hector Diaz
- * TCSS 450 - Team 2
- */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+
 /**
- * An adapter for the list of weight workouts.
- *
- * @author Jonah Howard
- * @author Hector Diaz
+ * Created by jonah on 5/13/2016.
  */
-public class WeightWorkoutAdapter extends RecyclerView.Adapter<WeightWorkoutAdapter.ViewHolder> {
+public class WeightWorkoutAdapter extends BaseAdapter {
 
     /** The list of exercises to be displayed. */
     private final List<Exercise> mValues;
 
     /** The listener for this adapter. */
-    private final OnListFragmentInteractionListener mListener;
+    private final WeightWorkoutListFragment.OnListFragmentInteractionListener mListener;
+
+    /** The activity that holds this adapter. */
+    private final Activity mContext;
 
     /**
      * Initialize a new WeightWorkoutAdapter.
      *
+     * @param context the Activity for this adapter
      * @param items list of exercises to be populated
      * @param listener listener for this adapter
      */
-    public WeightWorkoutAdapter(List<Exercise> items, OnListFragmentInteractionListener listener) {
+    public WeightWorkoutAdapter(Activity context, List<Exercise> items,
+                                      WeightWorkoutListFragment.OnListFragmentInteractionListener listener) {
         if (items == null) {
             items = new ArrayList<>();
         }
         mValues = items;
         mListener = listener;
+        mContext = context;
+    }
+
+
+
+    @Override
+    public int getCount() {
+        return mValues.size();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_weightworkout, parent, false);
-        return new ViewHolder(view);
+    public Object getItem(int position) {
+        Log.e("ADAPTER", ((Exercise) mValues.get(position)).getExerciseName());
+        return mValues.get(position);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public long getItemId(int position) {
+        return position;
+    }
+
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater inflater =
+                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.fragment_weightworkout, null);
+        }
+        final ViewHolder holder = new ViewHolder(convertView);
+        holder.mItem = mValues.get(position);
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getExerciseName());
-        holder.mContentView.setText("ex");
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
+                    Log.e("ADAPTER", ((Exercise) holder.mItem).getExerciseName());
                     mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
+        return convertView;
     }
-
-    @Override
-    public int getItemCount() {
-        return mValues.size();
-    }
-
     /**
      * Holds all of the view elements for each list item for this adapter.
      */

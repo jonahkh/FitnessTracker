@@ -6,9 +6,11 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -129,6 +133,8 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private String mDateCompleted = "N/A";
 
+    private WeightWorkoutListFragment.OnListFragmentInteractionListener mListener;
+
     /** Required empty public constructor */
     public DashboardDisplayFragment() {
         // Required empty public constructor
@@ -142,7 +148,7 @@ public class DashboardDisplayFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_dash_board_display, container, false);
         setFieldsPersonalInformation();
         setUserLastLoggedWorkout();
-
+        ((DashboardActivity) getActivity()).showFab();
         Button viewLogBut = (Button)mView.findViewById(R.id.dasbB_viewLog_bt);
         viewLogBut.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -186,6 +192,23 @@ public class DashboardDisplayFragment extends Fragment {
             }
         });
         return mView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WeightWorkoutListFragment.OnListFragmentInteractionListener) {
+            mListener = (WeightWorkoutListFragment.OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement LoggedWeightWorkoutsInteractListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     /** Sets the view of the users last logged workout. */

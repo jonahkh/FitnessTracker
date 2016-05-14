@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,6 +19,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +29,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -53,12 +58,11 @@ public class DashboardActivity extends AppCompatActivity
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
         ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
 
-
     /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
 
     /** The SavedInstanceState. Used to restore data when the app is rotated. */
-    private Bundle mSavedInstanceState;
+//    private Bundle mSavedInstanceState;
 
     /** The Fragment for the dashboard home page. */
     private DashboardDisplayFragment mDashView = null;
@@ -66,20 +70,14 @@ public class DashboardActivity extends AppCompatActivity
     /** Shared preferences for this activity. */
     private SharedPreferences mSharedPreferences;
 
-    /** The current email logged in. */
-    private String mCurrentEmail;
-
-    /** The current workout number. */
-    private int mWorkoutNum;
-
-    /** The current set number for a weight workout. */
-    private int mSetNum = 1;
-
-    /** True if the current workout being performed has not logged any exercises. */
-    private boolean mFirstExercise = true;
-
     /** The dialog for adding a set. */
     private AddSetFragment mDialog;
+
+    /** Starts a custom workout when pressed. */
+    private FloatingActionButton mFab;
+
+    /** The dialog for starting a custom workout. */
+    private Dialog mStartCustomWorkoutDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +86,19 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
+        mDialog = new AddSetFragment();
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        assert mFab != null;
+        final WeightWorkoutListFragment.OnListFragmentInteractionListener listener = this;
+        final Activity activity = this;
+        initializeCustomWorkoutDialog();
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                mStartCustomWorkoutDialog.show();
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -109,7 +110,7 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
-        mSavedInstanceState = savedInstanceState;
+//        mSavedInstanceState = savedInstanceState;
 
         // Display of personal data
         if (mDashView == null) {
@@ -123,13 +124,49 @@ public class DashboardActivity extends AppCompatActivity
                 , Context.MODE_PRIVATE);
     }
 
-    public boolean getFirstAddedExercise() {
-        return mFirstExercise;
+
+    /**
+     * Initialize the dialog that appears when the user clicks the floating action button. It
+     * prompts the user to enter the name of the workout they are starting. This field is required.
+     */
+    private void initializeCustomWorkoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View view = getLayoutInflater().inflate(R.layout.start_custom_workout_dialog, null);
+        final EditText text = (EditText) view.findViewById(R.id.workout_name);
+        final Button start = (Button) view.findViewById(R.id.start);
+        final Button cancel = (Button) view.findViewById(R.id.cancel);
+        builder.setTitle("Enter the name of your workout");
+        builder.setView(view);
+        mStartCustomWorkoutDialog = builder.create();
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String contents = text.getText().toString();
+                if (contents.length() > 1) {
+                    mCurrentWorkout = new WeightWorkout(contents);
+                    mFab.hide();
+                    mStartCustomWorkoutDialog.dismiss();
+                    text.setText("");
+                    WeightWorkoutListFragment fragment = new WeightWorkoutListFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    text.setError("Workout Name Required!");
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStartCustomWorkoutDialog.dismiss();
+                text.setText("");
+            }
+        });
     }
 
-    public void setFirstAddedExercise(final boolean bool) {
-        mFirstExercise = bool;
-    }
     /**
      * Returns if the user's device is connected to the network.
      *
@@ -172,7 +209,6 @@ public class DashboardActivity extends AppCompatActivity
                         .replace(R.id.fragment_container, weightWorkout)
                         .addToBackStack(null)
                         .commit();
-                mDialog = new AddSetFragment();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -194,9 +230,9 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null && savedInstanceState.getSerializable("current_workout") != null) {
-            mCurrentWorkout = (WeightWorkout) savedInstanceState.getSerializable("current_workout");
-        }
+//        if (savedInstanceState != null && savedInstanceState.getSerializable("current_workout") != null) {
+//            mCurrentWorkout = (WeightWorkout) savedInstanceState.getSerializable("current_workout");
+//        }
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -205,7 +241,7 @@ public class DashboardActivity extends AppCompatActivity
      * screen orientation).
      */
     public void retrieveCurrentWorkout() {
-        onRestoreInstanceState(mSavedInstanceState);
+//        onRestoreInstanceState(mSavedInstanceState);
     }
 
     @Override
@@ -274,18 +310,21 @@ public class DashboardActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_predefined_workouts) {
+            mFab.hide();
             PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.view_logged_workouts) {
+            mFab.hide();
             ViewLoggedWorkoutsListFragment fragment = new ViewLoggedWorkoutsListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         } else if(id == R.id.nav_home) {
+            mFab.show();
             if(mDashView != null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, mDashView)
@@ -307,6 +346,10 @@ public class DashboardActivity extends AppCompatActivity
         return true;
     }
 
+    /** Shows the Floating action button. */
+    public void showFab() {
+        mFab.show();
+    }
     /**
      * Helper method for all AsyncTask inner classes. Connects to the web service and extracts
      * data according to the url.

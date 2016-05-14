@@ -11,13 +11,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -56,6 +64,12 @@ public class WeightWorkoutListFragment extends Fragment {
     /** The current list of workouts. */
     private WeightWorkout mCurrentWorkout;
 
+    /** The add exercise dialog. */
+    private Dialog mDialog;
+
+    /** The adapter for this list fragment. */
+    private BaseAdapter mAdapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -76,26 +90,36 @@ public class WeightWorkoutListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weightworkout_list, container, false);
-
-        mRecyclerView = (RecyclerView) view;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        // Retrieve current workout
-        if (mCurrentWorkout == null) {
-            ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
+        View view = inflater.inflate(R.layout.fragment_custom_weight_list, container, false);
+        if (mCurrentWorkout != null) {
+            // Retrieve current workout
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
+
+            String param = "&name=" + mCurrentWorkout.getWorkoutName();
+            if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
+                DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask();
+                task.execute(WORKOUT_URL + param);
+            } else {
+                Toast.makeText(view.getContext(),
+                        "No network connection available. Cannot display workouts",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {    // A custom workout is being performed
+            mExerciseList = new ArrayList<>();
+            Button button = (Button) view.findViewById(R.id.add_exercise_button);
+            setDialog();
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDialog.show();
+                }
+            });
         }
-        String param = "&name=" + mCurrentWorkout.getWorkoutName();
-        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
-            DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask();
-            task.execute(WORKOUT_URL + param);
-        } else {
-            Toast.makeText(view.getContext(),
-                    "No network connection available. Cannot display workouts",
-                    Toast.LENGTH_SHORT) .show();
-        }
-        mRecyclerView.setAdapter(new WeightWorkoutAdapter(mExerciseList, mListener));
+
+        mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
         // Handle when the user presses the back button
+        ListView list = (ListView)  view.findViewById(R.id.custom_workout_list);
+        list.setAdapter(mAdapter);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -111,6 +135,60 @@ public class WeightWorkoutListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Creates the dialog that appears when the user is in a custom workout and presses
+     * the "Add Exercise" button at the bottom of the screen. When the user enters an exercise name
+     * and presses the add button on the dialog, a new exercise is displayed in the list of
+     * exercises.
+     */
+    private void setDialog() {
+        final DashboardActivity dashboard = (DashboardActivity) getActivity();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = dashboard.getLayoutInflater();
+        final View v = inflater.inflate(R.layout.add_exercise_fragment, null);
+        final TextView mExercise = (EditText) v.findViewById(R.id.enter_exercise_name);
+        final Button addExercise = (Button) v.findViewById(R.id.add_exercise);
+        builder.setView(v);
+        builder.setTitle("Enter Exercise Name");
+        final Dialog dialog = builder.create();
+        Button cancel = (Button) v.findViewById(R.id.cancel_exercise);
+
+        addExercise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addExercise(mExercise.getText().toString());
+                Log.e("ERROR", mExercise.getText().toString());
+                mExercise.setText("");
+                dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mExercise.setText("");
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mExercise.setText("");
+                Toast.makeText(getActivity().getApplicationContext(), "Exercise not added!", Toast.LENGTH_LONG).show();
+            }
+        });
+        mDialog = dialog;
+    }
+
+    /**
+     * Add a new exercise to the list view with the given name.
+     *
+     * @param exercise the name of the exercise
+     */
+    public void addExercise(final String exercise) {
+        mExerciseList.add(new Exercise(exercise));
+        mAdapter.notifyDataSetChanged();
+//        view.setAdapter(mAdapter);
+    }
 
 
     @Override
@@ -122,6 +200,7 @@ public class WeightWorkoutListFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnExerciseListFragmentInteractionListener");
         }
+
     }
 
     @Override
@@ -171,12 +250,12 @@ public class WeightWorkoutListFragment extends Fragment {
                         .show();
                 return;
             }
-
+            mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
             // Everything is good, show the list of courses.
             if (!mExerciseList.isEmpty()) {
-                mRecyclerView.setAdapter(new WeightWorkoutAdapter(mExerciseList, mListener));
-
-
+                mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
+                ListView view = (ListView) getActivity().findViewById(R.id.custom_workout_list);
+                view.setAdapter(mAdapter);
             }
         }
     }
@@ -191,7 +270,6 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
-                ((DashboardActivity) getActivity()).setFirstAddedExercise(true);
                 getActivity().onBackPressed();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
