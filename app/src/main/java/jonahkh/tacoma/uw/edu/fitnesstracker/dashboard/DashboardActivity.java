@@ -86,7 +86,7 @@ public class DashboardActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        mDialog = new AddSetFragment();
+//        mDialog = new AddSetFragment();
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         assert mFab != null;
         final WeightWorkoutListFragment.OnListFragmentInteractionListener listener = this;
@@ -190,6 +190,7 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
+        mDialog = new AddSetFragment();
         mDialog.setExerciseName(exercise.getExerciseName());
         mDialog.show(getSupportFragmentManager(), "AddSetFragment");
     }
@@ -203,6 +204,7 @@ public class DashboardActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 mCurrentWorkout = workout;
+                mDialog = new AddSetFragment();
                 WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
                 weightWorkout.setName(mCurrentWorkout.getWorkoutName());
                 getSupportFragmentManager().beginTransaction()

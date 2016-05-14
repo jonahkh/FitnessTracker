@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -275,7 +276,10 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
-                getActivity().onBackPressed();
+//                getActivity().onBackPressed();
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                manager.popBackStack();
+
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -285,5 +289,6 @@ public class WeightWorkoutListFragment extends Fragment {
         });
         Dialog alert = builder.create();
             alert.show();
+
     }
 }

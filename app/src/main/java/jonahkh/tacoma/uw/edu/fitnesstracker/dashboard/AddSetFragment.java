@@ -102,7 +102,7 @@ public class AddSetFragment extends DialogFragment {
                         newTask.execute(buildUrl());
                         Log.e("FIRST SET", "First Set");
                     }
-
+                    Log.e("EMAIL", mCurrentEmail);
                     String param = ADD_EXERCISE_URL + "&set=" + mSetNumber + "&wNum="
                             + mWorkoutNum + "&name=" + mCurrentExercise + "&reps="
                             + reps.getText().toString() + "&email=" + mCurrentEmail + "&weight="
