@@ -141,7 +141,7 @@ public class DashboardActivity extends AppCompatActivity
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String contents = text.getText().toString();
+                String contents = text.getText().toString().trim();
                 if (contents.length() > 1) {
                     mCurrentWorkout = new WeightWorkout(contents);
                     mFab.hide();
