@@ -6,15 +6,19 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -79,7 +84,7 @@ public class DashboardDisplayFragment extends Fragment {
             = "http://cssgate.insttech.washington.edu/~_450atm2/additionalInfo.php?";
 
     /** URL used get users last logged workout information from database. */
-    private static final String USER_LAST_LOGGED_WORKOUT
+    public static final String USER_LAST_LOGGED_WORKOUT
             = "http://cssgate.insttech.washington.edu/~_450atm2/getLastUserWorkout.php?";
 
     /** Tag used for debugging. */
@@ -108,7 +113,7 @@ public class DashboardDisplayFragment extends Fragment {
     private int mUserDaysToWorkout;
 
     /** The current View. */
-    private View myView;
+    private View mView;
 
     /**
      * Users last logged workout number. Default value is negative one, value gets switched
@@ -128,6 +133,8 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private String mDateCompleted = "N/A";
 
+    private WeightWorkoutListFragment.OnListFragmentInteractionListener mListener;
+
     /** Required empty public constructor */
     public DashboardDisplayFragment() {
         // Required empty public constructor
@@ -138,11 +145,11 @@ public class DashboardDisplayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        myView = inflater.inflate(R.layout.fragment_dash_board_display, container, false);
+        mView = inflater.inflate(R.layout.fragment_dash_board_display, container, false);
         setFieldsPersonalInformation();
         setUserLastLoggedWorkout();
-
-        Button viewLogBut = (Button)myView.findViewById(R.id.dasbB_viewLog_bt);
+        ((DashboardActivity) getActivity()).showFab();
+        Button viewLogBut = (Button)mView.findViewById(R.id.dasbB_viewLog_bt);
         viewLogBut.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -161,7 +168,7 @@ public class DashboardDisplayFragment extends Fragment {
             }
         });
 
-        Button editBut = (Button)myView.findViewById(R.id.dashB_editPersonalBt);
+        Button editBut = (Button)mView.findViewById(R.id.dashB_editPersonalBt);
         editBut.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View c) {
@@ -172,18 +179,47 @@ public class DashboardDisplayFragment extends Fragment {
                         .commit();
             }
         });
-        return myView;
+        mView.setFocusableInTouchMode(true);
+        mView.requestFocus();
+        mView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+        return mView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WeightWorkoutListFragment.OnListFragmentInteractionListener) {
+            mListener = (WeightWorkoutListFragment.OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement LoggedWeightWorkoutsInteractListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     /** Sets the view of the users last logged workout. */
     private void setUserLastLoggedWorkoutView() {
-        TextView name = (TextView)myView.findViewById(R.id.dashB_workoutName);
+        TextView name = (TextView)mView.findViewById(R.id.dashB_workoutName);
         name.setText(" " + mWorkoutName); // not concatenation, is a space to separate data
 
-        TextView date = (TextView)myView.findViewById(R.id.dashB_workoutDate);
+        TextView date = (TextView)mView.findViewById(R.id.dashB_workoutDate);
         date.setText(" " + mDateCompleted); // not concatenation, is a space to separate data
 
-        TextView number = (TextView)myView.findViewById(R.id.dashB_workoutNumber);
+        TextView number = (TextView)mView.findViewById(R.id.dashB_workoutNumber);
         number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
     }
 
@@ -195,7 +231,7 @@ public class DashboardDisplayFragment extends Fragment {
         String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
         Log.i(TAG, url);
         UserLastLoggedWorkoutTask task = new UserLastLoggedWorkoutTask();
-        task.execute(new String[]{url});
+        task.execute(url);
     }
 
     /**
@@ -214,13 +250,13 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** Sets the personal information View. */
     private void setPersonalDataView() {
-        TextView weight = (TextView) myView.findViewById(R.id.dashB_weightV);
+        TextView weight = (TextView) mView.findViewById(R.id.dashB_weightV);
         weight.setText("" + mUserWeight); // Concatenating to make it a string.
 
-        TextView activity = (TextView) myView.findViewById(R.id.dashB_activityLevelV);
+        TextView activity = (TextView) mView.findViewById(R.id.dashB_activityLevelV);
         activity.setText(mUserActivityLevel);
 
-        TextView daysWorkingOut = (TextView) myView.findViewById(R.id.dashB_daysWorkingOutV);
+        TextView daysWorkingOut = (TextView) mView.findViewById(R.id.dashB_daysWorkingOutV);
         daysWorkingOut.setText("" + mUserDaysToWorkout); // Concatenating to make it a string.
     }
 

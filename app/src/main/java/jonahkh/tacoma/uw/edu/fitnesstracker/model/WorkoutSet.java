@@ -46,6 +46,10 @@ public class WorkoutSet {
      * @param weight the weight used
      */
     public WorkoutSet(String exerciseName, int reps, int setNumber, int weight) {
+        if (exerciseName == null || exerciseName.length() < 1 || reps < 0
+                || setNumber < 1 || weight < 0) {
+            throw new IllegalArgumentException();
+        }
         mExerciseName = exerciseName;
         mReps = reps;
         mSetNumber = setNumber;

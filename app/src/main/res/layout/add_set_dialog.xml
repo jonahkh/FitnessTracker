@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/add_set_dialog_layout">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="number"
+        android:id="@+id/enter_weight"
+        android:hint="Weight"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:inputType="number"
+        android:layout_height="match_parent"
+        android:id="@+id/enter_reps"
+        android:hint="Reps"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:gravity="center_horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancel_set"
+            android:text="Cancel"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_set"
+            android:layout_toRightOf="@+id/cancel_set"
+            android:text="Add Set"/>
+
+
+    </RelativeLayout>
+</LinearLayout>
+

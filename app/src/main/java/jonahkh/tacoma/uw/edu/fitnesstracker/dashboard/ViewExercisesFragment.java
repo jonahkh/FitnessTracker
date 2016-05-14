@@ -113,16 +113,15 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
             }
             result = WeightWorkout.parseExercisesJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
-            if (result != null) {
+            if (null != result) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
                         .show();
                 return;
             }
 
-            // Everything is good, show the list of courses.
+            // Everything is good, show the list of exercises.
             if (!mExerciseList.isEmpty()) {
                 mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
-                LayoutInflater inflater;
                 ExpandableListView view = (ExpandableListView) getActivity()
                         .findViewById(R.id.specific_work_list);
                 view.setAdapter(mAdapter);
