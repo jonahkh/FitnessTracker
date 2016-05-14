@@ -28,11 +28,14 @@ public class Exercise implements Serializable{
     private final List<WorkoutSet> mSets;
 
     /**
-     * Initialize a new Exercise.
+     * Initialize a new Exercise. the name must be non-null and at least one character.
      *
      * @param name the name of this exercise
      */
-    public Exercise(String name) {
+    public Exercise(final String name) {
+        if (name == null || name.length() < 1) {
+            throw new IllegalArgumentException();
+        }
         mName = name;
         mSets = new ArrayList<>();
     }
@@ -52,6 +55,9 @@ public class Exercise implements Serializable{
      * @param set the set being added
      */
     public void addSet(WorkoutSet set) {
+        if (set == null) {
+            throw new IllegalArgumentException();
+        }
         mSets.add(set);
     }
 

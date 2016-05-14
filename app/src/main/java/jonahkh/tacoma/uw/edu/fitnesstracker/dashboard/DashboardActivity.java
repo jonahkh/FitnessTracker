@@ -18,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -311,6 +312,9 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //TODO make it so when you go to another drawer item from a workout the ondestroy method of that fragment is called
+        FragmentManager manager = getSupportFragmentManager();
+        manager.getFragments().size();
         if (id == R.id.nav_predefined_workouts) {
             mFab.hide();
             PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();

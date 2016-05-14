@@ -266,6 +266,12 @@ public class WeightWorkoutListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        Log.e("HELLO", "here");
+        super.onDestroy();
+    }
+
     /**
      * Verify with the user that they want to exit the current workout.
      */

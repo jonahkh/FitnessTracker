@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class WeightWorkout implements Serializable {
 
+    /** Error message for parsing JSON. */
+    public static final String ERROR = "Network Connection Error";
+
     /** Name of the workout in the weight workout table. */
     private static final String NAME = "workoutName";
 
@@ -46,12 +49,12 @@ public class WeightWorkout implements Serializable {
     private String mDate;
 
     /**
-     * Initialize a new Weight Workout.
+     * Initialize a new Weight Workout. the name must be non null and at least one character.
      *
      * @param workoutName the workout name for this workout
      */
     public WeightWorkout(String workoutName) {
-        mWorkoutName = workoutName;
+        this(workoutName, 1, "");
     }
 
     /**
@@ -62,6 +65,10 @@ public class WeightWorkout implements Serializable {
      * @param date the date this workout was completed
      */
     public WeightWorkout(String workoutName, int workoutNumber, String date) {
+        if (workoutName == null || date == null || workoutName.length() < 1
+                || workoutNumber < 1) {
+            throw new IllegalArgumentException();
+        }
         mWorkoutName = workoutName;
         mWorkoutNumber = workoutNumber;
         mDate = date;
@@ -102,7 +109,8 @@ public class WeightWorkout implements Serializable {
      * @param weightWorkoutList the WeightWorkout list being populated
      * @return null if the parsing was successful, otherwise returns an error message
      */
-    public static String parsePreDefinedWeightWorkoutJSON(String weightWorkoutJSON, List<WeightWorkout> weightWorkoutList) {
+    public static String parsePreDefinedWeightWorkoutJSON(String weightWorkoutJSON,
+                                                          List<WeightWorkout> weightWorkoutList) {
         String reason = null;
         if (weightWorkoutJSON != null) {
             try {
@@ -113,7 +121,7 @@ public class WeightWorkout implements Serializable {
                     weightWorkoutList.add(weightWorkout);
                 }
             } catch (JSONException e) {
-                reason =  "Unable to parse data, Reason: " + e.getMessage();
+                reason =  ERROR;
             }
 
         }
@@ -140,7 +148,7 @@ public class WeightWorkout implements Serializable {
                     exerciseList.add(exercise);
                 }
             } catch (JSONException e) {
-                reason =  "Unable to parse data, Reason: " + e.getMessage();
+                reason =  ERROR;
             }
 
         }
@@ -177,7 +185,7 @@ public class WeightWorkout implements Serializable {
                     }
                 }
             } catch (JSONException e) {
-                reason =  "Unable to parse data, Reason: " + e.getMessage();
+                reason =  ERROR;
             }
         }
         return reason;
@@ -219,7 +227,7 @@ public class WeightWorkout implements Serializable {
                     weightWorkoutList.add(workout);
                 }
             } catch (JSONException e) {
-                reason =  "Unable to parse data, Reason: " + e.getMessage();
+                reason =  ERROR;
             }
         }
         return reason;
