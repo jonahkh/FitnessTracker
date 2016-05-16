@@ -134,6 +134,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
+        final TextView text = (TextView) findViewById(R.id.text);
+        text.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("tag", "here");
+                if (mCheckBox.isChecked()) {
+                    mCheckBox.setChecked(false);
+                } else {
+                    mCheckBox.setChecked(true);
+                }
+            }
+        });
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {

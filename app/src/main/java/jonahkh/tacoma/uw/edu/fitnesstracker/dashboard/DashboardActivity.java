@@ -4,7 +4,17 @@
  * TCSS 450 - Team 2
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
-
+// TODO finish project
+/*
+ * Cardio workouts
+ * Settings page (Use Case 7)
+ * Facebook? Login
+ * Camera for login and on dashboard
+ * Forgot password
+ * Share workout to Facebook
+ * Message in logged workouts saying no workouts completed yet
+ * Robotium Test
+ */
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.AlertDialog;
@@ -12,16 +22,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;

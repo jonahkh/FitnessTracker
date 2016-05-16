@@ -135,6 +135,14 @@ public class WeightWorkoutListFragment extends Fragment {
         return view;
     }
 
+//    @Override
+//    public void onResume() {
+//        if (mExerciseList == null) {
+//            Log.e("TAG", "empty");
+//        }
+//        super.onResume();
+//    }
+
     /**
      * Creates the dialog that appears when the user is in a custom workout and presses
      * the "Add Exercise" button at the bottom of the screen. When the user enters an exercise name
@@ -233,7 +241,7 @@ public class WeightWorkoutListFragment extends Fragment {
      * This class handles all of the web service interaction for the WeightWorkoutL
      */
     private class DownloadWeightWorkoutsTask extends AsyncTask<String, Void, String> {
-
+        //TODO check if result = network error. If so, then try with new url to pull from recorded workouts with email workout number
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
@@ -247,17 +255,18 @@ public class WeightWorkoutListFragment extends Fragment {
                         .show();
                 return;
             }
-
             mExerciseList = new ArrayList<>();
             result = WeightWorkout.parseWeightWorkoutListExerciseJSON(result, mExerciseList);
             // Something wrong with the JSON returned.
             if (result != null) {
+
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
                         .show();
                 return;
             }
             mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
             // Everything is good, show the list of courses.
+            boolean check = mExerciseList.isEmpty();
             if (!mExerciseList.isEmpty()) {
                 mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.custom_workout_list);
@@ -268,7 +277,6 @@ public class WeightWorkoutListFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        Log.e("HELLO", "here");
         super.onDestroy();
     }
 
