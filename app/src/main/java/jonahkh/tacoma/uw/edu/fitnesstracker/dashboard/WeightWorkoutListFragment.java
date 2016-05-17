@@ -71,6 +71,9 @@ public class WeightWorkoutListFragment extends Fragment {
     /** The adapter for this list fragment. */
     private BaseAdapter mAdapter;
 
+    /** Bundle for this Fragment. */
+    private Bundle mBundle;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -95,8 +98,15 @@ public class WeightWorkoutListFragment extends Fragment {
         if (mCurrentWorkout != null) {
             // Retrieve current workout
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
-
-            String param = "&name=" + mCurrentWorkout.getWorkoutName();
+            mBundle = getArguments();
+            String param;
+            // Determine if user is using a workout template or reusing a previously completed
+            // workout
+            if (mBundle != null && mBundle.getBoolean("is_custom")) {
+                param = "&num=" + mCurrentWorkout.getWorkoutNumber();
+            } else {
+                param = "&name=" + mCurrentWorkout.getWorkoutName();
+            }
             if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
                 DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask();
                 task.execute(WORKOUT_URL + param);
@@ -135,14 +145,23 @@ public class WeightWorkoutListFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onResume() {
-//        if (mExerciseList == null) {
-//            Log.e("TAG", "empty");
-//        }
-//        super.onResume();
-//    }
+    @Override
+    public void onPause() {
+//        onExit();
+//        FragmentManager mgr = getActivity().getSupportFragmentManager();
+//        mgr.popBackStackImmediate();
+        super.onPause();
+    }
 
+
+    /**
+     * Set the current workout to the passed value.
+     *
+     * @param workout the workout for this list of exercises
+     */
+    public void setWorkout(final WeightWorkout workout) {
+        mCurrentWorkout = workout;
+    }
     /**
      * Creates the dialog that appears when the user is in a custom workout and presses
      * the "Add Exercise" button at the bottom of the screen. When the user enters an exercise name
@@ -169,7 +188,6 @@ public class WeightWorkoutListFragment extends Fragment {
                     mExercise.setError("Required Field!");
                 } else {
                     addExercise(mExercise.getText().toString());
-                    Log.e("ERROR", mExercise.getText().toString());
                     mExercise.setText("");
                     dialog.dismiss();
                 }
@@ -256,7 +274,12 @@ public class WeightWorkoutListFragment extends Fragment {
                 return;
             }
             mExerciseList = new ArrayList<>();
-            result = WeightWorkout.parseWeightWorkoutListExerciseJSON(result, mExerciseList);
+            boolean checkType = false;
+            if (mBundle != null) {
+                checkType = mBundle.getBoolean("is_custom");
+            }
+            result = WeightWorkout.parseWeightWorkoutListExerciseJSON(result, mExerciseList,
+                    checkType);
             // Something wrong with the JSON returned.
             if (result != null) {
 

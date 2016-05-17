@@ -5,7 +5,10 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -142,7 +145,8 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
                 view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        ((DashboardActivity) getActivity()).onPreDefinedWorkoutInteraction(mWorkoutList.get(position));
+                        ((DashboardActivity) getActivity()).redoLoggedWorkout(mWorkoutList.get(position));
+
                         return true;
                     }
                 });

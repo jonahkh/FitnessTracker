@@ -5,6 +5,8 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
+import android.os.Bundle;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +31,9 @@ public class WeightWorkout implements Serializable {
 
     /** Name of the exercise in the weight workout table. */
     private static final String EXERCISE = "exercise";
+
+    /** Name of the exercise in the exercise table. */
+    private static final String LOGGED = "exerciseName";
 
     /** Name of the workout number for this workout. */
     private static final String NUMBER = "workoutNumber";
@@ -134,17 +139,23 @@ public class WeightWorkout implements Serializable {
      *
      * @param weightWorkoutJSON The JSON being parsed
      * @param exerciseList the exercise list being populated
+     * @param isLogged true if a logged workout is being redone
      * @return null if the parsing was successful, otherwise returns an error message
      */
     public static String parseWeightWorkoutListExerciseJSON(String weightWorkoutJSON,
-                                                            List<Exercise> exerciseList) {
+                                                            List<Exercise> exerciseList, final boolean isLogged) {
         String reason = null;
         if (weightWorkoutJSON != null) {
             try {
                 JSONArray arr = new JSONArray(weightWorkoutJSON);
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
-                    Exercise exercise = new Exercise(obj.getString(EXERCISE));
+                    Exercise exercise;
+                    if (isLogged) {
+                        exercise = new Exercise(obj.getString(LOGGED));
+                    } else {
+                        exercise = new Exercise(obj.getString(EXERCISE));
+                    }
                     exerciseList.add(exercise);
                 }
             } catch (JSONException e) {

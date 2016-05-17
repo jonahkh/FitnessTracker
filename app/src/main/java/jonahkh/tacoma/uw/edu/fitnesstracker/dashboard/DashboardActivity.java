@@ -195,12 +195,55 @@ public class DashboardActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Called when the user is on the View Logged Workouts page and starts a new workout by holding
+     * one of the list items down. Starts a new weight workout by using the same exercises as the
+     * selected workout.
+     *
+     * @param workout the workout being repeated
+     */
+    protected void redoLoggedWorkout(final WeightWorkout workout) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+//                ((DashboardActivity) getActivity()).setCurrentWorkout(workout);
+                mDialog = new AddSetFragment();
+                mCurrentWorkout = workout;
+                WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
+                weightWorkout.setWorkout(workout);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("is_custom", true);
+                bundle.putInt("workout_number", workout.getWorkoutNumber());
+                weightWorkout.setArguments(bundle);
+//                weightWorkout.setName(mCurrentWorkout.getWorkoutName());
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, weightWorkout)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
+        });
+        mSharedPreferences.edit().putInt(getString(R.string.current_set), 0);
+        Dialog alert = builder.create();
+        alert.show();
+    }
+
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
         mDialog = new AddSetFragment();
         mDialog.setExerciseName(exercise.getExerciseName());
         mDialog.show(getSupportFragmentManager(), "AddSetFragment");
+    }
+
+    protected void setCurrentWorkout(WeightWorkout workout) {
+        mCurrentWorkout = workout;
     }
 
     @Override
