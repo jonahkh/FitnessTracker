@@ -119,8 +119,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
-        checkLoggedIn();
         FacebookSdk.sdkInitialize(getApplicationContext());
+        checkLoggedIn();
 //        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -245,9 +245,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             finish();
         } else {
             // Double check that there's no Facebook account still logged in
-            LoginManager mgr = LoginManager.getInstance();
-            if (mgr != null) {
-                mgr.logOut();
+            if (LoginManager.getInstance() != null) {
+                LoginManager.getInstance().logOut();
             }
         }
     }

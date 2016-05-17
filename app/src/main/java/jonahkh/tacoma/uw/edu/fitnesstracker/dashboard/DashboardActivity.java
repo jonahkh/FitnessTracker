@@ -248,7 +248,6 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onPreDefinedWorkoutInteraction(final WeightWorkout workout) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {

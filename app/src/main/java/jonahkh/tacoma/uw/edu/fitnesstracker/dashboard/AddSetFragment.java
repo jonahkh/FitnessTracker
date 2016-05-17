@@ -87,7 +87,7 @@ public class AddSetFragment extends DialogFragment {
                 , Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
         final String url = DashboardDisplayFragment.USER_LAST_LOGGED_WORKOUT + "&email="  + mCurrentEmail;
-
+        Log.e("addSet", url);
         task.execute(url);
         builder.setView(v);
         builder.setTitle("Enter Set Information");
@@ -145,7 +145,7 @@ public class AddSetFragment extends DialogFragment {
         url.append("&num=" + mWorkoutNum);
 
         url.append("&name=");
-        url.append(mCurrentWorkout.getWorkoutName());
+        url.append(mCurrentWorkout.getWorkoutName().replace(' ', '_'));
 
         url.append("&email=");
         url.append(mCurrentEmail);
@@ -164,6 +164,7 @@ public class AddSetFragment extends DialogFragment {
 
         url.append(year + "-" + month + "-" + day);
         url.append("&type=weight");
+        String result = url.toString();
         Log.e("URLLL", url.toString());
         return url.toString();
     }
