@@ -59,11 +59,11 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -119,21 +119,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         checkLoggedIn();
-        FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
-            @Override
-            public void onInitialized() {
-                if(AccessToken.getCurrentAccessToken() == null){
-                    System.out.println("not logged in yet");
-                } else {
-                    System.out.println("Logged in");
-                }
-            }
-        });
-        AppEventsLogger.activateApp(this);
+//        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
+        final TextView text = (TextView) findViewById(R.id.text);
+        text.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCheckBox.isChecked()) {
+                    mCheckBox.setChecked(false);
+                } else {
+                    mCheckBox.setChecked(true);
+                }
+            }
+        });
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -174,63 +176,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginButton = (LoginButton) findViewById(R.id.login_button);
-        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, (Arrays.asList("public_profile", "email")));
-        List<String> permissions = new ArrayList<>();
-//        List<String> permissions = new ArrayList<>();
-
-        // Set up permissions
-        permissions.add("email");
-        permissions.add("public_profile");
-        permissions.add("user_friends");
-        mLoginButton.setReadPermissions(permissions);
-
-        // Check that profile is logged in
-
-        mLoginButton.registerCallback(mCallback, new FacebookCallback<LoginResult>() {
-            private ProfileTracker mProfileTracker;
+        mLoginButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.e("FBOOK", loginResult.toString());
-                if(Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                            // profile2 is the new profile
-                            Log.v("facebook - profile", profile2.getFirstName());
-                            mProfileTracker.stopTracking();
-                        }
-                    };
-                }
-                Profile profile = Profile.getCurrentProfile();
-                LoginManager mgr = LoginManager.getInstance();
+            public void onClick(View v) {
+                List<String> permissions = new ArrayList<>();
+                // Set up permissions
+                permissions.add("email");
+                permissions.add("public_profile");
+                mLoginButton.setReadPermissions(permissions);
 
-                requestData();
+                // Check that profile is logged in
 
-                attemptLogin();
-                if (!mSharedPreferences.getBoolean(getString(R.string.logged_in), false)) {
-                    LoginManager.getInstance().logOut();
-                }
-//                if (!mLoginFacebook) {
-//                    LoginManager.getInstance().logOut();
-//                    Log.e("FBOOK", "Logout");
-//                }
-                Log.e("TAG", "Success");
-            }
+                mLoginButton.registerCallback(mCallback, new FacebookCallback<LoginResult>() {
+                    private ProfileTracker mProfileTracker;
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        requestData();
+                    }
 
-            @Override
-            public void onCancel() {
-                Log.e("TAG", "Cancel");
-            }
+                    @Override
+                    public void onCancel() {
+                        Log.e("TAG", "Cancel");
+                    }
 
-            @Override
-            public void onError(FacebookException exception) {
-                Log.e("TAG", "ERROR");
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Log.e("TAG", "ERROR");
+                    }
+                });
             }
         });
-        // Set up permissions for Facebook
-        permissions.add("email");
-        permissions.add("public_profile");
-        permissions.add("user_friends");
+
 
     }
 
@@ -241,17 +217,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 final JSONObject json = response.getJSONObject();
-                String TAG = "FBOOK";
                 try {
                     if (json != null) {
-                        Log.e(TAG, json.getString("email"));
+                        String email = json.getString("email");
+                        FacebookLoginTask task = new FacebookLoginTask();
+                        String url = USER_URL + "email=" + email + "&fbook=true";
+                        task.execute(url);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-        Log.e("FBOOK", "here");
         Bundle parameters = new Bundle();
         parameters.putString("fields", "email");
         request.setParameters(parameters);
@@ -263,15 +240,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void checkLoggedIn() {
         if (mSharedPreferences.getBoolean(getString(R.string.logged_in), false)) {
-//            mLoginFacebook = false;
             Intent i = new Intent(this, DashboardActivity.class);
             startActivity(i);
             finish();
+        } else {
+            // Double check that there's no Facebook account still logged in
+            if (LoginManager.getInstance() != null) {
+                LoginManager.getInstance().logOut();
+            }
         }
-//            mLoginFacebook = true;
-//            Log.e("FBOOK", "HERE");
-//            FacebookSdk.sdkInitialize(getApplicationContext());
-//            LoginManager.getInstance().logOut();
     }
 
     @Override
@@ -409,6 +386,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
+     * Login the user with the given email.
+     *
+     * @param email the email for the user
+     */
+    private void login(final String email) {
+        // Store user email and record that they are logged in
+        mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
+        mSharedPreferences.edit().putString(getString(R.string.current_email), email).apply();
+        if (mCheckBox.isChecked()) {
+            mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
+        }
+        finish();
+        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        startActivity(intent);
+    }
+
+    /**
      * Adds the list of emails to the adapter for the email view.
      *
      * @param emailAddressCollection list of emails
@@ -421,6 +416,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setAdapter(adapter);
     }
+
+
+    /**
+     * Asynchronous task to attempt to log in a user using Facebook.
+     */
+    public class FacebookLoginTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {super.onPreExecute();}
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return DashboardActivity.doInBackgroundHelper(urls);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // Something wrong with the network or the URL.
+            try {
+                JSONArray arr = new JSONArray(result);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (obj.getString("result").equals("success")) {
+                        login(obj.getString("email"));
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(),
+                                RegisterUserActivity.class);
+                        Bundle bundle = new Bundle();
+                        Profile profile = Profile.getCurrentProfile();
+                        bundle.putString("email", obj.getString("email"));
+                        bundle.putString("first", profile.getFirstName());
+                        bundle.putString("last", profile.getLastName());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                    }
+                }
+            } catch (JSONException e) {
+                Log.e("Dashboard", e.getStackTrace().toString());
+            }
+        }
+    }
+
+
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -484,16 +523,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
             if (success) {
-                // Store user email and record that they are logged in
-                mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
-                        , Context.MODE_PRIVATE);
-                mSharedPreferences.edit().putString(getString(R.string.current_email), mEmail).apply();
-                if (mCheckBox.isChecked()) {
-                    mSharedPreferences.edit().putBoolean(getString(R.string.logged_in), true).apply();
-                }
-                finish();
-                Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                startActivity(intent);
+                login(mEmail);
             } else if (!networkAccess) {
                 Toast.makeText(getApplicationContext(), "Cannot connect to network!", Toast.LENGTH_LONG).show();
             } else {

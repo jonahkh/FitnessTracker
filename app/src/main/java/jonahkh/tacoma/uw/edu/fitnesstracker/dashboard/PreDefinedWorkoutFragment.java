@@ -6,6 +6,7 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -55,10 +56,16 @@ public class PreDefinedWorkoutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_predefined_workouts_list, container, false);
         // Check for network connectivity
+        SharedPreferences sharedPrefs =
+                getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                        , Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString(getActivity().getString(R.string.current_email),
+                "No existing email");
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadPreDefinedWorkoutsTask task = new DownloadPreDefinedWorkoutsTask();
-            task.execute(WORKOUT_URL);
+            task.execute(WORKOUT_URL + "&email=" + email);
         }
+
         mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
         return view;
     }

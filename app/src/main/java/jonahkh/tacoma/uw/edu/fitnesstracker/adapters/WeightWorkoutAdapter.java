@@ -58,7 +58,6 @@ public class WeightWorkoutAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        Log.e("ADAPTER", ((Exercise) mValues.get(position)).getExerciseName());
         return mValues.get(position);
     }
 
@@ -85,7 +84,6 @@ public class WeightWorkoutAdapter extends BaseAdapter {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    Log.e("ADAPTER", ((Exercise) holder.mItem).getExerciseName());
                     mListener.onListFragmentInteraction(holder.mItem);
                 }
             }

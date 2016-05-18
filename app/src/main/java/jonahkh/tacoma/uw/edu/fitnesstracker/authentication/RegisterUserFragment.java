@@ -19,6 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -64,6 +67,7 @@ public class RegisterUserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register_user, container, false);
         mFirstName = (EditText) v.findViewById(R.id.add_user_first_name);
@@ -71,6 +75,17 @@ public class RegisterUserFragment extends Fragment {
         mEmail = (EditText) v.findViewById(R.id.add_user_email);
         mPassword = (EditText) v.findViewById(R.id.add_user_password);
         mConfirmPassword = (EditText) v.findViewById(R.id.add_user_confirm_password);
+        savedInstanceState = getArguments();
+
+        if (savedInstanceState != null && savedInstanceState.getBoolean("fbook")) {
+            // Fill and disable name and email fields if registering through Facebook
+            mLastName.setEnabled(false);
+            mEmail.setEnabled(false);
+            mFirstName.setEnabled(false);
+            mFirstName.setText(savedInstanceState.getString("first"));
+            mLastName.setText(savedInstanceState.getString("last"));
+            mEmail.setText(savedInstanceState.getString("email"));
+        }
 
         Button addUserButton = (Button) v.findViewById(R.id.register_next_button);
         addUserButton.setOnClickListener(new View.OnClickListener() {
@@ -106,8 +121,18 @@ public class RegisterUserFragment extends Fragment {
                 return false;
             }
         });
-
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        Bundle b = getArguments();
+        Profile profile = Profile.getCurrentProfile();
+        if (b != null && profile != null &&  b.getBoolean("fbook")) {
+            LoginManager mgr = LoginManager.getInstance();
+            mgr.logOut();
+        }
+        super.onDestroy();
     }
 
     /**
@@ -185,7 +210,7 @@ public class RegisterUserFragment extends Fragment {
             Log.i(TAG, sb.toString());
         }
         catch(Exception e) {
-            Toast.makeText( getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+            Toast.makeText( getContext(), "Network connectivity issue", Toast.LENGTH_LONG)
                     .show();
         }
         return sb.toString();

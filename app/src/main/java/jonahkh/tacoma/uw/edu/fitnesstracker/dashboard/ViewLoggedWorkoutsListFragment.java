@@ -5,14 +5,19 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -135,6 +140,16 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
             if (!mWorkoutList.isEmpty()) {
                 mAdapter = new ViewLoggedWeightWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.logged_workouts_list);
+                view.setLongClickable(true);
+                view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        ((DashboardActivity) getActivity()).redoLoggedWorkout(mWorkoutList.get(position));
+
+                        return true;
+                    }
+                });
                 view.setAdapter(mAdapter);
             }
         }

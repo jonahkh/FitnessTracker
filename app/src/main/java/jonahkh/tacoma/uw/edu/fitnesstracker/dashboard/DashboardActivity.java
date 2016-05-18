@@ -4,7 +4,17 @@
  * TCSS 450 - Team 2
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
-
+// TODO finish project
+/*
+ * Cardio workouts
+ * Settings page (Use Case 7)
+ * Facebook? Login
+ * Camera for login and on dashboard
+ * Forgot password
+ * Share workout to Facebook
+ * Message in logged workouts saying no workouts completed yet
+ * Robotium Test
+ */
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.AlertDialog;
@@ -12,16 +22,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -188,6 +195,45 @@ public class DashboardActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Called when the user is on the View Logged Workouts page and starts a new workout by holding
+     * one of the list items down. Starts a new weight workout by using the same exercises as the
+     * selected workout.
+     *
+     * @param workout the workout being repeated
+     */
+    protected void redoLoggedWorkout(final WeightWorkout workout) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
+        builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+//                ((DashboardActivity) getActivity()).setCurrentWorkout(workout);
+                mDialog = new AddSetFragment();
+                mCurrentWorkout = workout;
+                WeightWorkoutListFragment weightWorkout = new WeightWorkoutListFragment();
+                weightWorkout.setWorkout(workout);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("is_custom", true);
+                bundle.putInt("workout_number", workout.getWorkoutNumber());
+                weightWorkout.setArguments(bundle);
+//                weightWorkout.setName(mCurrentWorkout.getWorkoutName());
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, weightWorkout)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // Do nothing
+            }
+        });
+        mSharedPreferences.edit().putInt(getString(R.string.current_set), 0);
+        Dialog alert = builder.create();
+        alert.show();
+    }
+
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
@@ -196,9 +242,12 @@ public class DashboardActivity extends AppCompatActivity
         mDialog.show(getSupportFragmentManager(), "AddSetFragment");
     }
 
+    protected void setCurrentWorkout(WeightWorkout workout) {
+        mCurrentWorkout = workout;
+    }
+
     @Override
     public void onPreDefinedWorkoutInteraction(final WeightWorkout workout) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {

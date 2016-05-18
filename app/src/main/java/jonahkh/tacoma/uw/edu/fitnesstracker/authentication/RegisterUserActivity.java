@@ -95,15 +95,27 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        savedInstanceState = getIntent().getExtras();
+        if (savedInstanceState != null) {
+            mUserEmail = savedInstanceState.getString("email");
+            mUserFirstName = savedInstanceState.getString("first");
+            mUserLastName = savedInstanceState.getString("last");
+            savedInstanceState.putBoolean("fbook", true);
+        } else {
+            Log.e("BUNDLE", "NULL");
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
         // launch the the registerUserfragment
         RegisterUserFragment userAddFragment = new RegisterUserFragment();
+        userAddFragment.setArguments(savedInstanceState);
+//        userAddFragment.set
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.activity_register_user_xml, userAddFragment)
                 .addToBackStack(null)
                 .commit();
+        Log.e("REGISTRATION", "HERER");
     }
 
     /**
