@@ -392,6 +392,15 @@ public class DashboardActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
             }
+        } else if(id == R.id.view_logged_cardio_workouts){
+            // TODO to work here
+            mFab.hide();
+            ViewLoggedCardioExersiceListFragment fragment =
+                    new ViewLoggedCardioExersiceListFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         }
 
 

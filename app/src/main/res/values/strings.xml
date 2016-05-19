@@ -142,4 +142,6 @@
     <string name="logout">Logout</string>
     <string name="workouts">Workouts</string>
     <string name="exercises">Exercises</string>
+    <string name="CardioExercises">Cardio Exercises</string>
+    <string name="no_cardioExe_to_display"> No Logged Workouts to Display!</string>
 </resources>
