@@ -104,7 +104,7 @@ public class WeightWorkoutTest {
                 "\"Chest\",\"exercise\":\"incline fly\"},{\"workoutName\":\"Chest\",\"exercise\":" +
                 "\"incline press\"}]";
         String message = WeightWorkout.parseWeightWorkoutListExerciseJSON(JSON,
-                new ArrayList<Exercise>());
+                new ArrayList<Exercise>(), false);
         assertTrue("JSON With Valid String", message == null);
     }
 

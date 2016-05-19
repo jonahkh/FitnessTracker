@@ -18,9 +18,7 @@ android {
         }
     }
 
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
+    // This will allow us the location and map libraries
 }
 
 repositories {
