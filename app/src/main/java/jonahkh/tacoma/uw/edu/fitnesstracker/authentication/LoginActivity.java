@@ -9,9 +9,12 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -27,6 +30,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -48,6 +52,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -80,6 +85,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /** Url to attempt user login. */
     private static final String USER_URL = "http://cssgate.insttech.washington.edu/~_450atm2/login.php?";
+
+    /** Url to generate a code to verify user when resetting password. */
+    private static final String GET_CODE_URL = "http://cssgate.insttech.washington.edu/~_450atm2/resetpassword.php?";
 
     /* Keep track of the login task to ensure we can cancel it if requested. */
     private UserLoginTask mAuthTask = null;
@@ -134,6 +142,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     mCheckBox.setChecked(true);
                 }
+            }
+        });
+        final TextView forgotText = (TextView) findViewById(R.id.forgot_password);
+        forgotText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPassword();
             }
         });
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -235,6 +250,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         request.executeAsync();
     }
 
+    private void resetPassword() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
+        final EditText emailText = (EditText) v.findViewById(R.id.email);
+        builder.setPositiveButton("Send Code", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                VerifyEmailTask task = new VerifyEmailTask();
+                task.execute(GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
+                Log.e("LoginActivity", GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
+                task.getStatus();
+                while (task.getCode() == null);
+                Log.e("LoginActivity", "code registered");
+                verifyCode(task);
+            }
+        });
+        builder.setView(v);
+        builder.setTitle("Enter your email:");
+        Dialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void verifyCode(final VerifyEmailTask task) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
+        final EditText text = (EditText) v.findViewById(R.id.code);
+        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e("LoginActivity", "here first");
+//                if (task.getCode().equals(text.getText().toString().toUpperCase())) {
+//                    Log.e("LoginActivity", task.getCode());
+//                }
+            }
+        });
+        builder.setView(v);
+        builder.setTitle("An email has been sent with a verification code, please enter that code below");
+        Dialog dialog = builder.create();
+        dialog.show();
+
+
+    }
     /**
      * Check whether the user is already logged in. If so, go straight to the dashboard.
      */
@@ -302,6 +359,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask.execute((Void) null);
         }
     }
+
+
 
     /**
      * Shows the progress UI and hides the login form.
@@ -417,14 +476,46 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    public class VerifyEmailTask extends AsyncTask<String, Void, String> {
+        private String mCode;
+
+//        protected VerifyEmailTask(final )
+        @Override
+        protected String doInBackground(String... urls) {
+            return DashboardActivity.doInBackgroundHelper(urls);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONArray arr = new JSONArray(result);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (obj.getString("result").equals("success")) {
+                        mCode = obj.getString("code");
+                        Log.e("LoginActivity", mCode);
+                    } else {
+                        mCode = "error";
+                        Log.e("LoginActivity", mCode);
+                    }
+                }
+            } catch (JSONException e) {
+                Log.e("LoginActivity", e.getStackTrace().toString());
+            }
+        }
+
+        protected void setCode(final String code) {
+            mCode = code;
+        }
+        protected String getCode() {
+            return mCode;
+        }
+    }
 
     /**
      * Asynchronous task to attempt to log in a user using Facebook.
      */
     public class FacebookLoginTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
 
         @Override
         protected String doInBackground(String... urls) {
@@ -458,8 +549,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }
     }
-
-
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
