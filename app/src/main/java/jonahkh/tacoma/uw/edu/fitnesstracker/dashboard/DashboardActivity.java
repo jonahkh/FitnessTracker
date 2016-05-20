@@ -8,7 +8,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 /*
  * Cardio workouts
  * Settings page (Use Case 7)
- * Facebook? Login
  * Camera for login and on dashboard
  * Forgot password
  * Share workout to Facebook
@@ -86,6 +85,9 @@ public class DashboardActivity extends AppCompatActivity
 
     /** The dialog for starting a custom workout. */
     private Dialog mStartCustomWorkoutDialog;
+    
+    /** The mDrawer for this Activity. */
+    private DrawerLayout mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,16 +105,18 @@ public class DashboardActivity extends AppCompatActivity
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mDialog = new AddSetFragment();
                 mStartCustomWorkoutDialog.show();
             }
         });
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        assert drawer != null;
-        drawer.addDrawerListener(toggle);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        assert mDrawer != null;
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -130,6 +134,16 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
+    }
+
+    /**
+     * Locks or unlocks the drawer depending on the passed mode. The drawer is locked when the user
+     * is performing a workout.
+     *
+     * @param mode determines whether to lock or unlock the drawer
+     */
+    protected void lockDrawer(final int mode) {
+        mDrawer.setDrawerLockMode(mode);
     }
 
 
@@ -196,7 +210,7 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     /**
-     * Called when the user is on the View Logged Workouts page and starts a new workout by holding
+         * Called when the user is on the View ged Workouts page and starts a new workout by holding
      * one of the list items down. Starts a new weight workout by using the same exercises as the
      * selected workout.
      *
@@ -237,7 +251,7 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
-        mDialog = new AddSetFragment();
+//        mDialog = new AddSetFragment();
         mDialog.setExerciseName(exercise.getExerciseName());
         mDialog.show(getSupportFragmentManager(), "AddSetFragment");
     }
@@ -311,10 +325,10 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert mDrawer != null;
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -361,7 +375,7 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //TODO make it so when you go to another drawer item from a workout the ondestroy method of that fragment is called
+        //TODO make it so when you go to another mDrawer item from a workout the ondestroy method of that fragment is called
         FragmentManager manager = getSupportFragmentManager();
         manager.getFragments().size();
         if (id == R.id.nav_predefined_workouts) {

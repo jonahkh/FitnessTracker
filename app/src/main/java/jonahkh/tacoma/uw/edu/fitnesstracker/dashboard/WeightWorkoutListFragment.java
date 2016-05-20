@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -94,6 +95,7 @@ public class WeightWorkoutListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         View view = inflater.inflate(R.layout.fragment_custom_weight_list, container, false);
         if (mCurrentWorkout != null) {
             // Retrieve current workout
@@ -118,8 +120,16 @@ public class WeightWorkoutListFragment extends Fragment {
         } else {    // A custom workout is being performed
             mExerciseList = new ArrayList<>();
         }
-        Button button = (Button) view.findViewById(R.id.add_exercise_button);
+
         setDialog();
+        final Button button = (Button) view.findViewById(R.id.add_exercise_button);
+        final Button cancel = (Button) view.findViewById(R.id.finish_workout);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onExit();
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,15 +154,6 @@ public class WeightWorkoutListFragment extends Fragment {
         });
         return view;
     }
-
-    @Override
-    public void onPause() {
-//        onExit();
-//        FragmentManager mgr = getActivity().getSupportFragmentManager();
-//        mgr.popBackStackImmediate();
-        super.onPause();
-    }
-
 
     /**
      * Set the current workout to the passed value.
@@ -300,6 +301,7 @@ public class WeightWorkoutListFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
         super.onDestroy();
     }
 
@@ -326,6 +328,6 @@ public class WeightWorkoutListFragment extends Fragment {
         });
         Dialog alert = builder.create();
             alert.show();
-
+        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

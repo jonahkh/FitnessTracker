@@ -142,4 +142,6 @@
     <string name="logout">Logout</string>
     <string name="workouts">Workouts</string>
     <string name="exercises">Exercises</string>
+    <string name="end_workout">End Workout</string>
+    <string name="add_exercise">Add Exercise</string>
 </resources>

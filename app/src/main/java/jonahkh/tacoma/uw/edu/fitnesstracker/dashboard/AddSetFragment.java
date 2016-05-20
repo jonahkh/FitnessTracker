@@ -165,7 +165,6 @@ public class AddSetFragment extends DialogFragment {
         url.append(year + "-" + month + "-" + day);
         url.append("&type=weight");
         String result = url.toString();
-        Log.e("URLLL", url.toString());
         return url.toString();
     }
 
