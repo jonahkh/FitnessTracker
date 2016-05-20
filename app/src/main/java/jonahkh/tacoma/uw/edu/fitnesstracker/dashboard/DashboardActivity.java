@@ -6,7 +6,6 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 // TODO finish project
 /*
- * Cardio workouts
  * Settings page (Use Case 7)
  * Camera for login and on dashboard
  * Forgot password
@@ -85,7 +84,7 @@ public class DashboardActivity extends AppCompatActivity
 
     /** The dialog for starting a custom workout. */
     private Dialog mStartCustomWorkoutDialog;
-    
+
     /** The mDrawer for this Activity. */
     private DrawerLayout mDrawer;
 
@@ -210,7 +209,29 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     /**
-         * Called when the user is on the View ged Workouts page and starts a new workout by holding
+     * Returns if the user's device is connected to the network.
+     *
+     * @param message the message to display if network is not connected
+     * @return true if the user's device is connected to the network
+     */
+    public boolean isNetworkConnected(String message, boolean showToast) {
+        // Check for network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if ((networkInfo == null || !networkInfo.isConnected())) {
+            if(showToast) {
+                Toast.makeText(this,
+                        "No network connection available. Cannot display " + message,
+                        Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Called when the user is on the View Logged Workouts page and starts a new workout by holding
      * one of the list items down. Starts a new weight workout by using the same exercises as the
      * selected workout.
      *
@@ -407,8 +428,7 @@ public class DashboardActivity extends AppCompatActivity
                         .commit();
             }
         } else if(id == R.id.view_logged_cardio_workouts){
-            // TODO to work here
-            mFab.hide();
+            mFab.show();
             ViewLoggedCardioExersiceListFragment fragment =
                     new ViewLoggedCardioExersiceListFragment();
             getSupportFragmentManager().beginTransaction()

@@ -115,7 +115,6 @@ public class RegisterUserActivity extends AppCompatActivity {
                 .replace(R.id.activity_register_user_xml, userAddFragment)
                 .addToBackStack(null)
                 .commit();
-        Log.e("REGISTRATION", "HERER");
     }
 
     /**

@@ -1,30 +1,33 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewLoggedCardioExersiceListFragment;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioExercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link CardioExercise} and makes a call to the
- * specified {@link ViewLoggedCardioExerciseAdapter}.
- * TODO: Replace the implementation with code for your data type.
+ * This is the Cardio Workout list class.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLoggedCardioExerciseAdapter.ViewHolder> {
 
-    /** The workout number identifier. */
-    public static final String NUMBER = "Number: ";
+    /** The cadio workout header. */
+    private static final String CARDIO_WORKOUT_HEADER = "Cardio Workout ";
 
     /** Miles for the distance. */
     public static final String MILES = " Miles";
@@ -33,7 +36,7 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
     public static final String MINUTES = " Minutes";
 
     /** The list of cardio exercises for this user. */
-    private final List<CardioExercise> mValues;
+    private final List<CardioWorkout> mValues;
 
     /** The Activity that holds this adapter. */
     private final Activity mContext;
@@ -41,7 +44,7 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
 //    /** The listener for the list. */
 //    private final ViewLoggedCardioExersiceListFragment.LoggedCardioExerciseInteractListener mListener;
 
-    public ViewLoggedCardioExerciseAdapter(Activity context, List<CardioExercise> items) {
+    public ViewLoggedCardioExerciseAdapter(Activity context, List<CardioWorkout> items) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -67,7 +70,7 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
         final String date = mValues.get(position).getDate();
         holder.mDateView.setText(date);
 
-        final String number = NUMBER + mValues.get(position).getWorkoutNumber();
+        final String number = CARDIO_WORKOUT_HEADER + mValues.get(position).getWorkoutNumber();
         holder.mWorkoutNumberView.setText(number);
 
         final double distance =  mValues.get(position).getDistance();
@@ -120,8 +123,8 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
         /** The distance view for this exercise. */
         private final TextView mDistanceView;
 
-        /** The current CardioExercise */
-        public CardioExercise mItem;
+        /** The current CardioWorkout */
+        public CardioWorkout mItem;
 
         /**
          * Initialize a new ViewHolder.
