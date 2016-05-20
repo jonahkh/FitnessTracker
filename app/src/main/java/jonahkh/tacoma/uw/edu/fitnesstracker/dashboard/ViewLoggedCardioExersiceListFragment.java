@@ -1,25 +1,28 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnesAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedCardioExerciseAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioExercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
 
 /**
  * A fragment representing a list of Items.
@@ -33,14 +36,28 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
     /** so that we can access it in the thread to load the data. */
     private RecyclerView mRecyclerView;
 
-    // TODO: Customize parameters
+    /** Tag used for debugging. */
+    private final String TAG = "Cardio Workout Fragment list";
+
     private int mColumnCount = 1;
 
     /** The list of completed exercises for this user. */
-    private List<CardioExercise> mWorkoutList;
+    private List<CardioWorkout> mWorkoutList;
 
     /** The adapter for this Fragment. */
     private ViewLoggedCardioExerciseAdapter mAdapter;
+
+    /** Shared Preferences */
+    private SharedPreferences mSharedPreferences;
+
+    /** Starts a new cardio exercise when pressed. */
+    private FloatingActionButton mFab;
+
+    /** The internal database for this app. */
+    private FitnesAppDB cardioWorkoutDB;
+
+    /** The email of the user. */
+    private String mUserEmail;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,9 +70,33 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cardio_exercise_list, container, false);
-        String param = "email=" + getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+        mSharedPreferences = getActivity().getSharedPreferences(getString(R.string.DASHBOARD_PREFS),
+                Context.MODE_PRIVATE);
+        final boolean networkAlive = ((DashboardActivity) getActivity()).isNetworkConnected(getString(
+                R.string.CardioExercises), false);
+        mUserEmail = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
+        String param = "email=" + mUserEmail;
+        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(networkAlive) {
+                    mFab.hide();
+                    AddCardioWorkout fragment = new AddCardioWorkout();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            R.string.adding_cardio_workout_noNet, Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -69,11 +110,22 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
 
         }
         // check network
-        if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.CardioExercises))) {
+        if (networkAlive) {
             DownloadCardioExercisesTask task = new DownloadCardioExercisesTask();
+//            Log.i(TAG, CARDIO_EXERCISE_URL + param);
             task.execute(CARDIO_EXERCISE_URL + param);
+        } else {
+            if(cardioWorkoutDB == null){
+                cardioWorkoutDB = new FitnesAppDB(getActivity());
+            }
+            if(mWorkoutList == null) {
+                mWorkoutList = cardioWorkoutDB.getCourses();
+            }
+            Toast.makeText(view.getContext(), R.string.local_data_message,
+                    Toast.LENGTH_SHORT).show();
+            mRecyclerView.setAdapter(new ViewLoggedCardioExerciseAdapter(getActivity(),
+                    mWorkoutList));
         }
-//        mAdapter = new ViewLoggedCardioExerciseAdapter(getActivity(), mWorkoutList);
         return view;
     }
 
@@ -98,7 +150,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
 
             mWorkoutList = new ArrayList<>();
 //            Log.i("TEST", result.toString());
-            result = CardioExercise.parseCardioExercisesJSON(result, mWorkoutList);
+            result = CardioWorkout.parseCardioExercisesJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
@@ -108,8 +160,26 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
 
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
+                if(cardioWorkoutDB == null){
+                    cardioWorkoutDB = new FitnesAppDB(getActivity());
+                }
+                // Delete old data so that you can refresh the local
+                // database with the network data.
+                cardioWorkoutDB.deleteCardioWorkouts();
+
+                // Also, add to the local database
+                for (int i=0; i<mWorkoutList.size(); i++) {
+                    CardioWorkout workout = mWorkoutList.get(i);
+                    cardioWorkoutDB.insertCardioWorkout(workout.getWorkoutNumber(),
+                            workout.getDate(), workout.getDuration(),
+                            workout.getActivityName(), mUserEmail, workout.getDistance());
+                }
                 mRecyclerView.setAdapter(new ViewLoggedCardioExerciseAdapter(getActivity(), mWorkoutList));
+                mSharedPreferences.edit().putInt(getString(R.string.next_cardio_exercise_num),
+                        mWorkoutList.size() + 1).apply();
             } else {
+                mSharedPreferences.edit().putInt(getString(R.string.next_cardio_exercise_num),
+                        1).apply();
                 Toast.makeText(getActivity().getApplicationContext(),
                         R.string.no_cardioExe_to_display, Toast.LENGTH_LONG)
                         .show();

@@ -8,6 +8,8 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -192,6 +194,19 @@ public class DashboardDisplayFragment extends Fragment {
             }
         });
         return mView;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DashboardActivity)getActivity()).mStartCustomWorkoutDialog.show();
+            }
+        });
     }
 
     @Override

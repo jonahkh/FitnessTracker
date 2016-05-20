@@ -88,6 +88,7 @@
     </string-array>
 
     <string-array name="daysToWorkout_array">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -142,6 +143,23 @@
     <string name="logout">Logout</string>
     <string name="workouts">Workouts</string>
     <string name="exercises">Exercises</string>
+    <string name="CardioExercises">Cardio Exercises</string>
+    <string name="no_cardioExe_to_display"> No Logged Workouts to Display!</string>
+    <string name="DASHBOARD_PREFS">edu.uw.tacoma.jonahkh.fitnesstracker.DASHBOARD_PREFS</string>
+    <string name="next_cardio_exercise_num">Next Cardio Exercise Number</string>
+    <string name="activity">*Activity:</string>
+    <string name="cardio_activity_hint">Enter name of Cardio Activity</string>
+    <string name="duration">*Duration:</string>
+    <string name="minutes">Minutes</string>
+    <string name="distance">Distance:</string>
+    <string name="miles">Miles</string>
+    <string name="new_cardio_activity">New Cardio Activity</string>
+    <string name="cardio_workout_succ">Cardio Workout Successful</string>
+    <string name="must_be_num">Must be a number!</string>
+    <string name="invalid_input">Invalid Input!</string>
+    <string name="cardio_workout">Cardio Workout</string>
+    <string name="local_data_message">No network connection available. Displaying locally stored data</string>
+    <string name="adding_cardio_workout_noNet">Can not add a Cardio Workout without internet</string>
     <string name="end_workout">End Workout</string>
     <string name="add_exercise">Add Exercise</string>
 </resources>
