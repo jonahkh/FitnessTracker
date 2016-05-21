@@ -9,6 +9,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -221,14 +222,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 });
             }
         });
-
-
     }
 
     /** Retrieves the email for the facebook profile currently logged in. */
     private void requestData() {
 
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 final JSONObject json = response.getJSONObject();
@@ -250,48 +250,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         request.executeAsync();
     }
 
-    private void resetPassword() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
-        final EditText emailText = (EditText) v.findViewById(R.id.email);
-        builder.setPositiveButton("Send Code", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                VerifyEmailTask task = new VerifyEmailTask();
-                task.execute(GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
-                Log.e("LoginActivity", GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
-                task.getStatus();
-                while (task.getCode() == null);
-                Log.e("LoginActivity", "code registered");
-                verifyCode(task);
-            }
-        });
-        builder.setView(v);
-        builder.setTitle("Enter your email:");
-        Dialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void verifyCode(final VerifyEmailTask task) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
-        final EditText text = (EditText) v.findViewById(R.id.code);
-        builder.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.e("LoginActivity", "here first");
-//                if (task.getCode().equals(text.getText().toString().toUpperCase())) {
-//                    Log.e("LoginActivity", task.getCode());
-//                }
-            }
-        });
-        builder.setView(v);
-        builder.setTitle("An email has been sent with a verification code, please enter that code below");
-        Dialog dialog = builder.create();
-        dialog.show();
 
 
-    }
+
     /**
      * Check whether the user is already logged in. If so, go straight to the dashboard.
      */
@@ -476,10 +437,65 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-    public class VerifyEmailTask extends AsyncTask<String, Void, String> {
-        private String mCode;
+    private void resetPassword() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
+        final EditText emailText = (EditText) v.findViewById(R.id.email);
+        final Button button = (Button) v.findViewById(R.id.button);
+        builder.setView(v);
+        builder.setTitle("Enter your email:");
+        final Dialog dialog = builder.create();
+        final LoginActivity activity = this;
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VerifyEmailTask task = new VerifyEmailTask(emailText, dialog, activity);
+                task.execute(GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
+            }
+        });
+        builder.setPositiveButton("Send Code", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-//        protected VerifyEmailTask(final )
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void changePassword(final String email) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View v = getLayoutInflater().inflate(R.layout.change_password, null);
+        final EditText first = (EditText) v.findViewById(R.id.first_pass);
+        final EditText second = (EditText) v.findViewById(R.id.second_pass);
+        final Button button = (Button) v.findViewById(R.id.button);
+        builder.setView(v);
+        builder.setTitle("An email has been sent with a verification code, please enter below");
+        final Dialog dialog = builder.create();
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text1 = first.getText().toString();
+                String text2 = second.getText().toString();
+                if (text1.equals("") || text2.equals("")) {
+                    first.setError("RequiredField");
+                    second.setError("RequiredField");
+                } else if (text1.equals(text2)) {
+                    final ResetPasswordTask task = new ResetPasswordTask();
+                    task.execute(GET_CODE_URL + "cmd=reset&email=" + email + "&pwd=" + text1);
+                    dialog.dismiss();
+                } else {
+                    first.setError("Passwords do not match!");
+                    second.setError("Passwords do not match!");
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    public class ResetPasswordTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
@@ -492,23 +508,80 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = arr.getJSONObject(i);
                     if (obj.getString("result").equals("success")) {
+                        Toast.makeText(getApplicationContext(), "Password Reset", Toast.LENGTH_LONG).show();
+                    }
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, please try again later", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * This class represents an asynch task to verify the email the user enters when they forgot
+     * their password and send them a password reset code if they enter this code correctly.
+     */
+    public class VerifyEmailTask extends AsyncTask<String, Void, String> {
+        /** The code generated by the web service. */
+        private String mCode;
+
+        /** The text field for entering the user's email. */
+        private EditText mEmail;
+
+        /** The email dialog. Will be dismissed upon email verification. */
+        private Dialog mDialog;
+        private Activity mActivity;
+
+        /**
+         * Initialize a new VerifyEmailTask
+         *
+         * @param email
+         */
+        protected VerifyEmailTask(final EditText email, final Dialog dialog, final Activity activity) {
+            mEmail = email;
+            mDialog = dialog;
+            mActivity = activity;
+        }
+        @Override
+        protected String doInBackground(String... urls) {
+            return DashboardActivity.doInBackgroundHelper(urls);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONArray arr = new JSONArray(result);
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    if (obj.getString("result").equals("success")) {
+                        mDialog.dismiss();
                         mCode = obj.getString("code");
-                        Log.e("LoginActivity", mCode);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                        final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
+                        final EditText text = (EditText) v.findViewById(R.id.code);
+                        final Button button = (Button) v.findViewById(R.id.button);
+                        builder.setView(v);
+                        builder.setTitle("An email has been sent with a code, please enter below");
+                        final Dialog dialog = builder.create();
+                        dialog.show();
+                        button.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (mCode.equals(text.getText().toString().toUpperCase())) {
+                                    changePassword(mEmail.getText().toString());
+                                    dialog.dismiss();
+                                } else {
+                                    text.setError("Incorrect Code");
+                                }
+                            }
+                        });
                     } else {
-                        mCode = "error";
-                        Log.e("LoginActivity", mCode);
+                        mEmail.setError("Invalid Email");
                     }
                 }
             } catch (JSONException e) {
                 Log.e("LoginActivity", e.getStackTrace().toString());
             }
-        }
-
-        protected void setCode(final String code) {
-            mCode = code;
-        }
-        protected String getCode() {
-            return mCode;
         }
     }
 

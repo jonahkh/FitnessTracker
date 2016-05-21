@@ -151,7 +151,7 @@ public class DashboardDisplayFragment extends Fragment {
         setFieldsPersonalInformation();
         setUserLastLoggedWorkout();
         ((DashboardActivity) getActivity()).showFab();
-        Button viewLogBut = (Button)mView.findViewById(R.id.dasbB_viewLog_bt);
+        Button viewLogBut = (Button) mView.findViewById(R.id.dasbB_viewLog_bt);
         viewLogBut.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -196,18 +196,18 @@ public class DashboardDisplayFragment extends Fragment {
         return mView;
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        fab.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((DashboardActivity)getActivity()).mStartCustomWorkoutDialog.show();
-            }
-        });
-    }
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+//        fab.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((DashboardActivity)getActivity()).mStartCustomWorkoutDialog.show();
+//            }
+//        });
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -228,13 +228,16 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** Sets the view of the users last logged workout. */
     private void setUserLastLoggedWorkoutView() {
-        TextView name = (TextView)mView.findViewById(R.id.dashB_workoutName);
+        TextView name = (TextView) mView.findViewById(R.id.dashB_workoutName);
+        Log.e("DashboardDisplay", mWorkoutName);
         name.setText(" " + mWorkoutName); // not concatenation, is a space to separate data
 
         TextView date = (TextView)mView.findViewById(R.id.dashB_workoutDate);
+        Log.e("DashboardDisplay", mDateCompleted);
         date.setText(" " + mDateCompleted); // not concatenation, is a space to separate data
 
         TextView number = (TextView)mView.findViewById(R.id.dashB_workoutNumber);
+        Log.e("DashboardDisplay", mWorkoutNum + "");
         number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
     }
 

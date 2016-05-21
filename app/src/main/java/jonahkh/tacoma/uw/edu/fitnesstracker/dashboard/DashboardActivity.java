@@ -83,7 +83,7 @@ public class DashboardActivity extends AppCompatActivity
     private FloatingActionButton mFab;
 
     /** The dialog for starting a custom workout. */
-    private Dialog mStartCustomWorkoutDialog;
+    protected Dialog mStartCustomWorkoutDialog;
 
     /** The mDrawer for this Activity. */
     private DrawerLayout mDrawer;
@@ -269,16 +269,11 @@ public class DashboardActivity extends AppCompatActivity
         alert.show();
     }
 
-
     @Override
     public void onListFragmentInteraction(Exercise exercise) {
 //        mDialog = new AddSetFragment();
         mDialog.setExerciseName(exercise.getExerciseName());
         mDialog.show(getSupportFragmentManager(), "AddSetFragment");
-    }
-
-    protected void setCurrentWorkout(WeightWorkout workout) {
-        mCurrentWorkout = workout;
     }
 
     @Override
@@ -482,7 +477,4 @@ public class DashboardActivity extends AppCompatActivity
         }
         return response;
     }
-
-
-
 }
