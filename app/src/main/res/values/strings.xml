@@ -162,4 +162,9 @@
     <string name="adding_cardio_workout_noNet">Can not add a Cardio Workout without internet</string>
     <string name="end_workout">End Workout</string>
     <string name="add_exercise">Add Exercise</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="reset">Reset</string>
+    <string name="enter">Enter</string>
+    <string name="send_code">Send Code</string>
 </resources>

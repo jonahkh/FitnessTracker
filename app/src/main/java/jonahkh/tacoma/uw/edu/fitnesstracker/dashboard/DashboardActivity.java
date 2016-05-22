@@ -10,7 +10,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
  * Camera for login and on dashboard
  * Forgot password
  * Share workout to Facebook
- * Message in logged workouts saying no workouts completed yet
  * Robotium Test
  */
 import android.app.Activity;
