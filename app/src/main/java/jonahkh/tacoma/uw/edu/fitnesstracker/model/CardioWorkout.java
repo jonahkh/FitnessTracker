@@ -5,6 +5,8 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,12 +77,16 @@ public class CardioWorkout implements Serializable{
      */
     public CardioWorkout(String name, int workoutNumber, String date, int duration,
                          double distance) {
-        if (name == null || name.length() < 1 || workoutNumber <1 ||
+        if (name == null || name.length() < 1 || workoutNumber <0 ||
                 date == null || duration < 0 || distance < 0) {
             throw new IllegalArgumentException();
         }
         mActivityName = name;
-        mWorkoutNumber = workoutNumber;
+        if(workoutNumber == 0) {
+            mWorkoutNumber = 1;
+        } else {
+            mWorkoutNumber = workoutNumber;
+        }
         mDate = date;
         mDuration = duration;
         mDistance = distance;
@@ -88,12 +94,16 @@ public class CardioWorkout implements Serializable{
 
     public CardioWorkout(int workoutNumber, String dateCompleted, int duration,
                          String workoutName, double distance) {
-        if (workoutName == null || workoutName.length() < 1 || workoutNumber <1 ||
+        if (workoutName == null || workoutName.length() < 1 || workoutNumber < 0 ||
                 dateCompleted == null || duration < 0 || distance < 0) {
             throw new IllegalArgumentException();
         }
         mActivityName = workoutName;
-        mWorkoutNumber = workoutNumber;
+        if(workoutNumber == 0) {
+            mWorkoutNumber = 1;
+        } else {
+            mWorkoutNumber = workoutNumber;
+        }
         mDate = dateCompleted;
         mDuration = duration;
         mDistance = distance;
@@ -122,6 +132,7 @@ public class CardioWorkout implements Serializable{
                     String exerciseName = obj.getString(NAME);
                     double distance = obj.getDouble(DISTANCE);
 //                    Log.i("TEST", "" + check);
+                    Log.i("Tat", obj.toString());
                     CardioWorkout exercise = new CardioWorkout(exerciseName, workoutNumber,
                             dateCompleted, duration, distance);
                     exerciseList.add(exercise);

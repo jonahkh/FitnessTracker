@@ -9,6 +9,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +92,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
     /** Number of days the user worksout. */
     private int mDaysToWorkout;
+    private ImageView mImageView;
 
     /** Required empty public constructor */
     public RegisterUserAdditionalInfoFragment() {
@@ -141,11 +145,15 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
                 DeleteUserTask task = new DeleteUserTask();
                 Log.i(TAG, url);
                 task.execute(url);
+            }
+        });
 
-                // Load the login activity.
-                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+        mImageView = (ImageView) myView.findViewById(R.id.add_pic);
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddPictureFragment fragment = new AddPictureFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), "launch");
             }
         });
 
@@ -340,6 +348,10 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
                             .apply();
                     sharedPreferences.edit().putBoolean(getString(R.string.logged_in), false)
                             .apply();
+                    // Load the login activity.
+                    Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
                 } else {
                     Log.e(TAG, "Failed to delete user, Reason: " + jsonObject.get("error"));
                 }

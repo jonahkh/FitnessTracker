@@ -78,26 +78,6 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
         String param = "email=" + mUserEmail;
-        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_cardio_workout);
-        mFab.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(networkAlive) {
-                    mFab.hide();
-                    AddCardioWorkout fragment = new AddCardioWorkout();
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.adding_cardio_workout_noNet, Toast.LENGTH_LONG)
-                            .show();
-                }
-            }
-        });
-
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -126,6 +106,25 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
             mRecyclerView.setAdapter(new ViewLoggedCardioExerciseAdapter(getActivity(),
                     mWorkoutList));
         }
+        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_cardio_workout);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(networkAlive) {
+                    mFab.hide();
+                    AddCardioWorkout fragment = new AddCardioWorkout();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            R.string.adding_cardio_workout_noNet, Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
         return view;
     }
 
@@ -153,6 +152,8 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
             result = CardioWorkout.parseCardioExercisesJSON(result, mWorkoutList);
             // Something wrong with the JSON returned.
             if (result != null) {
+                mSharedPreferences.edit().putInt(getString(R.string.next_cardio_exercise_num),
+                        1).apply();
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
                         .show();
                 return;
