@@ -167,4 +167,7 @@
     <string name="reset">Reset</string>
     <string name="enter">Enter</string>
     <string name="send_code">Send Code</string>
+    <string name="profile_photo">Profile Photo</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 </resources>

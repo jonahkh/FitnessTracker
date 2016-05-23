@@ -6,8 +6,10 @@
     tools:context=".authentication.RegisterUserAdditionalInfoFragment"
     android:weightSum="1">
 
-    <ImageButton
-        android:layout_width="150dp"
+    <ImageView
+        android:id="@+id/add_pic"
+        android:clickable="true"
+        android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_gravity="center|top"
         android:background="@color/com_facebook_blue"

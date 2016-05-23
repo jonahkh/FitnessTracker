@@ -5,25 +5,38 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -41,6 +54,13 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** Tag used for debugging. */
     private final String TAG = "Register Activity";
 
+    /** Permission for the Camera. */
+    private static final int MY_PERMISSIONS_CAMERA = 0;
+
+    /** Message for the permission of the camera. */
+    public static final String CAMERA_PERMISSION_MESSAGE =
+            "Camera permission is needed to add profile picture using your camera.";
+
     /**
      *  Boolean value used for lunching AdditionalInformationFragment after entering
      *  user first information.
@@ -50,6 +70,9 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** URL used to add the user information to database. */
     private final static String USER_ADDITIONAL_INFO_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
+
+    /** Only one image can be taken. */
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
 
     /** Users First name. */
     private String mUserFirstName = "";
@@ -93,6 +116,9 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** Number of days the user works out. */
     private int mDaysToWorkout;
 
+    /** The path of the current photo. */
+    private String mCurrentPhotoPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getIntent().getExtras();
@@ -107,6 +133,14 @@ public class RegisterUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
+        // request permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_CAMERA);
+        }
+
         // launch the the registerUserfragment
         RegisterUserFragment userAddFragment = new RegisterUserFragment();
         userAddFragment.setArguments(savedInstanceState);
@@ -116,6 +150,99 @@ public class RegisterUserActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // add a picture task needed.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+
+
+
+
+    /** function that invokes an intent to capture a photo. */
+    protected void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ImageView imageBt = (ImageView) findViewById(R.id.add_pic);
+            if(imageBt != null) {
+                imageBt.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageBt.setImageBitmap(imageBitmap);
+                Log.i(TAG, "H: " + imageBt.getHeight() + "W: "
+                        + imageBt.getWidth() + "SCALE: " + imageBt.getScaleType());
+//                Log.i(TAG, "W: " + imageBitmap.getWidth() + " H: " + imageBitmap.getHeight());
+//                setPic(imageBt, imageBitmap);
+            }
+
+        }
+    }
+
+//    private void setPic(ImageView mImageView, Bitmap imageBitmap) {
+//        // Get the dimensions of the View
+//        int targetW = mImageView.getWidth();
+//        int targetH = mImageView.getHeight();
+//
+//        // Get the dimensions of the bitmap
+//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//        bmOptions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+//        int photoW = bmOptions.outWidth;
+//        int photoH = bmOptions.outHeight;
+//
+//        // Determine how much to scale down the image
+//        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+//
+//        // Decode the image file into a Bitmap sized to fill the View
+//        bmOptions.inJustDecodeBounds = false;
+//        bmOptions.inSampleSize = scaleFactor;
+//        bmOptions.inPurgeable = true;
+//
+//        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+//        mImageView.setImageBitmap(bitmap);
+//    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Method used to register the User to User Database Table.

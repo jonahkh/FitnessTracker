@@ -66,15 +66,16 @@ public class AddCardioWorkout extends Fragment {
         final String userEmail = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
-        final int cardioExerciseNum = getActivity().getSharedPreferences(getString(R.string.DASHBOARD_PREFS),
-                Context.MODE_PRIVATE).getInt(getString(R.string.next_cardio_exercise_num),
-                0);
         final String dateofCardioExercise = getDateofExercise();
         mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_cardio_workout);
         Button addCardioWorkout = (Button)view.findViewById(R.id.cardio_activity_save);
         addCardioWorkout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                int cardioExerciseNum = getActivity().getSharedPreferences(getString(R.string.DASHBOARD_PREFS),
+                        Context.MODE_PRIVATE).getInt(getString(R.string.next_cardio_exercise_num),
+                        0);
+                Log.i("TS", " num:" + cardioExerciseNum);
                 String cardioAtivityName = getCardioActivityName();
                 int activityDuration = getCardioDuration();
                 double activityDistance = getCardioDistance();
