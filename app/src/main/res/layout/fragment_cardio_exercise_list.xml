@@ -10,4 +10,6 @@ android:layout_marginLeft="16dp"
 android:layout_marginRight="16dp"
 app:layoutManager="LinearLayoutManager"
 tools:context=".dashboard.ViewLoggedCardioExersiceListFragment"
-tools:listitem="@layout/fragment_cardio_exercise" />
+tools:listitem="@layout/fragment_cardio_exercise" >
+
+</android.support.v7.widget.RecyclerView>

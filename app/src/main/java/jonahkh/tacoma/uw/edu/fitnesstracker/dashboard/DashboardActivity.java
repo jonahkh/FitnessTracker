@@ -81,6 +81,8 @@ public class DashboardActivity extends AppCompatActivity
     /** Starts a custom workout when pressed. */
     private FloatingActionButton mFab;
 
+    /** Adds a cardio workout. */
+    private FloatingActionButton mFabCardioWorkout;
     /** The dialog for starting a custom workout. */
     protected Dialog mStartCustomWorkoutDialog;
 
@@ -96,6 +98,9 @@ public class DashboardActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 //        mDialog = new AddSetFragment();
         mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFabCardioWorkout = (FloatingActionButton) findViewById(R.id.fab_cardio_workout);
+        assert mFabCardioWorkout != null;
+        mFabCardioWorkout.hide();
         assert mFab != null;
         final WeightWorkoutListFragment.OnListFragmentInteractionListener listener = this;
         final Activity activity = this;
@@ -395,6 +400,7 @@ public class DashboardActivity extends AppCompatActivity
         manager.getFragments().size();
         if (id == R.id.nav_predefined_workouts) {
             mFab.hide();
+            mFabCardioWorkout.hide();
             PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -402,6 +408,7 @@ public class DashboardActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.view_logged_workouts) {
             mFab.hide();
+            mFabCardioWorkout.hide();
             ViewLoggedWorkoutsListFragment fragment = new ViewLoggedWorkoutsListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -409,6 +416,7 @@ public class DashboardActivity extends AppCompatActivity
                     .commit();
         } else if(id == R.id.nav_home) {
             mFab.show();
+            mFabCardioWorkout.hide();
             if(mDashView != null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, mDashView)
@@ -422,7 +430,8 @@ public class DashboardActivity extends AppCompatActivity
                         .commit();
             }
         } else if(id == R.id.view_logged_cardio_workouts){
-            mFab.show();
+            mFab.hide();
+            mFabCardioWorkout.show();
             ViewLoggedCardioExersiceListFragment fragment =
                     new ViewLoggedCardioExersiceListFragment();
             getSupportFragmentManager().beginTransaction()

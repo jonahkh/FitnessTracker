@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,7 +70,7 @@ public class AddCardioWorkout extends Fragment {
                 Context.MODE_PRIVATE).getInt(getString(R.string.next_cardio_exercise_num),
                 0);
         final String dateofCardioExercise = getDateofExercise();
-        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_cardio_workout);
         Button addCardioWorkout = (Button)view.findViewById(R.id.cardio_activity_save);
         addCardioWorkout.setOnClickListener(new View.OnClickListener(){
             @Override
