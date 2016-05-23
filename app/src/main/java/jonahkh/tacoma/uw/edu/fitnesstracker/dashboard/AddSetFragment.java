@@ -100,9 +100,7 @@ public class AddSetFragment extends DialogFragment {
                     // If it's the first set, add a new Recorded Workout in database
                     if (mSetNumber == 1) {
                         newTask.execute(buildUrl());
-                        Log.e("FIRST SET", "First Set");
                     }
-                    Log.e("EMAIL", mCurrentEmail);
                     String param = ADD_EXERCISE_URL + "&set=" + mSetNumber + "&wNum="
                             + mWorkoutNum + "&name=" + mCurrentExercise + "&reps="
                             + reps.getText().toString() + "&email=" + mCurrentEmail + "&weight="

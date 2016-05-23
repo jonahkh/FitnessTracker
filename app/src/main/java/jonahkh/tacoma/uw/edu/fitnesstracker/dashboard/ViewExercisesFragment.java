@@ -7,6 +7,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
+
+import com.facebook.share.model.ShareLinkContent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -77,6 +80,9 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         mExerciseList = new ArrayList<>();
         mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
 //        inflater.inflate(R.layout., container, false);
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
         return inflater.inflate(R.layout.fragment_view_exercises, container, false);
     }
 
