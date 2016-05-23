@@ -78,7 +78,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
         String param = "email=" + mUserEmail;
-        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_cardio_workout);
         mFab.setBackgroundTintList(ColorStateList.valueOf(Color.YELLOW));
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override

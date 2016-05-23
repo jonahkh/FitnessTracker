@@ -196,18 +196,13 @@ public class DashboardDisplayFragment extends Fragment {
         return mView;
     }
 
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-//        fab.setBackgroundTintList(ColorStateList.valueOf(Color.BLUE));
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ((DashboardActivity)getActivity()).mStartCustomWorkoutDialog.show();
-//            }
-//        });
-//    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        FloatingActionButton fab = (FloatingActionButton)
+                getActivity().findViewById(R.id.fab_cardio_workout);
+        fab.hide();
+    }
 
     @Override
     public void onAttach(Context context) {
