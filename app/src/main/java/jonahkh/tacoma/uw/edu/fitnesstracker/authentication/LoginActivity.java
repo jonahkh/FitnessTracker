@@ -31,7 +31,6 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -51,9 +50,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -130,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 , Context.MODE_PRIVATE);
         FacebookSdk.sdkInitialize(getApplicationContext());
         checkLoggedIn();
+//        LoginManager.getInstance().logOut();
 //        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -263,15 +261,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             finish();
         } else {
             // Double check that there's no Facebook account still logged in
-            if (LoginManager.getInstance() != null) {
-                LoginManager.getInstance().logOut();
-            }
+            LoginManager.getInstance().logOut();
+            LoginManager.getInstance().logOut();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -463,6 +455,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         dialog.show();
     }
 
+    /**
+     * Change the password for the user with the passed email. The new password must be at least 6
+     * characters.
+     *
+     * @param email the email of the user whose password is being updated
+     */
     private void changePassword(final String email) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View v = getLayoutInflater().inflate(R.layout.change_password, null);
@@ -477,9 +475,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View v) {
                 String text1 = first.getText().toString();
                 String text2 = second.getText().toString();
-                if (text1.equals("") || text2.equals("")) {
-                    first.setError("RequiredField");
-                    second.setError("RequiredField");
+                if (text1.length() < 6 || text2.length() < 6) {
+                    first.setError("Minimum 6 characters");
+                    second.setError("Minimum 6 characters");
                 } else if (text1.equals(text2)) {
                     final ResetPasswordTask task = new ResetPasswordTask();
                     task.execute(GET_CODE_URL + "cmd=reset&email=" + email + "&pwd=" + text1);
