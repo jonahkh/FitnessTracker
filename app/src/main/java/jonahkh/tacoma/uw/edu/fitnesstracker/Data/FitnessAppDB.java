@@ -22,7 +22,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
  * @author Jonah Howard
  * @author Hector Diaz
  */
-public class FitnesAppDB {
+public class FitnessAppDB {
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "FitnessApp.db";
@@ -32,7 +32,7 @@ public class FitnesAppDB {
     private SQLiteDatabase mSQLiteDatabase;
 
     /** Construtor of this Fitness App Database. */
-    public FitnesAppDB(Context context) {
+    public FitnessAppDB(Context context) {
         mCardioWorkoutDBHelper = new FitnessAppDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = mCardioWorkoutDBHelper.getWritableDatabase();

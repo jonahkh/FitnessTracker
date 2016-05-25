@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnesAppDB;
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedCardioExerciseAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
@@ -28,7 +28,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class ViewLoggedCardioExersiceListFragment extends Fragment {
+public class ViewLoggedCardioExerciseListFragment extends Fragment {
 
     public static final String CARDIO_EXERCISE_URL =
             "http://cssgate.insttech.washington.edu/~_450atm2/getCardioExercices.php?";
@@ -54,7 +54,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
     private FloatingActionButton mFab;
 
     /** The internal database for this app. */
-    private FitnesAppDB cardioWorkoutDB;
+    private FitnessAppDB cardioWorkoutDB;
 
     /** The email of the user. */
     private String mUserEmail;
@@ -63,7 +63,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ViewLoggedCardioExersiceListFragment() {
+    public ViewLoggedCardioExerciseListFragment() {
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
             task.execute(CARDIO_EXERCISE_URL + param);
         } else {
             if(cardioWorkoutDB == null){
-                cardioWorkoutDB = new FitnesAppDB(getActivity());
+                cardioWorkoutDB = new FitnessAppDB(getActivity());
             }
             if(mWorkoutList == null) {
                 mWorkoutList = cardioWorkoutDB.getCourses();
@@ -126,6 +126,12 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        ((DashboardActivity) getActivity()).setNavigationItem(R.id.view_logged_cardio_workouts);
+        super.onResume();
     }
 
     /**
@@ -162,7 +168,7 @@ public class ViewLoggedCardioExersiceListFragment extends Fragment {
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
                 if(cardioWorkoutDB == null){
-                    cardioWorkoutDB = new FitnesAppDB(getActivity());
+                    cardioWorkoutDB = new FitnessAppDB(getActivity());
                 }
                 // Delete old data so that you can refresh the local
                 // database with the network data.

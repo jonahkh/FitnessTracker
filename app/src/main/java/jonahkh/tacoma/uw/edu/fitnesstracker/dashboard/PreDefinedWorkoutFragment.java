@@ -55,7 +55,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_predefined_workouts_list, container, false);
-        // Check for network connectivity
         SharedPreferences sharedPrefs =
                 getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS)
                         , Context.MODE_PRIVATE);
@@ -70,6 +69,11 @@ public class PreDefinedWorkoutFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        ((DashboardActivity) getActivity()).setNavigationItem(R.id.nav_predefined_workouts);
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -135,8 +139,6 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 ListView view = (ListView) getActivity().findViewById(R.id.predefined_wo_list);
                 view.setAdapter(mAdapter);
             }
-
         }
-
     }
 }

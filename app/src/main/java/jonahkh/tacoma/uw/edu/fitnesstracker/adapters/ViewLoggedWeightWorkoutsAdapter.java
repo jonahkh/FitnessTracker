@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewLoggedWorkoutsListFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
@@ -83,7 +84,7 @@ public class ViewLoggedWeightWorkoutsAdapter extends BaseAdapter {
         final ViewHolder holder = new ViewHolder(convertView);
         holder.mItem = mValues.get(position);
         holder.mWorkoutName.setText(mValues.get(position).getWorkoutName());
-        final String date = mValues.get(position).getDate();
+        final String date = DashboardActivity.parseDate(mValues.get(position).getDate());
         final String number = NUMBER + mValues.get(position).getWorkoutNumber();
         holder.mDateView.setText(date);
         holder.mWorkoutNumber.setText(number);
