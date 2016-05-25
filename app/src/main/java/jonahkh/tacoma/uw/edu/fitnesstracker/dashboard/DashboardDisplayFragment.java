@@ -8,6 +8,8 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -20,7 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +32,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
@@ -90,7 +96,7 @@ public class DashboardDisplayFragment extends Fragment {
             = "http://cssgate.insttech.washington.edu/~_450atm2/getLastUserWorkout.php?";
 
     /** Tag used for debugging. */
-    private static final String TAG = "Dash Board Display";
+    private static final String TAG = "Dashboard Display";
 
     /** Users email. */
     private String mUserEmail;
@@ -135,6 +141,9 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private String mDateCompleted = "N/A";
 
+    /** The shared preferences for this application. */
+    private SharedPreferences mSharedPreferences;
+
     private WeightWorkoutListFragment.OnListFragmentInteractionListener mListener;
 
     /** Required empty public constructor */
@@ -148,6 +157,8 @@ public class DashboardDisplayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_dash_board_display, container, false);
+        mSharedPreferences = getActivity().getSharedPreferences(getActivity().getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
         setFieldsPersonalInformation();
         setUserLastLoggedWorkout();
         ((DashboardActivity) getActivity()).showFab();
@@ -193,6 +204,28 @@ public class DashboardDisplayFragment extends Fragment {
                 return false;
             }
         });
+        Switch notificationsSwitch = (Switch) mView.findViewById(R.id.toggle_notifications);
+        notificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.e(TAG, "checked");
+                    mSharedPreferences.edit().putBoolean(getActivity().getString(R.string.ON), true).apply();
+                    getActivity().startService(new Intent(getActivity(), RSSService.class));
+                    RSSService.setServiceAlarm(getActivity(), true);
+                } else {
+                    Log.e(TAG, "unchecked");
+                    RSSService.setServiceAlarm(getActivity(), false);
+                    mSharedPreferences.edit().putBoolean(getActivity()
+                            .getString(R.string.ON), false).apply();
+                }
+            }
+        });
+        if (mSharedPreferences.getBoolean(getActivity().getString(R.string.ON), false)) {
+            notificationsSwitch.setChecked(true);
+        } else {
+            notificationsSwitch.setChecked(false);
+        }
         return mView;
     }
 
@@ -202,6 +235,7 @@ public class DashboardDisplayFragment extends Fragment {
         FloatingActionButton fab = (FloatingActionButton)
                 getActivity().findViewById(R.id.fab_cardio_workout);
         fab.hide();
+        ((DashboardActivity) getActivity()).setNavigationItem(R.id.nav_home);
     }
 
     @Override
@@ -234,6 +268,8 @@ public class DashboardDisplayFragment extends Fragment {
         TextView number = (TextView)mView.findViewById(R.id.dashB_workoutNumber);
         Log.e("DashboardDisplay", mWorkoutNum + "");
         number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
+        mSharedPreferences.edit().putString(getString(R.string.last_workout),
+                mDateCompleted).apply();
     }
 
     /**
@@ -252,8 +288,7 @@ public class DashboardDisplayFragment extends Fragment {
      * from the database.
      */
     private void setFieldsPersonalInformation() {
-        mUserEmail = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
-                Context.MODE_PRIVATE).getString(getString(R.string.current_email),
+        mUserEmail = mSharedPreferences.getString(getString(R.string.current_email),
                 "Email does not exist");
         String url = USER_INFO + "email=" + mUserEmail;
         Log.i(TAG, url);
@@ -271,6 +306,9 @@ public class DashboardDisplayFragment extends Fragment {
 
         TextView daysWorkingOut = (TextView) mView.findViewById(R.id.dashB_daysWorkingOutV);
         daysWorkingOut.setText("" + mUserDaysToWorkout); // Concatenating to make it a string.
+        mSharedPreferences.edit().putInt(getString(R.string.days_working_out),
+                mUserDaysToWorkout).apply();
+        Log.e(TAG, "HERE");
     }
 
     /** Private class to download user personal information */
@@ -315,12 +353,8 @@ public class DashboardDisplayFragment extends Fragment {
         }
     }
 
-
     /** Private class to get the information about the last logged workout from user. */
     private class UserLastLoggedWorkoutTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
-
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);

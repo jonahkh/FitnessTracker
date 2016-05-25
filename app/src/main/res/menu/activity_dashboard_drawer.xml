@@ -9,7 +9,6 @@
         <item
             android:id="@+id/nav_predefined_workouts"
             android:icon="@drawable/ic_workout_template"
-
             android:title="@string/workout_templates" />
         <item
             android:id="@+id/view_logged_workouts"

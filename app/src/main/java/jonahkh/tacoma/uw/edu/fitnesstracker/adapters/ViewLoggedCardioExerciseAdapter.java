@@ -42,7 +42,7 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
     private final Activity mContext;
 
 //    /** The listener for the list. */
-//    private final ViewLoggedCardioExersiceListFragment.LoggedCardioExerciseInteractListener mListener;
+//    private final ViewLoggedCardioExerciseListFragment.LoggedCardioExerciseInteractListener mListener;
 
     public ViewLoggedCardioExerciseAdapter(Activity context, List<CardioWorkout> items) {
         if (items == null) {

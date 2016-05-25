@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -44,6 +45,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
@@ -89,21 +91,20 @@ public class DashboardActivity extends AppCompatActivity
     /** The mDrawer for this Activity. */
     private DrawerLayout mDrawer;
 
+    /** The navigation view for the drawer. */
+    private NavigationView mNavView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
-//        mDialog = new AddSetFragment();
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFabCardioWorkout = (FloatingActionButton) findViewById(R.id.fab_cardio_workout);
         assert mFabCardioWorkout != null;
         mFabCardioWorkout.hide();
         assert mFab != null;
-        final WeightWorkoutListFragment.OnListFragmentInteractionListener listener = this;
-        final Activity activity = this;
         initializeCustomWorkoutDialog();
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,19 +116,15 @@ public class DashboardActivity extends AppCompatActivity
 
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         assert mDrawer != null;
         mDrawer.addDrawerListener(toggle);
-
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        assert navigationView != null;
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_home);
-//        mSavedInstanceState = savedInstanceState;
+        mNavView = (NavigationView) findViewById(R.id.nav_view);
+        assert mNavView != null;
+        mNavView.setNavigationItemSelectedListener(this);
 
         // Display of personal data
         if (mDashView == null) {
@@ -139,6 +136,7 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
+//        startService(new Intent(this, RSSService.class));
     }
 
     /**
@@ -212,6 +210,44 @@ public class DashboardActivity extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    /**
+     * Parses a date string to the form of DD-MM-YYYY.
+     *
+     * @param date the date being parsed
+     * @return the result of the parsed date
+     */
+    public static String parseDate(String date) {
+        String month = "";
+        String year = "";
+        String day = "";
+        int i = 0;
+        while (date.charAt(i) != '-') {
+            year += date.charAt(0);
+            date = date.substring(1);
+        }
+        date = date.substring(1);
+        while (date.charAt(0) != '-') {
+            month += date.charAt(0);
+            date = date.substring(1);
+        }
+
+        date = date.substring(1);
+        while (date.length() > 0) {
+            day += date.charAt(0);
+            date = date.substring(1);
+        }
+        return day + '-' + month + '-' + year;
+    }
+
+    /**
+     * Sets the currently selected navigation item to the passed id.
+     *
+     * @param id the id of the navigation item being set
+     */
+    protected void setNavigationItem(int id) {
+        mNavView.setCheckedItem(id);
     }
 
     /**
@@ -434,8 +470,8 @@ public class DashboardActivity extends AppCompatActivity
         } else if(id == R.id.view_logged_cardio_workouts){
             mFab.hide();
             mFabCardioWorkout.show();
-            ViewLoggedCardioExersiceListFragment fragment =
-                    new ViewLoggedCardioExersiceListFragment();
+            ViewLoggedCardioExerciseListFragment fragment =
+                    new ViewLoggedCardioExerciseListFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)

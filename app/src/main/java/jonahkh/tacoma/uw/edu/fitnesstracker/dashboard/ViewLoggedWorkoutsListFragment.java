@@ -76,6 +76,11 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        ((DashboardActivity) getActivity()).setNavigationItem(R.id.view_logged_workouts);
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Context context) {
