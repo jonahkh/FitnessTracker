@@ -19,7 +19,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -79,9 +81,15 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         mExerciseList = new ArrayList<>();
         mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
 //        inflater.inflate(R.layout., container, false);
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                .build();
+//        ShareLinkContent content = new ShareLinkContent.Builder()
+//                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+//                .build();
+//        ShareContent content = new ShareContent.Builder().build();
+        Bundle bundle = new Bundle();
+        bundle.putString("message", "This is a test");
+        ShareDialog dialog = new ShareDialog(getActivity());
+
+
         return inflater.inflate(R.layout.fragment_view_exercises, container, false);
     }
 
