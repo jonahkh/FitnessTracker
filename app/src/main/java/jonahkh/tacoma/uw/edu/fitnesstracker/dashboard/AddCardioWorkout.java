@@ -47,7 +47,7 @@ public class AddCardioWorkout extends Fragment {
     private final int INVALID = -1;
 
     /** Tag used for debugging. */
-    public static final String TAG = "New Cardio Exercise";
+    private static final String TAG = "New Cardio Exercise";
 
     /** Floating action button.*/
     private FloatingActionButton mFab;
@@ -112,12 +112,12 @@ public class AddCardioWorkout extends Fragment {
      * @param userEmail The email of the user.
      * @param activityDistance The distance of the activity if applicable.
      */
-    public String buildAddUserAdditionaIfoURL(int cardioExerciseNum,
-                                              String dateofCardioExercise,
-                                              int activityDuration,
-                                              String cardioAtivityName,
-                                              String userEmail,
-                                              double activityDistance) {
+    private String buildAddUserAdditionaIfoURL(int cardioExerciseNum,
+                                               String dateofCardioExercise,
+                                               int activityDuration,
+                                               String cardioAtivityName,
+                                               String userEmail,
+                                               double activityDistance) {
 
         StringBuilder sb = new StringBuilder(ADD_CARDIO_EXERCISE);
         // //  workoutNumber | dateCompleted | duration | workoutName | email          | distance
@@ -216,7 +216,7 @@ public class AddCardioWorkout extends Fragment {
      *
      * @return Todays date.
      */
-    public String getDateofExercise() {
+    private String getDateofExercise() {
         Calendar calendar = Calendar.getInstance();
         String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
         String year = Integer.toString(calendar.get(Calendar.YEAR));
@@ -238,9 +238,6 @@ public class AddCardioWorkout extends Fragment {
 
     /** Private class add new user cardio workout. */
     private class AddUserCadioWorkout extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
-
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
@@ -266,7 +263,7 @@ public class AddCardioWorkout extends Fragment {
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Failed to add: "
-                                    + jsonObject.get("Error Referece: ")
+                                    + jsonObject.get("Error Reference: ")
                             , Toast.LENGTH_LONG)
                             .show();
 

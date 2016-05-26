@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-- NUMBER 0 --"
+        android:text="@string/number_0"
         android:textColor="#FA0202"
         android:gravity="center_horizontal"
         android:id="@+id/cardio_exercise_number"
@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-- RUNNING --"
+            android:text="@string/running"
             android:textAppearance="?attr/textAppearanceListItem"
             android:id="@+id/cardio_exercise_name"
             android:layout_gravity="left"
@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3.85 Miles"
+            android:text="@string/_3_85_miles"
             android:textAppearance="?attr/textAppearanceListItem"
             android:id="@+id/cardio_exercise_distance"
             android:layout_gravity="center_horizontal"
@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-- RUNNING --"
+            android:text="@string/running"
             android:textAppearance="?attr/textAppearanceListItem"
             android:id="@+id/cardio_exercise_date"
             android:layout_gravity="left"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3.85 Miles"
+            android:text="@string/_3_85_miles"
             android:textAppearance="?attr/textAppearanceListItem"
             android:id="@+id/cardio_exercise_duration"
             android:layout_gravity="center_horizontal"

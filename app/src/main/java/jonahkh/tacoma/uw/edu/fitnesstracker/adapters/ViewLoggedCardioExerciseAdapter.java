@@ -30,10 +30,10 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
     private static final String CARDIO_WORKOUT_HEADER = "Cardio Workout ";
 
     /** Miles for the distance. */
-    public static final String MILES = " Miles";
+    private static final String MILES = " Miles";
 
     /** Minutes for formatting. */
-    public static final String MINUTES = " Minutes";
+    private static final String MINUTES = " Minutes";
 
     /** The list of cardio exercises for this user. */
     private final List<CardioWorkout> mValues;

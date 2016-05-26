@@ -2,20 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/add_set_dialog_layout">
+    android:layout_height="match_parent">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inputType="number"
         android:id="@+id/enter_weight"
-        android:hint="Weight"/>
+        android:hint="@string/weight"/>
     <EditText
         android:layout_width="match_parent"
         android:inputType="number"
         android:layout_height="match_parent"
         android:id="@+id/enter_reps"
-        android:hint="Reps"/>
+        android:hint="@string/reps"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -24,13 +23,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cancel_set"
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/add_set"
             android:layout_toRightOf="@+id/cancel_set"
-            android:text="Add Set"/>
+            android:text="@string/add_set"/>
 
 
     </RelativeLayout>

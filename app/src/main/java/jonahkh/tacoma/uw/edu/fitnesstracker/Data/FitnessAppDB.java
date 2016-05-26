@@ -24,12 +24,12 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
  */
 public class FitnessAppDB {
 
-    public static final int DB_VERSION = 1;
-    public static final String DB_NAME = "FitnessApp.db";
+    private static final int DB_VERSION = 1;
+    private static final String DB_NAME = "FitnessApp.db";
     private static final String CARDIO_WORKOUT_TABLE = "CardioWorkout";
 
-    private FitnessAppDBHelper mCardioWorkoutDBHelper;
-    private SQLiteDatabase mSQLiteDatabase;
+    private final FitnessAppDBHelper mCardioWorkoutDBHelper;
+    private final SQLiteDatabase mSQLiteDatabase;
 
     /** Construtor of this Fitness App Database. */
     public FitnessAppDB(Context context) {

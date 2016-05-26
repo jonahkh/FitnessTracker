@@ -6,9 +6,6 @@
 
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

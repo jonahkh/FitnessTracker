@@ -24,22 +24,22 @@ import java.util.List;
 public class CardioWorkout implements Serializable{
 
     /** Error do display when there is no data. */
-    public static final String ERROR = "No Logged Workouts to Display!";
+    private static final String ERROR = "No Logged Workouts to Display!";
 
     /** Name of the workout number for this workout. */
-    public static final String NUMBER = "workoutNumber";
+    private static final String NUMBER = "workoutNumber";
 
     /** Name of the date in the weight workout table. */
-    public static final String DATE = "dateCompleted";
+    private static final String DATE = "dateCompleted";
 
     /** The duration of the exercise. */
-    public static final String DURATION = "duration";
+    private static final String DURATION = "duration";
 
     /** Name of the exercise in the exercise table. */
-    public static final String NAME = "workoutName";
+    private static final String NAME = "workoutName";
 
     /** The distance of the exercise if applicable. */
-    public static final String DISTANCE = "distance";
+    private static final String DISTANCE = "distance";
 
     /** The current exercise number. */
     private int mWorkoutNumber;
@@ -75,8 +75,8 @@ public class CardioWorkout implements Serializable{
      * @param duration The duration of the exercise.
      * @param distance The distance of the exercise.
      */
-    public CardioWorkout(String name, int workoutNumber, String date, int duration,
-                         double distance) {
+    private CardioWorkout(String name, int workoutNumber, String date, int duration,
+                          double distance) {
         if (name == null || name.length() < 1 || workoutNumber <0 ||
                 date == null || duration < 0 || distance < 0) {
             throw new IllegalArgumentException();
@@ -121,25 +121,23 @@ public class CardioWorkout implements Serializable{
             return ERROR;
         }
         String reason = null;
-        if (ecerciseActivityJSON != null) {
-            try {
-                JSONArray arr = new JSONArray(ecerciseActivityJSON);
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    int workoutNumber = obj.getInt(NUMBER);
-                    String dateCompleted = obj.getString(DATE);
-                    int duration = obj.getInt(DURATION);
-                    String exerciseName = obj.getString(NAME);
-                    double distance = obj.getDouble(DISTANCE);
+        try {
+            JSONArray arr = new JSONArray(ecerciseActivityJSON);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                int workoutNumber = obj.getInt(NUMBER);
+                String dateCompleted = obj.getString(DATE);
+                int duration = obj.getInt(DURATION);
+                String exerciseName = obj.getString(NAME);
+                double distance = obj.getDouble(DISTANCE);
 //                    Log.i("TEST", "" + check);
-                    Log.i("Tat", obj.toString());
-                    CardioWorkout exercise = new CardioWorkout(exerciseName, workoutNumber,
-                            dateCompleted, duration, distance);
-                    exerciseList.add(exercise);
-                }
-            } catch (JSONException e) {
-                reason =  e.getMessage();
+                Log.i("Tat", obj.toString());
+                CardioWorkout exercise = new CardioWorkout(exerciseName, workoutNumber,
+                        dateCompleted, duration, distance);
+                exerciseList.add(exercise);
             }
+        } catch (JSONException e) {
+            reason =  e.getMessage();
         }
         return reason;
     }

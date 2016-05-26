@@ -10,22 +10,15 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.IOException;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 
@@ -53,6 +46,7 @@ public class AddPictureFragment extends DialogFragment {
     }
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 //        mImageView = (ImageButton) getActivity().findViewById(R.id.add_pic);

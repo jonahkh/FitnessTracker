@@ -1,13 +1,16 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -19,7 +22,10 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.WeightWorkoutListFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
 
 /**
- * Created by jonah on 5/13/2016.
+ * Adapter for the weight workout list. Displays an exercise.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class WeightWorkoutAdapter extends BaseAdapter {
 
@@ -101,9 +107,6 @@ public class WeightWorkoutAdapter extends BaseAdapter {
         /** TextView holding the exercise name. */
         public final TextView mIdView;
 
-        /** TextView holding the content. */
-        public final TextView mContentView;
-
         /** The exercise for this list item. */
         public Exercise mItem;
 
@@ -116,12 +119,6 @@ public class WeightWorkoutAdapter extends BaseAdapter {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
 }

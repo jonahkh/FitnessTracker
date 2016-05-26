@@ -66,7 +66,6 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
                 .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
         if (mCurrentWorkout == null) {
-            ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
         String param = "&email=" + pref.getString(getString(R.string.current_email),

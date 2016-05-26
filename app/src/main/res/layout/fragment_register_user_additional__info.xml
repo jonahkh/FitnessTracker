@@ -25,32 +25,39 @@
         android:layout_gravity="center_horizontal" />
 
     <!--Date of birth (day and Month)-->
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_weight="0.08">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/birthDay"
+            android:layout_centerVertical="true"
+            android:id="@+id/birth"
             android:textColor="#000000" />
 
         <Spinner
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/birth"
             android:id="@+id/day_spinner"
+            android:layout_centerVertical="true"
             android:entries="@array/Day_array"
             android:textSize="15sp"
             android:textColor="#000000"/>
 
         <Spinner
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/day_spinner"
             android:id="@+id/month_spinner"
             android:entries="@array/month_array"
             android:textColor="#000000" />
-    </TableRow>
+    </RelativeLayout>
 
     <!--Date of birth Year-->
     <TableRow
