@@ -91,6 +91,11 @@ public class RegisterUserFragment extends Fragment {
         addUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.activity_register_user_xml, userOtherInfo)
+//                        .addToBackStack(null)
+//                        .commit();
 
                 boolean fieldNotNull = checkRequirements();
                 boolean passwordsMatch = false;

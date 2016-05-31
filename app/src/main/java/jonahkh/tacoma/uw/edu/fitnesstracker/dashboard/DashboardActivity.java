@@ -10,18 +10,29 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
  * Share workout to Facebook
  * Robotium Test
  */
+import android.Manifest;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,17 +43,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -57,7 +74,25 @@ public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PreDefinedWorkoutFragment.PreDefinedWorkoutListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
-        ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
+        ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener,
+        PictureListFragment.OnListFragmentInteractionListener {
+
+    /** Only one image can be taken. */
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    /** The Directory to store the pic for this app. */
+    private final String DIRECTORY = "FitnessTracker";
+
+    /** Permission for the Camera. */
+    private static final int MY_PERMISSIONS_CAMERA = 1;
+
+    /** URL used to delete the user information from database. */
+    private final static String ADD_IMAGE_URL
+            = "http://cssgate.insttech.washington.edu/~_450atm2/addPicture.php?";
+
+    /** Message for the permission of the camera. */
+    private static final String CAMERA_PERMISSION_MESSAGE =
+            "Camera permission is needed to add profile picture using your camera.";
 
     /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
@@ -84,6 +119,12 @@ public class DashboardActivity extends AppCompatActivity
 
     /** The navigation view for the drawer. */
     private NavigationView mNavView;
+
+    /** The path of the current photo. */
+    private String mCurrentPhotoPath;
+
+    /** Whether we are capturing an image or grabbing it from file. */
+    private boolean mImageCapture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +168,50 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
+        // request permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_CAMERA);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    //TODO this is empty
+                    // permission was granted, yay! Do the
+                    // add a picture task needed.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     /**
@@ -494,5 +579,147 @@ public class DashboardActivity extends AppCompatActivity
             }
         }
         return response;
+    }
+
+    /** function that invokes an intent to capture a photo. */
+    public void dispatchTakePictureIntent(boolean imageCapture) {
+        mImageCapture = imageCapture;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File imageFile = null;
+            try {
+                imageFile = createImageFile();
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+                        mCurrentPhotoPath).apply();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(imageFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(imageFile));
+                galleryAddPic();
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    public void dispatchPictureIntent(boolean imageCapture) {
+        mImageCapture = imageCapture;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), REQUEST_IMAGE_CAPTURE);
+    }
+
+    /**
+     * Creates the image file.
+     *
+     * @return The image file.
+     * @throws IOException Exception to be handled by calling method.
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_DCIM);
+        String path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM).toString() + File.separator + DIRECTORY;
+        File storageDir = new File(path);
+        if(!storageDir.exists()) {
+            storageDir.mkdir();
+        }
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.i("Dashboard Activity", mCurrentPhotoPath);
+        return image;
+    }
+
+    /**
+     *  Adds photo to the Media Provider's database, making it available
+     *  in the Android Gallery application and to other apps.
+     */
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if(!mImageCapture) {
+                Uri selectedImageUri = data.getData();
+                mCurrentPhotoPath = getPath(selectedImageUri);
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+                        mCurrentPhotoPath).apply();
+
+            }
+            setImageView();
+        }
+    }
+
+    private String getPath(Uri uri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
+    private void setImageView() {
+        ImageView profilePic = (ImageView) findViewById(R.id.profile_pic);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        final long currTime = System.currentTimeMillis();
+        final long end = currTime + 5000;
+        // will run a loop for either 5 seconds waiting for the image
+        // If the 5 seconds run out and the image is still not found
+        // the profile pic will be empty.
+        while(System.currentTimeMillis() < end && bitmap == null){
+            bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        }
+        if(profilePic != null && bitmap != null) {
+            profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            profilePic.setImageBitmap(bitmap);
+            final SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            final AddPictureTask addPictureTask = new AddPictureTask(getApplicationContext());
+            final String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                    "Email does not exist");
+            String url = ADD_IMAGE_URL + "email=" + userEmail + "&photoDirectoryLocation=" +
+                    mCurrentPhotoPath;
+            Log.i("PIC URL: ", url);
+            addPictureTask.execute(url);
+        }
+    }
+
+    @Override
+    public void onListFragmentInteraction(Picture item) {
+
+//        CourseDetailFragment courseDetailFragment = new CourseDetailFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable(CourseDetailFragment.COURSE_ITEM_SELECTED, item);
+//        courseDetailFragment.setArguments(args);
+//
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, courseDetailFragment)
+//                .addToBackStack(null)
+//                .commit();
     }
 }
