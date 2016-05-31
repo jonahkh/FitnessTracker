@@ -5,6 +5,26 @@
     android:orientation="vertical"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     tools:context=".dashboard.DashboardDisplayFragment">
+
+    <ImageView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/profile_pic"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/com_facebook_blue"
+        android:src="@android:drawable/ic_menu_camera"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:clickable="true"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/com_facebook_blue"
+        android:text= "@string/view_previous_pictures"
+        android:id="@+id/view_pre_pics"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"

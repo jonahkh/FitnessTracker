@@ -10,9 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -24,16 +28,21 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.AddPictureTask;
 
 /**
  * Activity used to register a User. In order to register, a user must enter in their first and last
@@ -45,11 +54,14 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class RegisterUserActivity extends AppCompatActivity {
 
+    /** The Directory to store the pic for this app. */
+    private final String DIRECTORY = "FitnessTracker";
+
     /** Tag used for debugging. */
     private final String TAG = "Register Activity";
 
     /** Permission for the Camera. */
-    private static final int MY_PERMISSIONS_CAMERA = 0;
+    private static final int MY_PERMISSIONS_CAMERA = 1;
 
     /** Message for the permission of the camera. */
     private static final String CAMERA_PERMISSION_MESSAGE =
@@ -64,6 +76,10 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** URL used to add the user information to database. */
     private final static String USER_ADDITIONAL_INFO_ADD_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
+
+    /** URL used to delete the user information from database. */
+    private final static String ADD_IMAGE_URL
+            = "http://cssgate.insttech.washington.edu/~_450atm2/addPicture.php?";
 
     /** Only one image can be taken. */
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -113,6 +129,9 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** The path of the current photo. */
     private String mCurrentPhotoPath;
 
+    /** Whether we are capturing an image or grabbing it from file. */
+    private boolean mImageCapture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getIntent().getExtras();
@@ -129,9 +148,17 @@ public class RegisterUserActivity extends AppCompatActivity {
 
         // request permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED ) {
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
+                    new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_CAMERA);
         }
 
@@ -152,7 +179,9 @@ public class RegisterUserActivity extends AppCompatActivity {
             case MY_PERMISSIONS_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     //TODO this is empty
                     // permission was granted, yay! Do the
                     // add a picture task needed.
@@ -172,70 +201,137 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-
-    /** function that invokes an intent to capture a photo. */
-    void dispatchTakePictureIntent() {
+    /** function that invokes an intent to capture a photo.
+     * @param imageCapture*/
+    protected void dispatchTakePictureIntent(boolean imageCapture) {
+        mImageCapture = imageCapture;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            File imageFile = null;
+            try {
+                imageFile = createImageFile();
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+                        mCurrentPhotoPath).apply();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(imageFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(imageFile));
+                galleryAddPic();
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
+    }
+
+    public void dispatchPictureIntent(boolean imageCapture) {
+        mImageCapture = imageCapture;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView imageBt = (ImageView) findViewById(R.id.add_pic);
-            if(imageBt != null) {
-                imageBt.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageBt.setImageBitmap(imageBitmap);
-                Log.i(TAG, "H: " + imageBt.getHeight() + "W: "
-                        + imageBt.getWidth() + "SCALE: " + imageBt.getScaleType());
-//                Log.i(TAG, "W: " + imageBitmap.getWidth() + " H: " + imageBitmap.getHeight());
-//                setPic(imageBt, imageBitmap);
-            }
+            if(!mImageCapture) {
+                Uri selectedImageUri = data.getData();
+                mCurrentPhotoPath = getPath(selectedImageUri);
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+                        mCurrentPhotoPath).apply();
 
+            }
+            setImageView();
         }
     }
 
-//    private void setPic(ImageView mImageView, Bitmap imageBitmap) {
-//        // Get the dimensions of the View
-//        int targetW = mImageView.getWidth();
-//        int targetH = mImageView.getHeight();
-//
-//        // Get the dimensions of the bitmap
-//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//        bmOptions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-//        int photoW = bmOptions.outWidth;
-//        int photoH = bmOptions.outHeight;
-//
-//        // Determine how much to scale down the image
-//        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-//
-//        // Decode the image file into a Bitmap sized to fill the View
-//        bmOptions.inJustDecodeBounds = false;
-//        bmOptions.inSampleSize = scaleFactor;
-//        bmOptions.inPurgeable = true;
-//
-//        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-//        mImageView.setImageBitmap(bitmap);
-//    }
+    private String getPath(Uri uri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
 
+    private void setImageView() {
+        ImageView profilePic = (ImageView) findViewById(R.id.add_pic);
+        Log.i("Image Location", mCurrentPhotoPath);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        final long currTime = System.currentTimeMillis();
+        final long end = currTime + 5000;
+        // will run a loop for either 5 seconds waiting for the image
+        // or until the image is found. If the 5 seconds run out
+        // and the image is still not found the profile pic will be
+        // empty.
+        while (System.currentTimeMillis() < end && bitmap == null) {
+            bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        }
 
+        if (profilePic != null && bitmap != null) {
+            profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            profilePic.setImageBitmap(bitmap);
+            final SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            final AddPictureTask addPictureTask = new AddPictureTask(getApplicationContext());
+            final String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                    "Email does not exist");
+            String url = ADD_IMAGE_URL + "&email=" + userEmail + "&photoDirectoryLocation=" +
+                    mCurrentPhotoPath;
+            Log.i(TAG, url);
+            addPictureTask.execute(url);
+        }
+    }
 
+    /**
+     * Creates the image file.
+     *
+     * @return The image file.
+     * @throws IOException Exception to be handled by calling method.
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_DCIM);
+        String path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM).toString() + File.separator + DIRECTORY;
+        File storageDir = new File(path);
+        if(!storageDir.exists()) {
+            storageDir.mkdir();
+        }
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.i(TAG, mCurrentPhotoPath);
+        return image;
+    }
 
-
-
-
-
-
+    /**
+     *  Adds photo to the Media Provider's database, making it available
+     *  in the Android Gallery application and to other apps.
+     */
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 
 
     /**
@@ -310,7 +406,6 @@ public class RegisterUserActivity extends AppCompatActivity {
             sb.append("email=");
             sb.append(mUserEmail);
 
-
             sb.append("&firstName=");
             sb.append(URLEncoder.encode(mUserFirstName, "UTF-8"));
 
@@ -359,37 +454,14 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
 
+
     /** AsyncTask class called AddUserTask that will allow us to call the service for adding
      * user information. */
     private class AddUserTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
-            // TODO simplify, only need to send url, don't need to receive data
-            String response = "";
-            HttpURLConnection urlConnection = null;
-            for (String url : urls) {
-                try {
-                    URL urlObject = new URL(url);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                    InputStream content = urlConnection.getInputStream();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s;
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    response = "Unable to add user, Reason: "
-                            + e.getMessage();
-                } finally {
-                    if (urlConnection != null)
-                        urlConnection.disconnect();
-                }
-            }
-            return response;
+            return DashboardActivity.doInBackgroundHelper(urls);
         }
 
 

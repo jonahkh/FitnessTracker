@@ -9,6 +9,11 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +35,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
+import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.AddPictureFragment;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -191,28 +206,28 @@ public class DashboardDisplayFragment extends Fragment {
         mView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-                    getActivity().finish();
-                    return true;
-                }
-                return false;
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                getActivity().finish();
+                return true;
+            }
+            return false;
             }
         });
         Switch notificationsSwitch = (Switch) mView.findViewById(R.id.toggle_notifications);
         notificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.e(TAG, "checked");
-                    mSharedPreferences.edit().putBoolean(getActivity().getString(R.string.ON), true).apply();
-                    getActivity().startService(new Intent(getActivity(), RSSService.class));
-                    RSSService.setServiceAlarm(getActivity(), true);
-                } else {
-                    Log.e(TAG, "unchecked");
-                    RSSService.setServiceAlarm(getActivity(), false);
-                    mSharedPreferences.edit().putBoolean(getActivity()
-                            .getString(R.string.ON), false).apply();
-                }
+            if (isChecked) {
+                Log.e(TAG, "checked");
+                mSharedPreferences.edit().putBoolean(getActivity().getString(R.string.ON), true).apply();
+                getActivity().startService(new Intent(getActivity(), RSSService.class));
+                RSSService.setServiceAlarm(getActivity(), true);
+            } else {
+                Log.e(TAG, "unchecked");
+                RSSService.setServiceAlarm(getActivity(), false);
+                mSharedPreferences.edit().putBoolean(getActivity()
+                        .getString(R.string.ON), false).apply();
+            }
             }
         });
         if (mSharedPreferences.getBoolean(getActivity().getString(R.string.ON), false)) {
@@ -220,7 +235,48 @@ public class DashboardDisplayFragment extends Fragment {
         } else {
             notificationsSwitch.setChecked(false);
         }
+
+        final ImageView profilePic = (ImageView) mView.findViewById(R.id.profile_pic);
+        setImage(profilePic);
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddPictureFragment fragment = new AddPictureFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), "launch");
+
+            }
+        });
+
+        TextView prevPics = (TextView) mView.findViewById(R.id.view_pre_pics);
+        prevPics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PictureListFragment pictureListFragment = new PictureListFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, pictureListFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         return mView;
+    }
+
+
+    /**
+     * Sets the profile picture of the user.
+     *
+     * @param profilePic The profile picture view.
+     */
+    public void setImage(ImageView profilePic) {
+        String imageFileName = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                Context.MODE_PRIVATE).getString(getString(R.string.profile_pic_file_name),
+                "");
+        Log.i(TAG, imageFileName);
+        Bitmap bitmap = BitmapFactory.decodeFile(imageFileName);
+        if(bitmap != null) {
+            profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            profilePic.setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -344,6 +400,7 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** Private class to get the information about the last logged workout from user. */
     private class UserLastLoggedWorkoutTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
