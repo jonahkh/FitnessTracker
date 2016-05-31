@@ -25,12 +25,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -49,7 +44,7 @@ public class EditPersonalInformationFragment extends Fragment {
             = "http://cssgate.insttech.washington.edu/~_450atm2/updateUserData.php?";
 
     /** Tag used for debugging. */
-    public static final String TAG = "Edit Personal Info";
+    private static final String TAG = "Edit Personal Info";
 
     /** Field used to check that all the required information is entered. */
     private final int INVALID = -1;

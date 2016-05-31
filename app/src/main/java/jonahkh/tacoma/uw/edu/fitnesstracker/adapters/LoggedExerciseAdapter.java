@@ -36,9 +36,6 @@ public class LoggedExerciseAdapter extends BaseExpandableListAdapter {
     /** Weight identifier for this set. */
     private static final String WEIGHT = "Weight: ";
 
-    /** Repetition identifier for this set. */
-    public static final String REPS = "Reps: ";
-
     /** The activity that holds this adapter. */
     private final Activity mContext;
 

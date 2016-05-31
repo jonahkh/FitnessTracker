@@ -74,9 +74,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/text"
-                    android:text="Keep me logged in"
-                    android:paddingLeft="5dp"
-                    android:layout_toRightOf="@+id/stay_logged_in"/>
+                    android:text="@string/keep_me_logged_in"
+                    android:paddingLeft="5dp"/>
             </LinearLayout>
 
             <Button
@@ -113,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/forgot_password"
-                android:text="Forgot Password"
+                android:text="@string/forgot_password"
                 android:textColor="@android:color/holo_blue_dark"
                 android:clickable="true"
                 android:layout_marginTop="90dp"/>

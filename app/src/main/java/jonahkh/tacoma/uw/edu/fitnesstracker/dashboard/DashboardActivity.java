@@ -6,13 +6,10 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 // TODO finish project
 /*
- * Settings page (Use Case 7)
- * Camera for login and on dashboard
- * Forgot password
+ * Camera on dashboard
  * Share workout to Facebook
  * Robotium Test
  */
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,7 +22,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,7 +32,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -45,7 +40,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
@@ -68,9 +62,6 @@ public class DashboardActivity extends AppCompatActivity
     /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
 
-    /** The SavedInstanceState. Used to restore data when the app is rotated. */
-//    private Bundle mSavedInstanceState;
-
     /** The Fragment for the dashboard home page. */
     private DashboardDisplayFragment mDashView = null;
 
@@ -86,7 +77,7 @@ public class DashboardActivity extends AppCompatActivity
     /** Adds a cardio workout. */
     private FloatingActionButton mFabCardioWorkout;
     /** The dialog for starting a custom workout. */
-    protected Dialog mStartCustomWorkoutDialog;
+    private Dialog mStartCustomWorkoutDialog;
 
     /** The mDrawer for this Activity. */
     private DrawerLayout mDrawer;
@@ -136,7 +127,6 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
-//        startService(new Intent(this, RSSService.class));
     }
 
     /**
@@ -199,17 +189,7 @@ public class DashboardActivity extends AppCompatActivity
      * @return true if the user's device is connected to the network
      */
     public boolean isNetworkConnected(String message) {
-        // Check for network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) {
-            Toast.makeText(this,
-                    "No network connection available. Cannot display " + message,
-                    Toast.LENGTH_SHORT) .show();
-            return false;
-        }
-        return true;
+        return isNetworkConnected(message, true);
     }
 
     /**
@@ -246,7 +226,7 @@ public class DashboardActivity extends AppCompatActivity
      *
      * @param id the id of the navigation item being set
      */
-    protected void setNavigationItem(int id) {
+    void setNavigationItem(int id) {
         mNavView.setCheckedItem(id);
     }
 
@@ -279,7 +259,7 @@ public class DashboardActivity extends AppCompatActivity
      *
      * @param workout the workout being repeated
      */
-    protected void redoLoggedWorkout(final WeightWorkout workout) {
+    void redoLoggedWorkout(final WeightWorkout workout) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -360,13 +340,6 @@ public class DashboardActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    /**
-     * Retrieves the current workout if the app was restarted unexpectedly (if the user changes the
-     * screen orientation).
-     */
-    public void retrieveCurrentWorkout() {
-//        onRestoreInstanceState(mSavedInstanceState);
-    }
 
     @Override
     public void LoggedWeightWorkoutInteraction(WeightWorkout workout) {
@@ -425,7 +398,6 @@ public class DashboardActivity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -433,7 +405,6 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //TODO make it so when you go to another mDrawer item from a workout the ondestroy method of that fragment is called
         FragmentManager manager = getSupportFragmentManager();
         manager.getFragments().size();
         if (id == R.id.nav_predefined_workouts) {
@@ -489,6 +460,7 @@ public class DashboardActivity extends AppCompatActivity
     public void showFab() {
         mFab.show();
     }
+
     /**
      * Helper method for all AsyncTask inner classes. Connects to the web service and extracts
      * data according to the url.

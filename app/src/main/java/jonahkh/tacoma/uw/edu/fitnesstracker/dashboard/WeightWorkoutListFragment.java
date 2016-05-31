@@ -11,18 +11,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,9 +52,6 @@ public class WeightWorkoutListFragment extends Fragment {
 
     /** The listener for this list. */
     private OnListFragmentInteractionListener mListener;
-
-    /** The adapter for this list. */
-    private RecyclerView mRecyclerView;
 
     /** The current list of exercises. */
     private List<Exercise> mExerciseList;
@@ -185,7 +178,7 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String text = mExercise.getText().toString();
-                if (null == text || text.length() < 1) {
+                if (text.length() < 1) {
                     mExercise.setError("Required Field!");
                 } else {
                     addExercise(mExercise.getText().toString());
@@ -217,7 +210,7 @@ public class WeightWorkoutListFragment extends Fragment {
      *
      * @param exercise the name of the exercise
      */
-    public void addExercise(final String exercise) {
+    private void addExercise(final String exercise) {
         mExerciseList.add(new Exercise(exercise.trim()));
         mAdapter.notifyDataSetChanged();
 //        view.setAdapter(mAdapter);
@@ -290,7 +283,6 @@ public class WeightWorkoutListFragment extends Fragment {
             }
             mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
             // Everything is good, show the list of courses.
-            boolean check = mExerciseList.isEmpty();
             if (!mExerciseList.isEmpty()) {
                 mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.custom_workout_list);

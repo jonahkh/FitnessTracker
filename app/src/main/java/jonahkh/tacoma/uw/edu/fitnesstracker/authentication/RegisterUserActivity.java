@@ -11,15 +11,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,16 +25,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -58,7 +52,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_CAMERA = 0;
 
     /** Message for the permission of the camera. */
-    public static final String CAMERA_PERMISSION_MESSAGE =
+    private static final String CAMERA_PERMISSION_MESSAGE =
             "Camera permission is needed to add profile picture using your camera.";
 
     /**
@@ -72,7 +66,7 @@ public class RegisterUserActivity extends AppCompatActivity {
             = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
 
     /** Only one image can be taken. */
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     /** Users First name. */
     private String mUserFirstName = "";
@@ -153,13 +147,13 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    //TODO this is empty
                     // permission was granted, yay! Do the
                     // add a picture task needed.
 
@@ -170,7 +164,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                     Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
                             .show();
                 }
-                return;
+                break;
             }
 
             // other 'case' lines to check for other
@@ -184,7 +178,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
 
     /** function that invokes an intent to capture a photo. */
-    protected void dispatchTakePictureIntent() {
+    void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);

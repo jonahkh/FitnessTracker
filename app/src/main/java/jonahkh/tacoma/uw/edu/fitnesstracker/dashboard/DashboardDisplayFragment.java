@@ -6,12 +6,9 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +30,6 @@ import org.json.JSONObject;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -61,7 +55,7 @@ public class DashboardDisplayFragment extends Fragment {
 //    public static final String BIRTHDAY = "birthDay";
 
     /** Weight field of database. */
-    public static final String WEIGHT = "weigth"; // Misspelled in the database :)
+    private static final String WEIGHT = "weigth"; // Misspelled in the database :)
 
 //    /** Height feet field of database. */
 //    public static final String HEIGHT_FT = "heightFt";
@@ -73,19 +67,19 @@ public class DashboardDisplayFragment extends Fragment {
 //    public static final String GENDER = "gender";
 
     /** Activity level field of database. */
-    public static final String ACTIVITY_LEVEL = "activityLevel";
+    private static final String ACTIVITY_LEVEL = "activityLevel";
 
     /** Days to workout field of database. */
-    public static final String DAYS_TO_WORKOUT = "daysToWorkout";
+    private static final String DAYS_TO_WORKOUT = "daysToWorkout";
 
     /** Workout number field of database. */
     public static final String WORKOUT_NUMBER = "workoutNumber";
 
     /** Workout name field of database. */
-    public static final String WORKOUT_NAME = "workoutName";
+    private static final String WORKOUT_NAME = "workoutName";
 
     /** Date of workout completed field of database. */
-    public static final String DATE_COMPLETED = "dateCompleted";
+    private static final String DATE_COMPLETED = "dateCompleted";
 
     /** URL used get user additional information from database. */
     private static final String USER_INFO
@@ -293,7 +287,7 @@ public class DashboardDisplayFragment extends Fragment {
         String url = USER_INFO + "email=" + mUserEmail;
         Log.i(TAG, url);
         DownloadUserInfoTask task = new DownloadUserInfoTask();
-        task.execute(new String[]{url});
+        task.execute(url);
     }
 
     /** Sets the personal information View. */
@@ -313,11 +307,6 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** Private class to download user personal information */
     private class DownloadUserInfoTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);

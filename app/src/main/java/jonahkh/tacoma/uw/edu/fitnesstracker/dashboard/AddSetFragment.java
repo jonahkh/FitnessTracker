@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -36,11 +38,11 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 public class AddSetFragment extends DialogFragment {
 
     /** The url to start a new workout. */
-    public static final String WORKOUT_URL
+    private static final String WORKOUT_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/weightWorkout.php?cmd=start_workout";
 
     /** Url to add a new set. */
-    public static final String ADD_EXERCISE_URL
+    private static final String ADD_EXERCISE_URL
             = "http://cssgate.insttech.washington.edu/~_450atm2/weightWorkout.php?cmd=addSet";
 
     /** The current weight workout. */
@@ -72,6 +74,7 @@ public class AddSetFragment extends DialogFragment {
         mCurrentExercise = name.replace(' ', '_');
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final DashboardActivity dashboard = (DashboardActivity) getActivity();
@@ -162,7 +165,6 @@ public class AddSetFragment extends DialogFragment {
 
         url.append(year + "-" + month + "-" + day);
         url.append("&type=weight");
-        String result = url.toString();
         return url.toString();
     }
 
@@ -191,9 +193,6 @@ public class AddSetFragment extends DialogFragment {
     /** Private class to get the information about the last logged workout from user. */
     private class SendWorkoutDataTask extends AsyncTask<String, Void, String> {
         @Override
-        protected void onPreExecute() {super.onPreExecute();}
-
-        @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
         }
@@ -209,9 +208,6 @@ public class AddSetFragment extends DialogFragment {
 
     /** Private class to get the information about the last logged workout from user. */
     private class GetWorkoutNumber extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {super.onPreExecute();}
-
         @Override
         protected String doInBackground(String... urls) {
             return DashboardActivity.doInBackgroundHelper(urls);
@@ -231,7 +227,7 @@ public class AddSetFragment extends DialogFragment {
                     }
                 }
             } catch (JSONException e) {
-                Log.e("Dashboard", e.getStackTrace().toString());
+                Log.e("Dashboard", Arrays.toString(e.getStackTrace()));
             }
         }
     }
