@@ -7,9 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
+
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewOriginalImageFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 
@@ -48,7 +55,7 @@ public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPicture
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
 //        Bitmap image = getImageBitmap(mValues.get(position).getPhotoDirectoryLocation(), position);
-        Bitmap image = mValues.get(position).getImage();
+        final Bitmap image = mValues.get(position).getImage();
         if(image != null) {
             holder.mContentView.setImageBitmap(image);
             holder.mContentView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -62,6 +69,22 @@ public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPicture
                             .addToBackStack(null)
                             .commit();
                     Log.e("CLick", "clikc");
+                }
+            });
+            holder.mContentView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    holder.mContentView.setLongClickable(true);
+//                    holder.mContentView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+                    SharePhoto photo = new SharePhoto.Builder()
+                            .setBitmap(image)
+                            .build();
+                    SharePhotoContent content = new SharePhotoContent.Builder()
+                            .addPhoto(photo)
+                            .build();
+                    ShareDialog.show(mActivity, content);
+                    return true;
                 }
             });
         } else {
