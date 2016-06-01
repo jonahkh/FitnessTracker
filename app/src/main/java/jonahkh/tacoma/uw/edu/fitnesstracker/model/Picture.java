@@ -33,6 +33,8 @@ public class Picture implements Serializable {
 
     private Bitmap mImage;
 
+    private Bitmap mOriginalImage;
+
     public Picture(String photoDirectoryLocation) {
         mPhotoDirectoryLocation = photoDirectoryLocation;
         setImage(photoDirectoryLocation);
@@ -96,7 +98,7 @@ public class Picture implements Serializable {
         }
         int width = image.getWidth();
         int height = image.getHeight();
-
+        setmOriginalImage(image);
         float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = MAX_IMAGE_SIZE;
@@ -108,6 +110,13 @@ public class Picture implements Serializable {
         mImage = Bitmap.createScaledBitmap(image, width, height, true);
     }
 
+    public Bitmap getmOriginalImage() {
+        return mOriginalImage;
+    }
+
+    public void setmOriginalImage(Bitmap image) {
+        mOriginalImage = image;
+    }
 
     private static class DeletePicturesTask extends AsyncTask<String, Void, String> {
 

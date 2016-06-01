@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  * <p>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class PictureListFragment extends Fragment {
@@ -35,8 +34,6 @@ public class PictureListFragment extends Fragment {
 
     // TODO: Customize parameters
     private int mColumnCount = 3;
-
-    private OnListFragmentInteractionListener mListener;
 
     /**
      * so that we can access it in the thread to load the data.
@@ -95,24 +92,8 @@ public class PictureListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Picture item);
     }
 
 
@@ -143,9 +124,8 @@ public class PictureListFragment extends Fragment {
                         .show();
                 return;
             } else {
-                mRecyclerView.setAdapter(new MyPictureRecyclerViewAdapter(mCourseList, mListener));
+                mRecyclerView.setAdapter(new MyPictureRecyclerViewAdapter(mCourseList, getActivity()));
             }
         }
     }
-
 }
