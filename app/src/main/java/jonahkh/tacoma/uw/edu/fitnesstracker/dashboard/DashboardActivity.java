@@ -6,7 +6,6 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 // TODO finish project
 /*
- * Camera on dashboard
  * Share workout to Facebook
  * Robotium Test
  */
@@ -74,8 +73,7 @@ public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PreDefinedWorkoutFragment.PreDefinedWorkoutListener,
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
-        ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener,
-        PictureListFragment.OnListFragmentInteractionListener {
+        ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
 
     /** Only one image can be taken. */
     public static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -195,7 +193,6 @@ public class DashboardActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    //TODO this is empty
                     // permission was granted, yay! Do the
                     // add a picture task needed.
 
@@ -707,19 +704,5 @@ public class DashboardActivity extends AppCompatActivity
             Log.i("PIC URL: ", url);
             addPictureTask.execute(url);
         }
-    }
-
-    @Override
-    public void onListFragmentInteraction(Picture item) {
-
-//        CourseDetailFragment courseDetailFragment = new CourseDetailFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable(CourseDetailFragment.COURSE_ITEM_SELECTED, item);
-//        courseDetailFragment.setArguments(args);
-//
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, courseDetailFragment)
-//                .addToBackStack(null)
-//                .commit();
     }
 }
