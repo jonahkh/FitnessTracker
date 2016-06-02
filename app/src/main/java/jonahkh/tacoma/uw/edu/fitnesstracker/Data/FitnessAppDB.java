@@ -25,15 +25,29 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
  */
 public class FitnessAppDB {
 
+    /** DataBase version. */
     private static final int DB_VERSION = 1;
+
+    /** Database Name. */
     private static final String DB_NAME = "FitnessApp.db";
+
+    /** The name of the Cardio Workout table. */
     private static final String CARDIO_WORKOUT_TABLE = "CardioWorkout";
+
+    /** The name of the Profile Pictures table. */
     private static final String PROFILE_PICTURE_TABLE = "ProfilePictures";
 
+    /** The DataBase helper field. */
     private final FitnessAppDBHelper mDBHelper;
+
+    /** The SQLiteDatabase field. */
     private final SQLiteDatabase mSQLiteDatabase;
 
-    /** Construtor of this Fitness App Database. */
+    /**
+     * Constructor of this Fitness App Database.
+     *
+     * @param context The context of the class using this database.
+     */
     public FitnessAppDB(Context context) {
         mDBHelper = new FitnessAppDBHelper(
                 context, DB_NAME, null, DB_VERSION);
@@ -69,9 +83,10 @@ public class FitnessAppDB {
 
     /**
      * Inserts a directory to profile picture local database.
-     * @param email
-     * @param fileDir
-     * @return
+     *
+     * @param email The email of the user.
+     * @param fileDir The file directory of the users profile picture.
+     * @return Whether the email and profile directory was set successful.
      */
     public boolean setProfilePicture(String email, String fileDir) {
         creteProfilePictureTable();
@@ -85,6 +100,7 @@ public class FitnessAppDB {
         if(numOfValReturn > 0) {
              temp = c.getString(0);
         }
+        c.close();
         if(temp.equals(email)) {
             query = "UPDATE " + PROFILE_PICTURE_TABLE
                     + " SET photoDirectoryLocation = '" + fileDir + "' WHERE"
@@ -96,13 +112,6 @@ public class FitnessAppDB {
         contentValues.put("email", email);
         contentValues.put("photoDirectoryLocation", fileDir);
         long rowId = mSQLiteDatabase.insert(PROFILE_PICTURE_TABLE, null, contentValues);
-//        if(rowId == -1) { // if error the email could exist so update email
-//            query = "UPDATE " + PROFILE_PICTURE_TABLE
-//                + " SET photoDirectoryLocation = '" + fileDir + "' WHERE"
-//                + " email = '" + email +"'";
-//            mSQLiteDatabase.rawQuery(query, null);
-//            rowId = 1;
-//        }
         return rowId != -1;
     }
 
@@ -114,6 +123,7 @@ public class FitnessAppDB {
 
     /**
      * Returns the list of Cardio workouts from the local table.
+     *
      * @return list The list of Cardio Workouts
      */
     public List<CardioWorkout> getCardioWorkouts() {
@@ -146,7 +156,7 @@ public class FitnessAppDB {
             list.add(cardioWorkout);
             c.moveToNext();
         }
-
+        c.close();
         return list;
     }
 
@@ -156,8 +166,9 @@ public class FitnessAppDB {
      * @param email The email of the user.
      * @return The locations of the profile picture.
      */
+    @SuppressWarnings("UnusedAssignment")
     public String getProfilePictureDirectory(String email) {
-        if(email.equals("") || email == null) {
+        if(email == null || email.equals("")) {
             return "";
         }
         String profileLoc = "";
@@ -167,6 +178,7 @@ public class FitnessAppDB {
             Cursor c = mSQLiteDatabase.rawQuery(query, null);
             c.moveToFirst();
             profileLoc = c.getString(0);
+            c.close();
         } catch (Exception e) {
 //            e.printStackTrace();
             Log.e("FitnessAppDB" , e.toString());
@@ -187,6 +199,7 @@ public class FitnessAppDB {
         mSQLiteDatabase.delete(PROFILE_PICTURE_TABLE, null, null);
     }
 
+    /** Private method to create ProfilePictureTable in case it does not exist. */
     private void creteProfilePictureTable() {
         String sqlStatement = "CREATE TABLE IF NOT EXISTS ProfilePictures "
                 + "(email TEXT, photoDirectoryLocation TEXT, "

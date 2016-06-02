@@ -9,11 +9,8 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,17 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
-import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.AddPictureFragment;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -144,7 +133,7 @@ public class DashboardDisplayFragment extends Fragment {
     private int mWorkoutNum = -1;
 
     /**
-     * Users last logged workout name. Default value is "None to Displa", value gets switched
+     * Users last logged workout name. Default value is "None to Display", value gets switched
      *  if data available.
      */
     private String mWorkoutName = "None to Display";
@@ -287,7 +276,7 @@ public class DashboardDisplayFragment extends Fragment {
      *
      * @param profilePic The profile picture view.
      */
-    public void setImage(ImageView profilePic) {
+    private void setImage(ImageView profilePic) {
         final SharedPreferences sharedPreferences = getActivity().
                 getSharedPreferences(getActivity().getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);

@@ -13,7 +13,8 @@
         android:clickable="true"
         android:layout_gravity="center_horizontal"
         android:background="@color/com_facebook_blue"
-        android:src="@android:drawable/ic_menu_camera"/>
+        android:src="@android:drawable/ic_menu_camera"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:layout_width="wrap_content"

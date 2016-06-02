@@ -4,13 +4,9 @@
  * TCSS 450 - Team 2
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
-// TODO finish project
-/*
- * Share workout to Facebook
- * Robotium Test
- */
+
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -60,7 +56,6 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
-import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
 
 /**
@@ -78,7 +73,7 @@ public class DashboardActivity extends AppCompatActivity
         ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
 
     /** Only one image can be taken. */
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     /** The Directory to store the pic for this app. */
     private final String DIRECTORY = "FitnessTracker";
@@ -176,21 +171,17 @@ public class DashboardActivity extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_CAMERA);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         final SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
         switch (requestCode) {
@@ -198,8 +189,7 @@ public class DashboardActivity extends AppCompatActivity
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // add a picture task needed.
 //                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
@@ -241,7 +231,7 @@ public class DashboardActivity extends AppCompatActivity
      */
     private void initializeCustomWorkoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View view = getLayoutInflater().inflate(R.layout.start_custom_workout_dialog, null);
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.start_custom_workout_dialog, null);
         final EditText text = (EditText) view.findViewById(R.id.workout_name);
         final Button start = (Button) view.findViewById(R.id.start);
         final Button cancel = (Button) view.findViewById(R.id.cancel);
@@ -626,8 +616,9 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-    public void dispatchPictureIntent(boolean imageCapture) {
-        mImageCapture = imageCapture;
+    /** Method that invokes an intent to upload pircture from gallery of images.  */
+    public void dispatchGalleryIntent() {
+        mImageCapture = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent,
@@ -642,7 +633,7 @@ public class DashboardActivity extends AppCompatActivity
      */
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
 //        File storageDir = Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_DCIM);
@@ -650,6 +641,7 @@ public class DashboardActivity extends AppCompatActivity
                 Environment.DIRECTORY_DCIM).toString() + File.separator + DIRECTORY;
         File storageDir = new File(path);
         if(!storageDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             storageDir.mkdir();
         }
         File image = File.createTempFile(
@@ -704,11 +696,18 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Helper method for the onActivityResult method. to getPth of picture being used.
+     *
+     * @param uri The partial location of the image been use.
+     * @return The location of the the picture being used.
+     */
     private String getPath(Uri uri) {
         String res = null;
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
+        if(cursor != null){
+            cursor.moveToFirst();
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
         }
@@ -716,6 +715,7 @@ public class DashboardActivity extends AppCompatActivity
         return res;
     }
 
+    /** Helper method for onActivityResult method to set the profile picture of user. */
     private void setImageView() {
         ImageView profilePic = (ImageView) findViewById(R.id.profile_pic);
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);

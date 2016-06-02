@@ -214,7 +214,7 @@ public class AddCardioWorkout extends Fragment {
     /**
      * Method to get today's date. The date of the exercise.
      *
-     * @return Todays date.
+     * @return Today's date.
      */
     private String getDateofExercise() {
         Calendar calendar = Calendar.getInstance();

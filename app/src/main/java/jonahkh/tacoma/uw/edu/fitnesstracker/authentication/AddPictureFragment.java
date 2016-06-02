@@ -10,26 +10,19 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardDisplayFragment;
 
 /**
  * Fragment used to add a profile image.
@@ -40,12 +33,9 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardDisplayFragment;
  */
 public class AddPictureFragment extends DialogFragment {
 
-    /** Only one image can be taken. */
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
-
     /** Error message displayed if no camera permission was granted. */
     private static final String CAMERA_PERMISSION_ERROR =
-            "Camera persmission was not granted, can not take picture.";
+            "Camera permission was not granted, can not take picture.";
 
     /** The image button. */
     private ImageView mImageView;
@@ -56,6 +46,7 @@ public class AddPictureFragment extends DialogFragment {
     }
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 //        mImageView = (ImageButton) getActivity().findViewById(R.id.add_pic);
@@ -71,7 +62,7 @@ public class AddPictureFragment extends DialogFragment {
                     // add from camera
                     Activity activity = getActivity();
                     if (activity instanceof RegisterUserActivity) {
-                        ((RegisterUserActivity) activity).dispatchTakePictureIntent(true);
+                        ((RegisterUserActivity) activity).dispatchTakePictureIntent();
                     } else if (activity instanceof DashboardActivity) {
                         ((DashboardActivity) activity).dispatchTakePictureIntent(true);
                     }
@@ -85,9 +76,9 @@ public class AddPictureFragment extends DialogFragment {
                 // add from gallery
                 Activity activity = getActivity();
                 if (activity instanceof RegisterUserActivity) {
-                    ((RegisterUserActivity) activity).dispatchPictureIntent(false);
+                    ((RegisterUserActivity) activity).dispatchGalleryIntent();
                 } else if (activity instanceof DashboardActivity) {
-                    ((DashboardActivity) activity).dispatchPictureIntent(false);
+                    ((DashboardActivity) activity).dispatchGalleryIntent();
                 }
 
 

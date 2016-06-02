@@ -92,6 +92,16 @@ public class CardioWorkout implements Serializable{
         mDistance = distance;
     }
 
+    /**
+     * Initializes an exercise activity given a name, workout number, date, duration,
+     * and distance.
+     *
+     * @param workoutNumber The current exercise number.
+     * @param dateCompleted he date this exercise was completed.
+     * @param duration The duration of the exercise.
+     * @param workoutName The name of the exercise.
+     * @param distance The distance of the exercise.
+     */
     public CardioWorkout(int workoutNumber, String dateCompleted, int duration,
                          String workoutName, double distance) {
         if (workoutName == null || workoutName.length() < 1 || workoutNumber < 0 ||
@@ -112,17 +122,17 @@ public class CardioWorkout implements Serializable{
     /**
      * Parse the passed input and convert into a new weight workout.
      *
-     * @param ecerciseActivityJSON the input being parsed (pulled from database)
+     * @param exerciseActivityJSON the input being parsed (pulled from database)
      * @param exerciseList the list being populated based on the input being parsed
      * @return null if no issues, otherwise return the error that occurred
      */
-    public static String parseCardioExercisesJSON(String ecerciseActivityJSON, List<CardioWorkout> exerciseList) {
-        if(ecerciseActivityJSON.length() < 1) {
+    public static String parseCardioExercisesJSON(String exerciseActivityJSON, List<CardioWorkout> exerciseList) {
+        if(exerciseActivityJSON.length() < 1) {
             return ERROR;
         }
         String reason = null;
         try {
-            JSONArray arr = new JSONArray(ecerciseActivityJSON);
+            JSONArray arr = new JSONArray(exerciseActivityJSON);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 int workoutNumber = obj.getInt(NUMBER);
@@ -158,7 +168,11 @@ public class CardioWorkout implements Serializable{
         return -1;
     }
 
-
+    /**
+     * Methdo to get the workoutNumber.
+     *
+     * @return The workout Number of this cardio workout.
+     */
     public int getWorkoutNumber() {
         return mWorkoutNumber;
     }

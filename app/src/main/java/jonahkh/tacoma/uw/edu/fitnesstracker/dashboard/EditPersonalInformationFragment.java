@@ -156,24 +156,20 @@ public class EditPersonalInformationFragment extends Fragment {
      *
      * @return The URL needed to launch the UpdateUserDataTask.
      *
-     * @throws UnsupportedEncodingException Incase the activity level cannot be converted to string.
+     * @throws UnsupportedEncodingException In case the activity level cannot be converted to string.
      */
     @NonNull
     private String getUrl() throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder(USER_INFO);
-        sb.append("email=");
-        sb.append(mUserEmail);
+        String sb = USER_INFO + "email=" +
+                mUserEmail +
+                "&weight=" +
+                mWeight +
+                "&daysToWorkout=" +
+                mDaysToWorkout +
+                "&activityLevel=" +
+                URLEncoder.encode(mActivityLevel, "UTF-8");
 
-        sb.append("&weight=");
-        sb.append(mWeight);
-
-        sb.append("&daysToWorkout=");
-        sb.append(mDaysToWorkout);
-
-        sb.append("&activityLevel=");
-        sb.append(URLEncoder.encode(mActivityLevel, "UTF-8"));
-
-        return sb.toString();
+        return sb;
     }
 
     /** AsyncTask class called UpdateUserDataTask that will allow us to call the update

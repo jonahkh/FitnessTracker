@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:id="@+id/original_img_dis"
         android:clickable="true"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        tools:ignore="ContentDescription" />
 
 </FrameLayout>

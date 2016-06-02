@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.Data;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -102,7 +103,7 @@ public class RSSService extends IntentService {
      */
     private void getDaysSinceLastWorkout(int days, String date) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
         int daysSinceLastWorkout = currentDate.format(calendar.getTime()).compareTo(date);
         Log.e(TAG, "Days since last workout: " + daysSinceLastWorkout);
         Log.e(TAG, "Days committed to workouts" + days);

@@ -8,6 +8,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -55,14 +56,12 @@ import java.util.List;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookActivity;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -128,23 +127,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
         final TextView text = (TextView) findViewById(R.id.text);
-        text.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCheckBox.isChecked()) {
-                    mCheckBox.setChecked(false);
-                } else {
-                    mCheckBox.setChecked(true);
+        if(text != null) {
+            text.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCheckBox.isChecked()) {
+                        mCheckBox.setChecked(false);
+                    } else {
+                        mCheckBox.setChecked(true);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            Log.e("Login Activity", "Checked box is null");
+        }
         final TextView forgotText = (TextView) findViewById(R.id.forgot_password);
-        forgotText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetPassword();
-            }
-        });
+        if(forgotText != null) {
+            forgotText.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    resetPassword();
+                }
+            });
+        } else {
+            Log.e("Login Activity", "Forgot Text Field is null");
+        }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -164,7 +171,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         regBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Hide the register button
                 //regBut.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
@@ -195,7 +201,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mLoginButton.setReadPermissions(permissions);
 
                 // Check that profile is logged in
-
                 mLoginButton.registerCallback(mCallback, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -429,7 +434,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void resetPassword() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
+        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
         final EditText emailText = (EditText) v.findViewById(R.id.email);
         final Button button = (Button) v.findViewById(R.id.button);
         builder.setView(v);
@@ -461,7 +466,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void changePassword(final String email) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.change_password, null);
+        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.change_password, null);
         final EditText first = (EditText) v.findViewById(R.id.first_pass);
         final EditText second = (EditText) v.findViewById(R.id.second_pass);
         final Button button = (Button) v.findViewById(R.id.button);
@@ -515,7 +520,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * This class represents an asynch task to verify the email the user enters when they forgot
+     * This class represents an async task to verify the email the user enters when they forgot
      * their password and send them a password reset code if they enter this code correctly.
      */
     public class VerifyEmailTask extends AsyncTask<String, Void, String> {
@@ -554,7 +559,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         mDialog.dismiss();
                         mCode = obj.getString("code");
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                        final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
+                        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
                         final EditText text = (EditText) v.findViewById(R.id.code);
                         final Button button = (Button) v.findViewById(R.id.button);
                         builder.setView(v);

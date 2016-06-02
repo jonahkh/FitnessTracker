@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -94,9 +93,10 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
     /** Users activity level. */
     private String mActivityLevel;
 
-    /** Number of days the user worksout. */
+    /** Number of days the user workouts. */
     private int mDaysToWorkout;
 
+    /** The imageView of the profile picture. */
     private ImageView mImageView;
 
     /** Required empty public constructor */
@@ -167,8 +167,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
                 } else {
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.CAMERA,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_CAMERA);
                     Toast.makeText(getActivity(), CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
                             .show();
@@ -182,14 +181,10 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_CAMERA);
         }
 

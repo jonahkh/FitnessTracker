@@ -6,6 +6,7 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,11 +31,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -152,14 +148,10 @@ public class RegisterUserActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_CAMERA);
         }
 
@@ -173,18 +165,16 @@ public class RegisterUserActivity extends AppCompatActivity {
                 .commit();
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
-        final SharedPreferences sharedPreferences = getSharedPreferences(
-                getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
         switch (requestCode) {
             case MY_PERMISSIONS_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 //                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
 //                            true).apply();
                 } else {
@@ -203,10 +193,9 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
-    /** function that invokes an intent to capture a photo.
-     * @param imageCapture*/
-    protected void dispatchTakePictureIntent(boolean imageCapture) {
-        mImageCapture = imageCapture;
+    /** Method that invokes an intent to capture a photo.  */
+    protected void dispatchTakePictureIntent() {
+        mImageCapture = true;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File imageFile = null;
@@ -234,8 +223,9 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
-    public void dispatchPictureIntent(boolean imageCapture) {
-        mImageCapture = imageCapture;
+    /** Method that invokes an intent to upload pircture from gallery of images.  */
+    public void dispatchGalleryIntent() {
+        mImageCapture = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent,
@@ -267,11 +257,19 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Helper method for the onActivityResult method. to getPth of picture being used.
+     *
+     * @param uri The partial location of the image been use.
+     * @return The location of the the picture being used.
+     */
     private String getPath(Uri uri) {
         String res = null;
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
+
+        if(cursor != null){
+            cursor.moveToFirst();
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
         }
@@ -279,6 +277,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         return res;
     }
 
+    /** Helper method for onActivityResult method to set the profile picture of user. */
     private void setImageView() {
         ImageView profilePic = (ImageView) findViewById(R.id.add_pic);
         Log.i("Image Location", mCurrentPhotoPath);
@@ -314,9 +313,10 @@ public class RegisterUserActivity extends AppCompatActivity {
      * @return The image file.
      * @throws IOException Exception to be handled by calling method.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
 //        File storageDir = Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_DCIM);
