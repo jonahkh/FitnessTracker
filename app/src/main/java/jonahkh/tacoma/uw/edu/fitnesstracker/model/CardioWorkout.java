@@ -163,9 +163,9 @@ public class CardioWorkout implements Serializable{
         return mWorkoutNumber;
     }
 
-    public void setWorkoutNumber(int mWorkoutNumber) {
-        this.mWorkoutNumber = mWorkoutNumber;
-    }
+//    public void setWorkoutNumber(int mWorkoutNumber) {
+//        this.mWorkoutNumber = mWorkoutNumber;
+//    }
 
     public String getDate() {
         return mDate;
@@ -179,25 +179,25 @@ public class CardioWorkout implements Serializable{
         return mDuration;
     }
 
-    public void setDuration(int mDuration) {
-        this.mDuration = mDuration;
-    }
+//    public void setDuration(int mDuration) {
+//        this.mDuration = mDuration;
+//    }
 
     public String getActivityName() {
         return mActivityName;
     }
 
-    public void setActivityName(String mActivityName) {
-        this.mActivityName = mActivityName;
-    }
+//    public void setActivityName(String mActivityName) {
+//        this.mActivityName = mActivityName;
+//    }
 
     public double getDistance() {
         return mDistance;
     }
 
-    public void setDistance(double mDistance) {
-        this.mDistance = mDistance;
-    }
+//    public void setDistance(double mDistance) {
+//        this.mDistance = mDistance;
+//    }
 
     @Override
     public String toString() {
