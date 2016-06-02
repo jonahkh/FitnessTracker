@@ -19,8 +19,8 @@
         android:layout_width="wrap_content"
         android:clickable="true"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/com_facebook_blue"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/holo_blue_dark"
         android:text= "@string/view_previous_pictures"
         android:id="@+id/view_pre_pics"
         android:layout_gravity="center_horizontal" />

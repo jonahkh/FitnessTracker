@@ -6,11 +6,15 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,6 +57,13 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
     /** Tag used for debugging. */
     private final String TAG = "Reg Additional Info";
 
+    /** Message for the permission of the camera. */
+    private static final String CAMERA_PERMISSION_MESSAGE =
+            "Permissions are needed to add profile pictures.";
+
+    /** Permission for the Camera. */
+    private static final int MY_PERMISSIONS_CAMERA = 1;
+
     /** Field used to check that all the required information is entered. */
     private final int INVALID = -1;
 
@@ -85,6 +96,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
     /** Number of days the user worksout. */
     private int mDaysToWorkout;
+
     private ImageView mImageView;
 
     /** Required empty public constructor */
@@ -143,12 +155,43 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
         mImageView = (ImageView) myView.findViewById(R.id.add_pic);
         mImageView.setOnClickListener(new View.OnClickListener() {
+            final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            boolean permissions = sharedPreferences.getBoolean(getString(R.string.permission_granted),
+                    false);
             @Override
             public void onClick(View v) {
-                AddPictureFragment fragment = new AddPictureFragment();
-                fragment.show(getActivity().getSupportFragmentManager(), "launch");
+                if(permissions) {
+                    AddPictureFragment fragment = new AddPictureFragment();
+                    fragment.show(getActivity().getSupportFragmentManager(), "launch");
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.CAMERA,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_CAMERA);
+                    Toast.makeText(getActivity(), CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
+                            .show();
+
+                }
+
             }
         });
+        // request permission
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_CAMERA);
+        }
 
         return myView;
     }

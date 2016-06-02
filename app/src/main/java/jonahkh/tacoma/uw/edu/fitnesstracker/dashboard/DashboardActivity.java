@@ -10,6 +10,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
  * Robotium Test
  */
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -55,6 +56,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
@@ -124,6 +126,9 @@ public class DashboardActivity extends AppCompatActivity
     /** Whether we are capturing an image or grabbing it from file. */
     private boolean mImageCapture;
 
+    /** Local database. */
+    protected FitnessAppDB mProfilePicDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,6 +191,8 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        final SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
         switch (requestCode) {
             case MY_PERMISSIONS_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
@@ -195,9 +202,11 @@ public class DashboardActivity extends AppCompatActivity
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // add a picture task needed.
-
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            true).apply();
                 } else {
-
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            false).apply();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
@@ -210,6 +219,10 @@ public class DashboardActivity extends AppCompatActivity
             // permissions this app might request
         }
     }
+
+//    public void setLocalDatabase() {
+//        mProfilePicDB = new FitnessAppDB(getApplicationContext());
+//    }
 
     /**
      * Locks or unlocks the drawer depending on the passed mode. The drawer is locked when the user
@@ -586,10 +599,21 @@ public class DashboardActivity extends AppCompatActivity
             File imageFile = null;
             try {
                 imageFile = createImageFile();
+//                final SharedPreferences sharedPreferences = getSharedPreferences(
+//                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
                 final SharedPreferences sharedPreferences = getSharedPreferences(
                         getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
-                        mCurrentPhotoPath).apply();
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                if(mProfilePicDB == null) {
+                    mProfilePicDB = new FitnessAppDB(this);
+                }
+                boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e("DashBoardActivity", "Profile pic could not be send to local database");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -658,11 +682,23 @@ public class DashboardActivity extends AppCompatActivity
             if(!mImageCapture) {
                 Uri selectedImageUri = data.getData();
                 mCurrentPhotoPath = getPath(selectedImageUri);
+//                final SharedPreferences sharedPreferences = getSharedPreferences(
+//                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
                 final SharedPreferences sharedPreferences = getSharedPreferences(
                         getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
-                        mCurrentPhotoPath).apply();
-
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                if(mProfilePicDB == null) {
+                    mProfilePicDB = new FitnessAppDB(this);
+                }
+                boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e("DashBoardActivity", "Profile pic could not be send to local database");
+                }
             }
             setImageView();
         }

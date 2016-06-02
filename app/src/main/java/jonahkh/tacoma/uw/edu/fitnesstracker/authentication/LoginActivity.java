@@ -209,7 +209,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Log.e("TAG", "ERROR");
+                        Log.e("FaceBookLogin", "ERROR");
+                        Log.e("FaceBookLogin", exception.toString());
                     }
                 });
             }

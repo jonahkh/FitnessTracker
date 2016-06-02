@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.AddPictureTask;
@@ -65,7 +66,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     /** Message for the permission of the camera. */
     private static final String CAMERA_PERMISSION_MESSAGE =
-            "Camera permission is needed to add profile picture using your camera.";
+            "Permissions are needed to add profile pictures.";
 
     /**
      *  Boolean value used for lunching AdditionalInformationFragment after entering
@@ -175,6 +176,8 @@ public class RegisterUserActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
+        final SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
         switch (requestCode) {
             case MY_PERMISSIONS_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
@@ -182,12 +185,11 @@ public class RegisterUserActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    //TODO this is empty
-                    // permission was granted, yay! Do the
-                    // add a picture task needed.
-
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            true).apply();
                 } else {
-
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            false).apply();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
@@ -210,10 +212,16 @@ public class RegisterUserActivity extends AppCompatActivity {
             File imageFile = null;
             try {
                 imageFile = createImageFile();
+                // Saving the profile picture to local database directory
                 final SharedPreferences sharedPreferences = getSharedPreferences(
                         getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
-                        mCurrentPhotoPath).apply();
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                FitnessAppDB profilePicDB = new FitnessAppDB(getApplicationContext());
+                boolean successful = profilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e(TAG, "Profile pic could not be send to local database");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -240,10 +248,19 @@ public class RegisterUserActivity extends AppCompatActivity {
             if(!mImageCapture) {
                 Uri selectedImageUri = data.getData();
                 mCurrentPhotoPath = getPath(selectedImageUri);
+//                final SharedPreferences sharedPreferences = getSharedPreferences(
+//                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
                 final SharedPreferences sharedPreferences = getSharedPreferences(
                         getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
-                        mCurrentPhotoPath).apply();
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                FitnessAppDB profilePicDB = new FitnessAppDB(getApplicationContext());
+                boolean successful = profilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e(TAG, "Profile pic could not be send to local database");
+                }
 
             }
             setImageView();

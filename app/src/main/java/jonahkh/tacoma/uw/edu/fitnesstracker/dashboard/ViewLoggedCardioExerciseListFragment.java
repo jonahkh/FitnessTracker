@@ -99,7 +99,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
                 cardioWorkoutDB = new FitnessAppDB(getActivity());
             }
             if(mWorkoutList == null) {
-                mWorkoutList = cardioWorkoutDB.getCourses();
+                mWorkoutList = cardioWorkoutDB.getCardioWorkouts();
             }
             Toast.makeText(view.getContext(), R.string.local_data_message,
                     Toast.LENGTH_SHORT).show();
