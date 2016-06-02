@@ -39,6 +39,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
@@ -104,6 +105,10 @@ public class DashboardDisplayFragment extends Fragment {
     public static final String USER_LAST_LOGGED_WORKOUT
             = "http://cssgate.insttech.washington.edu/~_450atm2/getLastUserWorkout.php?";
 
+    /** Message for the permission of the camera. */
+    private static final String CAMERA_PERMISSION_MESSAGE =
+            "Permissions are needed to add profile pictures.";
+
     /** Tag used for debugging. */
     private static final String TAG = "Dashboard Display";
 
@@ -154,6 +159,12 @@ public class DashboardDisplayFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
 
     private WeightWorkoutListFragment.OnListFragmentInteractionListener mListener;
+
+    /** The File name of the profile picture. */
+    private String mImageFileName;
+
+    /** The profile picture View. */
+    private ImageView mProfilePic;
 
     /** Required empty public constructor */
     public DashboardDisplayFragment() {
@@ -218,10 +229,12 @@ public class DashboardDisplayFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
+                Log.i(TAG, "checked");
                 mSharedPreferences.edit().putBoolean(getActivity().getString(R.string.ON), true).apply();
                 getActivity().startService(new Intent(getActivity(), RSSService.class));
                 RSSService.setServiceAlarm(getActivity(), true);
             } else {
+                Log.i(TAG, "unchecked");
                 RSSService.setServiceAlarm(getActivity(), false);
                 mSharedPreferences.edit().putBoolean(getActivity()
                         .getString(R.string.ON), false).apply();
@@ -234,13 +247,22 @@ public class DashboardDisplayFragment extends Fragment {
             notificationsSwitch.setChecked(false);
         }
 
-        final ImageView profilePic = (ImageView) mView.findViewById(R.id.profile_pic);
-        setImage(profilePic);
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        mProfilePic = (ImageView) mView.findViewById(R.id.profile_pic);
+        setImage(mProfilePic);
+        mProfilePic.setOnClickListener(new View.OnClickListener() {
+//            final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+//                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//            boolean permissions = sharedPreferences.getBoolean(getString(R.string.permission_granted),
+//                    false);
             @Override
             public void onClick(View v) {
+//                if(permissions) {
                 AddPictureFragment fragment = new AddPictureFragment();
                 fragment.show(getActivity().getSupportFragmentManager(), "launch");
+//                } else {
+//                    Toast.makeText(getActivity(), CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
+//                            .show();
+//                }
 
             }
         });
@@ -266,10 +288,23 @@ public class DashboardDisplayFragment extends Fragment {
      * @param profilePic The profile picture view.
      */
     public void setImage(ImageView profilePic) {
-        String imageFileName = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
-                Context.MODE_PRIVATE).getString(getString(R.string.profile_pic_file_name),
-                "");
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFileName);
+        final SharedPreferences sharedPreferences = getActivity().
+                getSharedPreferences(getActivity().getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
+        String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                "Email does not exist");
+        FitnessAppDB dataBase = ((DashboardActivity)getActivity()).mProfilePicDB;
+        if(dataBase == null) {
+            ((DashboardActivity)getActivity()).mProfilePicDB = new FitnessAppDB(getActivity());
+            dataBase = ((DashboardActivity)getActivity()).mProfilePicDB;
+        }
+        if(dataBase == null) {
+            Log.e(TAG, "Could not create local database");
+            return;
+        }
+        mImageFileName = dataBase.getProfilePictureDirectory(userEmail);
+        if(mImageFileName.equals("")){ return;}
+        Bitmap bitmap = BitmapFactory.decodeFile(mImageFileName);
         if(bitmap != null) {
             profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             profilePic.setImageBitmap(bitmap);
@@ -277,12 +312,32 @@ public class DashboardDisplayFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         FloatingActionButton fab = (FloatingActionButton)
                 getActivity().findViewById(R.id.fab_cardio_workout);
         fab.hide();
         ((DashboardActivity) getActivity()).setNavigationItem(R.id.nav_home);
+        if (mImageFileName == null) {
+            FitnessAppDB dataBase = ((DashboardActivity) getActivity()).mProfilePicDB;
+            if (dataBase == null) {
+                ((DashboardActivity) getActivity()).mProfilePicDB = new FitnessAppDB(getActivity());
+                dataBase = ((DashboardActivity) getActivity()).mProfilePicDB;
+            }
+            if (dataBase == null) {
+                Log.e(TAG, "Could not create local database");
+                return;
+            }
+            mImageFileName = dataBase.getProfilePictureDirectory(mUserEmail);
+            if (mImageFileName.equals("")) {
+                return;
+            }
+            Bitmap bitmap = BitmapFactory.decodeFile(mImageFileName);
+            if(bitmap != null && mProfilePic != null) {
+                mProfilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                mProfilePic.setImageBitmap(bitmap);
+            }
+        }
     }
 
     @Override
@@ -322,6 +377,7 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private void setUserLastLoggedWorkout() {
         String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
+        Log.i(TAG, url);
         UserLastLoggedWorkoutTask task = new UserLastLoggedWorkoutTask();
         task.execute(url);
     }
@@ -334,6 +390,7 @@ public class DashboardDisplayFragment extends Fragment {
         mUserEmail = mSharedPreferences.getString(getString(R.string.current_email),
                 "Email does not exist");
         String url = USER_INFO + "email=" + mUserEmail;
+        Log.i(TAG, url);
         DownloadUserInfoTask task = new DownloadUserInfoTask();
         task.execute(url);
     }
