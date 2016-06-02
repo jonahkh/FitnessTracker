@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -81,7 +82,7 @@ public class AddSetFragment extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = dashboard.getLayoutInflater();
         final GetWorkoutNumber task = new GetWorkoutNumber();
-        final View v = inflater.inflate(R.layout.add_set_dialog, null);
+        @SuppressLint("InflateParams") final View v = inflater.inflate(R.layout.add_set_dialog, null);
         final EditText weight = (EditText) v.findViewById(R.id.enter_weight);
         final EditText reps = (EditText) v.findViewById(R.id.enter_reps);
         final Button addSet = (Button) v.findViewById(R.id.add_set);
@@ -139,6 +140,7 @@ public class AddSetFragment extends DialogFragment {
      *
      * @return the url to add the workout to the server
      */
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     private String buildUrl() {
         StringBuilder url = new StringBuilder(WORKOUT_URL);
         Log.e("TAG", mWorkoutNum + "");

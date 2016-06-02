@@ -1,5 +1,11 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -7,39 +13,55 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
-import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewOriginalImageFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
 
 import java.util.List;
 
-
+/**
+ * The View adapter for the recycler view used to show a list of previous pictures.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
+ */
 public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPictureRecyclerViewAdapter.ViewHolder> {
 
     /** Tag used for debugging. */
-    private static final String TAG = "Picture does not exist:";
+    private static final String TAG = "MyPicRecyViewAdapter:";
 
+    /** List of Picture for this user. */
     private final List<Picture> mValues;
 
+    /** The activity calling this Recycler Adapter. */
     private final FragmentActivity mActivity;
 
+    /** The current Picture (Profile pic). */
     private static Picture mCurrentPicture;
 
+    /**
+     * The constructor to instantiate this class.
+     *
+     * @param items The list of pictures.
+     * @param activity The activity calling this Recycler Adapter.
+     */
     public MyPictureRecyclerViewAdapter(List<Picture> items,
                                         FragmentActivity activity) {
         mValues = items;
         mActivity = activity;
     }
 
+    /**
+     * Method to set the image of an ImageView.
+     *
+     * @param bigImageView The Image view to set its image.
+     */
     public static void setBigImageView(ImageView bigImageView) {
         bigImageView.setImageBitmap(mCurrentPicture.getmOriginalImage());
     }
@@ -51,10 +73,10 @@ public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPicture
         return new ViewHolder(view);
     }
 
+    @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
-//        Bitmap image = getImageBitmap(mValues.get(position).getPhotoDirectoryLocation(), position);
         final Bitmap image = mValues.get(position).getImage();
         if(image != null) {
             holder.mContentView.setImageBitmap(image);
@@ -68,7 +90,6 @@ public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPicture
                             .replace(R.id.fragment_container, orgImgFrag)
                             .addToBackStack(null)
                             .commit();
-                    Log.e("CLick", "clikc");
                 }
             });
             holder.mContentView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -99,6 +120,7 @@ public class MyPictureRecyclerViewAdapter extends RecyclerView.Adapter<MyPicture
         return mValues.size();
     }
 
+    /** The view holder containing required info to make the adapter work. */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView mContentView;

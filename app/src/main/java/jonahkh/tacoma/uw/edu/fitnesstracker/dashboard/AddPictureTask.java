@@ -7,7 +7,6 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,7 +25,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
  */
 public class AddPictureTask extends AsyncTask<String, Void, String> {
 
-    /** The aplication context. */
+    /** The application context. */
     private final Context mApplicationContext;
 
     /** Tag used for debugging. */
@@ -40,11 +39,6 @@ public class AddPictureTask extends AsyncTask<String, Void, String> {
      */
     public AddPictureTask(Context applicationContext) {
         mApplicationContext = applicationContext;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
     }
 
     @Override

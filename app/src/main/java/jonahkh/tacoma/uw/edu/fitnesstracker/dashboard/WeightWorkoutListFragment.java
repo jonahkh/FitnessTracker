@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -14,7 +15,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,7 +166,7 @@ public class WeightWorkoutListFragment extends Fragment {
         final DashboardActivity dashboard = (DashboardActivity) getActivity();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = dashboard.getLayoutInflater();
-        final View v = inflater.inflate(R.layout.add_exercise_fragment, null);
+        @SuppressLint("InflateParams") final View v = inflater.inflate(R.layout.add_exercise_fragment, null);
         final TextView mExercise = (EditText) v.findViewById(R.id.enter_exercise_name);
         final Button addExercise = (Button) v.findViewById(R.id.add_exercise);
         builder.setView(v);

@@ -168,7 +168,6 @@
     <string name="profile_photo">Profile Photo</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-    <string name="profile_pic_file_name">Profile Pic File Name</string>
     <string name="addPictureTask_error">Unable to add image to database!</string>
     <string name="view_previous_pictures">PREVIOUS PICTURES</string>
     <string name="icon">icon</string>

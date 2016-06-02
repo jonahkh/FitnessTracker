@@ -27,7 +27,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 public class AddCardioWorkoutTest extends
         ActivityInstrumentationTestCase2<DashboardActivity> {
 
-    /** The field used for testeing. */
+    /** The field used for testing. */
     private Solo solo;
 
     /** Constructor setup. */
@@ -57,7 +57,7 @@ public class AddCardioWorkoutTest extends
 
 
 
-    /** Method to test if the Logged Cardio Meny Item works. */
+    /** Method to test if the Logged Cardio add Item works. */
     public void testAddingLoggedCardioWorkout() {
         solo.clickOnScreen(85, 75);
         solo.clickOnText("Logged Cardio Workouts");

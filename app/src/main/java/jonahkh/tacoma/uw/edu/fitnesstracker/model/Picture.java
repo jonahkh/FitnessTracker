@@ -1,10 +1,14 @@
+/*
+ * Jonah Howard
+ * Hector Diaz
+ * TCSS 450 - Team 2
+ */
 package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,23 +22,38 @@ import java.util.List;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 
 /**
- * Created by Hector on 5/31/2016.
+ * Picture class to store different size of bitmaps and picture location.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class Picture implements Serializable {
 
-    private String mPhotoDirectoryLocation;
+    /** The maximum image dimension when displaying the small image size of the bitmap. */
+    public static final int MAX_IMAGE_SIZE = 250;
 
-    public static final int MAX_IMAGE_SIZE = 300;
-
+    /** URL for the PHP to delelte a picture directory. */
     private static final String DELETE_PICTURE_URL =
             "http://cssgate.insttech.washington.edu/~_450atm2/deletePicture.php?";
 
+    /** The photo directory location. */
     public static final String PHOTO_DIR_LOC = "photoDirectoryLocation";
 
+    /** The reduce bitmap image/picture of this class. */
     private Bitmap mImage;
 
-    private Bitmap mOriginalImage;
+    /** The user's profile picture directory. */
+    private String mPhotoDirectoryLocation;
 
+//    /** The original bitmap image of this picture class. */
+//    private Bitmap mOriginalImage;
+
+    /**
+     * Constructor for this class.
+     *
+     * @param photoDirectoryLocation The directory of the where the image/picture
+     *                               is stored at.
+     */
     public Picture(String photoDirectoryLocation) {
         mPhotoDirectoryLocation = photoDirectoryLocation;
         setImage(photoDirectoryLocation);
@@ -44,14 +63,14 @@ public class Picture implements Serializable {
         return mPhotoDirectoryLocation;
     }
 
-    public void setPhotoDirectoryLocation(String mPhotoDirectoryLocation) {
-        this.mPhotoDirectoryLocation = mPhotoDirectoryLocation;
-    }
+//    public void setPhotoDirectoryLocation(String mPhotoDirectoryLocation) {
+//        this.mPhotoDirectoryLocation = mPhotoDirectoryLocation;
+//    }
 
     /**
      * Parses the json string, returns an error message if unsuccessful.
      * Returns course list if success.
-     * @param courseJSON
+     * @param courseJSON The JSON string object representation.
      * @return reason or null if successful.
      */
     public static String parseCourseJSON(String courseJSON, List<Picture> courseList, String userEmail) {
@@ -91,6 +110,7 @@ public class Picture implements Serializable {
         return mImage;
     }
 
+    /* Methid to set the fields of this picture class. */
     public void setImage(String photoDirectoryLocation) {
         Bitmap image = BitmapFactory.decodeFile(photoDirectoryLocation);
         if(image == null){
@@ -98,7 +118,7 @@ public class Picture implements Serializable {
         }
         int width = image.getWidth();
         int height = image.getHeight();
-        setmOriginalImage(image);
+//        setmOriginalImage(image);
         float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = MAX_IMAGE_SIZE;
@@ -111,19 +131,21 @@ public class Picture implements Serializable {
     }
 
     public Bitmap getmOriginalImage() {
-        return mOriginalImage;
-    }
-
-    public void setmOriginalImage(Bitmap image) {
-        mOriginalImage = image;
-    }
-
-    private static class DeletePicturesTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        if(mPhotoDirectoryLocation != null) {
+            return BitmapFactory.decodeFile(mPhotoDirectoryLocation);
         }
+        return null;
+    }
+
+//    public void setmOriginalImage(Bitmap image) {
+//        mOriginalImage = image;
+//    }
+
+    /**
+     * Async task class to delete directories of images that are not found on the device
+     * but are stored in the database.
+     */
+    private static class DeletePicturesTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -133,8 +155,7 @@ public class Picture implements Serializable {
         @Override
         protected void onPostExecute(String result) {
             if (result.startsWith("Unable to")) {
-                Log.e("DeletePicTask Poblem:", result);
-                return;
+                Log.e("DeletePicTask Problem:", result);
             }
         }
     }

@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +70,7 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -96,7 +98,8 @@ public class PreDefinedWorkoutAdapter extends BaseAdapter {
 
         /** The current View. */
         public final View mView;
-        /** The textview for the workout name. */
+
+        /** The text view for the workout name. */
         public final TextView mContentView;
         /** The current predefined workout. */
         public WeightWorkout mItem;

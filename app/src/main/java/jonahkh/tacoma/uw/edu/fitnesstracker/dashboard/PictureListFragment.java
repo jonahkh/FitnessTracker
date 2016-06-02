@@ -1,3 +1,9 @@
+/*
+ * TCSS 450 FitnessTracker
+ * Jonah Howard
+ * Hector Diaz
+ */
+
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
@@ -24,16 +30,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p>
- * interface.
+ * The list of pictures, class used to display previous user pictures.
+ *
+ * @author Jonah Howard
+ * @author Hector Diaz
  */
 public class PictureListFragment extends Fragment {
     private static final String ADD_PICTURE_URL =
             "http://cssgate.insttech.washington.edu/~_450atm2/getAfterImages.php?";
 
-    // TODO: Customize parameters
-    private int mColumnCount = 3;
+    /** Number of columns to show. */
+    private final int mColumnCount = 3;
 
     /**
      * so that we can access it in the thread to load the data.
@@ -52,12 +59,7 @@ public class PictureListFragment extends Fragment {
     public PictureListFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
+    @SuppressWarnings("ConstantConditions")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,24 +87,14 @@ public class PictureListFragment extends Fragment {
             mUserEmail = sharedPreferences.getString(getString(R.string.current_email),
                     "Email does not exist");
             String url = ADD_PICTURE_URL + "email=" + mUserEmail;
-            Log.i("Pictire List Frag", url);
+            Log.i("Picture List Frag", url);
             task.execute(url);
         }
         return view;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-
+    /** Private class do download from server list of user images stored in device. */
     private class DownloadPicturesTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -116,13 +108,13 @@ public class PictureListFragment extends Fragment {
                         .show();
                 return;
             }
+            //noinspection Convert2Diamond
             mCourseList = new ArrayList<Picture>();
             result = Picture.parseCourseJSON(result, mCourseList, mUserEmail);
             if (result != null) {
                 Toast.makeText(getActivity().getApplicationContext(), R.string.no_prev_pic_message,
                         Toast.LENGTH_LONG)
                         .show();
-                return;
             } else {
                 mRecyclerView.setAdapter(new MyPictureRecyclerViewAdapter(mCourseList, getActivity()));
                 Toast.makeText(getActivity().getApplicationContext(), "Hold a picture to share to Facebook",
