@@ -218,12 +218,10 @@ public class DashboardDisplayFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                Log.e(TAG, "checked");
                 mSharedPreferences.edit().putBoolean(getActivity().getString(R.string.ON), true).apply();
                 getActivity().startService(new Intent(getActivity(), RSSService.class));
                 RSSService.setServiceAlarm(getActivity(), true);
             } else {
-                Log.e(TAG, "unchecked");
                 RSSService.setServiceAlarm(getActivity(), false);
                 mSharedPreferences.edit().putBoolean(getActivity()
                         .getString(R.string.ON), false).apply();
@@ -271,7 +269,6 @@ public class DashboardDisplayFragment extends Fragment {
         String imageFileName = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.profile_pic_file_name),
                 "");
-        Log.i(TAG, imageFileName);
         Bitmap bitmap = BitmapFactory.decodeFile(imageFileName);
         if(bitmap != null) {
             profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -308,15 +305,12 @@ public class DashboardDisplayFragment extends Fragment {
     /** Sets the view of the users last logged workout. */
     private void setUserLastLoggedWorkoutView() {
         TextView name = (TextView) mView.findViewById(R.id.dashB_workoutName);
-        Log.e("DashboardDisplay", mWorkoutName);
         name.setText(" " + mWorkoutName); // not concatenation, is a space to separate data
 
         TextView date = (TextView)mView.findViewById(R.id.dashB_workoutDate);
-        Log.e("DashboardDisplay", mDateCompleted);
         date.setText(" " + mDateCompleted); // not concatenation, is a space to separate data
 
         TextView number = (TextView)mView.findViewById(R.id.dashB_workoutNumber);
-        Log.e("DashboardDisplay", mWorkoutNum + "");
         number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
         mSharedPreferences.edit().putString(getString(R.string.last_workout),
                 mDateCompleted).apply();
@@ -328,7 +322,6 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private void setUserLastLoggedWorkout() {
         String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
-        Log.i(TAG, url);
         UserLastLoggedWorkoutTask task = new UserLastLoggedWorkoutTask();
         task.execute(url);
     }
@@ -341,7 +334,6 @@ public class DashboardDisplayFragment extends Fragment {
         mUserEmail = mSharedPreferences.getString(getString(R.string.current_email),
                 "Email does not exist");
         String url = USER_INFO + "email=" + mUserEmail;
-        Log.i(TAG, url);
         DownloadUserInfoTask task = new DownloadUserInfoTask();
         task.execute(url);
     }
@@ -358,7 +350,6 @@ public class DashboardDisplayFragment extends Fragment {
         daysWorkingOut.setText("" + mUserDaysToWorkout); // Concatenating to make it a string.
         mSharedPreferences.edit().putInt(getString(R.string.days_working_out),
                 mUserDaysToWorkout).apply();
-        Log.e(TAG, "HERE");
     }
 
     /** Private class to download user personal information */

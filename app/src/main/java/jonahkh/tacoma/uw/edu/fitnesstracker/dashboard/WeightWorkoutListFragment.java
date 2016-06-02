@@ -306,8 +306,9 @@ public class WeightWorkoutListFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
-//                getActivity().onBackPressed();
+                if (mExerciseList.isEmpty()) {
+                    Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
+                }
                 FragmentManager manager = getActivity().getSupportFragmentManager();
                 manager.popBackStack();
 

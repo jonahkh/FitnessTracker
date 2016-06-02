@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:id="@+id/imageView"
         android:clickable="true"
+        android:longClickable="true"
         android:layout_gravity="center_horizontal"
         android:background="@color/com_facebook_blue"/>
 

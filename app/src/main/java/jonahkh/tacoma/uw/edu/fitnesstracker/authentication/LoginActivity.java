@@ -423,6 +423,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    /**
+     * Displays dialog for user resetting password.
+     */
     private void resetPassword() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
@@ -486,6 +489,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         dialog.show();
     }
 
+    /** Class to connect to web service to reset password. */
     private class ResetPasswordTask extends AsyncTask<String, Void, String> {
 
         @Override

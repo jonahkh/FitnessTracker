@@ -125,6 +125,8 @@ public class PictureListFragment extends Fragment {
                 return;
             } else {
                 mRecyclerView.setAdapter(new MyPictureRecyclerViewAdapter(mCourseList, getActivity()));
+                Toast.makeText(getActivity().getApplicationContext(), "Hold a picture to share to Facebook",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

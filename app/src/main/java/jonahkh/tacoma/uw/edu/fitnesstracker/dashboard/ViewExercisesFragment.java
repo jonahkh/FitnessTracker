@@ -16,12 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
-
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,7 +60,7 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        View view = inflater.inflate(R.layout.fragment_view_exercises, container, false);
         SharedPreferences pref = getActivity()
                 .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
@@ -87,10 +84,8 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
 //        ShareContent content = new ShareContent.Builder().build();
         Bundle bundle = new Bundle();
         bundle.putString("message", "This is a test");
-        ShareDialog dialog = new ShareDialog(getActivity());
-
-
-        return inflater.inflate(R.layout.fragment_view_exercises, container, false);
+//        ShareDialog dialog = new ShareDialog(getActivity());
+        return view;
     }
 
     /**

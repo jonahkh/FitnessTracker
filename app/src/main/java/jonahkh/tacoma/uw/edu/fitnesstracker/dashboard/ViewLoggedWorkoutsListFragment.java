@@ -140,18 +140,20 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
             // Everything is good, show the list of courses.
             if (!mWorkoutList.isEmpty()) {
                 mAdapter = new ViewLoggedWeightWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
-                ListView view = (ListView) getActivity().findViewById(R.id.logged_workouts_list);
-                view.setLongClickable(true);
-                view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        ((DashboardActivity) getActivity()).redoLoggedWorkout(mWorkoutList.get(position));
+                if ((ListView) getActivity().findViewById(R.id.logged_workouts_list) != null) {
+                    ListView view = (ListView) getActivity().findViewById(R.id.logged_workouts_list);
+                    view.setLongClickable(true);
+                    view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                    view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            ((DashboardActivity) getActivity()).redoLoggedWorkout(mWorkoutList.get(position));
 
-                        return true;
-                    }
-                });
-                view.setAdapter(mAdapter);
+                            return true;
+                        }
+                    });
+                    view.setAdapter(mAdapter);
+                }
             }
         }
     }
