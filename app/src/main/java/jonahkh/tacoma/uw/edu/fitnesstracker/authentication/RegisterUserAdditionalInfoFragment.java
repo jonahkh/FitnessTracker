@@ -111,6 +111,17 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         final View myView = inflater.inflate(R.layout.fragment_register_user_additional__info,
                 container, false);
+        // request permission
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_CAMERA);
+        }
 
         Button register = (Button)myView.findViewById(R.id.registerUser_bt);
         register.setOnClickListener(new View.OnClickListener(){
@@ -155,38 +166,12 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
         mImageView = (ImageView) myView.findViewById(R.id.add_pic);
         mImageView.setOnClickListener(new View.OnClickListener() {
-            final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-            boolean permissions = sharedPreferences.getBoolean(getString(R.string.permission_granted),
-                    false);
             @Override
             public void onClick(View v) {
-                if(permissions) {
-                    AddPictureFragment fragment = new AddPictureFragment();
-                    fragment.show(getActivity().getSupportFragmentManager(), "launch");
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.CAMERA,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_CAMERA);
-                    Toast.makeText(getActivity(), CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
-                            .show();
-
-                }
-
+                AddPictureFragment fragment = new AddPictureFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), "launch");
             }
         });
-        // request permission
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.CAMERA,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_CAMERA);
-        }
 
         return myView;
     }

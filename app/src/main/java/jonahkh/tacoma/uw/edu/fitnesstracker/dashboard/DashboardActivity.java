@@ -741,4 +741,20 @@ public class DashboardActivity extends AppCompatActivity
             addPictureTask.execute(url);
         }
     }
+
+    /**
+     * Sets reference to local database.
+     * @param localDataBase The local data base.
+     * @param currentPhotoPath The current path of the profile picture.
+     * @param userEmail The email of the user.
+     */
+    public void setLocalDataBase(FitnessAppDB localDataBase, String currentPhotoPath,
+                                 String userEmail) {
+        mProfilePicDB = localDataBase;
+        if(mProfilePicDB == null) {
+            mProfilePicDB = new FitnessAppDB(this);
+        }
+        mProfilePicDB.setProfilePicture(userEmail, currentPhotoPath);
+
+    }
 }

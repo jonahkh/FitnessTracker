@@ -129,6 +129,9 @@ public class RegisterUserActivity extends AppCompatActivity {
     /** Whether we are capturing an image or grabbing it from file. */
     private boolean mImageCapture;
 
+    /** The local database that contains references to profile pictures. */
+    private FitnessAppDB mProfilePicDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getIntent().getExtras();
@@ -246,8 +249,8 @@ public class RegisterUserActivity extends AppCompatActivity {
                         getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
                 String userEmail = sharedPreferences.getString(getString(R.string.current_email),
                         "Email does not exist");
-                FitnessAppDB profilePicDB = new FitnessAppDB(getApplicationContext());
-                boolean successful = profilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                mProfilePicDB = new FitnessAppDB(getApplicationContext());
+                boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
                 if(!successful) {
                     Log.e(TAG, "Profile pic could not be send to local database");
                 }
@@ -516,7 +519,9 @@ public class RegisterUserActivity extends AppCompatActivity {
                         sharedPreferences.edit().putBoolean(getString(R.string.logged_in), true)
                                 .apply();
                         // Registration complete go to dashboard.
-                        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                        DashboardActivity temp = new DashboardActivity();
+                        Intent intent = new Intent(getApplicationContext(), temp.getClass());
+                        temp.setLocalDataBase(mProfilePicDB, mCurrentPhotoPath, mUserEmail);
                         startActivity(intent);
                         getSupportFragmentManager().popBackStackImmediate();
                     }

@@ -83,7 +83,6 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textColor="#000000"
-            android:text="@string/distance"
             android:gravity="center_horizontal"
             android:id="@+id/cardio_activity_distance"/>
         <TextView
