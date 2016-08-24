@@ -95,8 +95,8 @@ public class WeightWorkoutListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         View view = inflater.inflate(R.layout.fragment_custom_weight_list, container, false);
+        mBundle = getArguments();
         if (mCurrentWorkout != null) {
             // Retrieve current workout
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
@@ -117,7 +117,7 @@ public class WeightWorkoutListFragment extends Fragment {
                         "No network connection available. Cannot display workouts",
                         Toast.LENGTH_SHORT).show();
             }
-        } else {    // A custom workout is being performed
+        } else if (mExerciseList == null){    // A custom workout is being performed
             mExerciseList = new ArrayList<>();
         }
 
@@ -142,16 +142,6 @@ public class WeightWorkoutListFragment extends Fragment {
         list.setAdapter(mAdapter);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-                    onExit();
-                    return true;
-                }
-                return false;
-            }
-        });
         return view;
     }
 
@@ -220,9 +210,7 @@ public class WeightWorkoutListFragment extends Fragment {
     public void addExercise(final String exercise) {
         mExerciseList.add(new Exercise(exercise.trim()));
         mAdapter.notifyDataSetChanged();
-//        view.setAdapter(mAdapter);
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -301,7 +289,7 @@ public class WeightWorkoutListFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
+//        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
         super.onDestroy();
     }
 
@@ -315,9 +303,6 @@ public class WeightWorkoutListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 Toast.makeText(getActivity(), "Workout Saved", Toast.LENGTH_SHORT).show();
-//                getActivity().onBackPressed();
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                manager.popBackStack();
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -328,6 +313,5 @@ public class WeightWorkoutListFragment extends Fragment {
         });
         Dialog alert = builder.create();
             alert.show();
-        ((DashboardActivity) getActivity()).lockDrawer(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

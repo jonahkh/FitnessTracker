@@ -101,18 +101,9 @@ public class DashboardDisplayFragment extends Fragment {
     /** Users email. */
     private String mUserEmail;
 //    For later implementation
-//    private String mUserFirstName;
-//    private String mUserLastName;
-//    private byte[] mUserProfilePhoto;
-//    private String mUserBirhtDay;
 
     /** Users weight. */
     private int mUserWeight;
-
-//    private int mUserHeightFt;
-//    private int mUserHeightIn;
-//    private String mUserGender;
-
 
     /** Users activity level. */
     private String mUserActivityLevel;
@@ -258,15 +249,15 @@ public class DashboardDisplayFragment extends Fragment {
     /** Sets the view of the users last logged workout. */
     private void setUserLastLoggedWorkoutView() {
         TextView name = (TextView) mView.findViewById(R.id.dashB_workoutName);
-        Log.e("DashboardDisplay", mWorkoutName);
+//        Log.e("DashboardDisplay", mWorkoutName);
         name.setText(" " + mWorkoutName); // not concatenation, is a space to separate data
 
         TextView date = (TextView)mView.findViewById(R.id.dashB_workoutDate);
-        Log.e("DashboardDisplay", mDateCompleted);
+//        Log.e("DashboardDisplay", mDateCompleted);
         date.setText(" " + mDateCompleted); // not concatenation, is a space to separate data
 
         TextView number = (TextView)mView.findViewById(R.id.dashB_workoutNumber);
-        Log.e("DashboardDisplay", mWorkoutNum + "");
+//        Log.e("DashboardDisplay", mWorkoutNum + "");
         number.setText(" " + mWorkoutNum); // not concatenation, is a space to separate data
         mSharedPreferences.edit().putString(getString(R.string.last_workout),
                 mDateCompleted).apply();
@@ -278,7 +269,7 @@ public class DashboardDisplayFragment extends Fragment {
      */
     private void setUserLastLoggedWorkout() {
         String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
-        Log.i(TAG, url);
+//        Log.i(TAG, url);
         UserLastLoggedWorkoutTask task = new UserLastLoggedWorkoutTask();
         task.execute(url);
     }
@@ -291,7 +282,7 @@ public class DashboardDisplayFragment extends Fragment {
         mUserEmail = mSharedPreferences.getString(getString(R.string.current_email),
                 "Email does not exist");
         String url = USER_INFO + "email=" + mUserEmail;
-        Log.i(TAG, url);
+//        Log.i(TAG, url);
         DownloadUserInfoTask task = new DownloadUserInfoTask();
         task.execute(new String[]{url});
     }
@@ -308,7 +299,7 @@ public class DashboardDisplayFragment extends Fragment {
         daysWorkingOut.setText("" + mUserDaysToWorkout); // Concatenating to make it a string.
         mSharedPreferences.edit().putInt(getString(R.string.days_working_out),
                 mUserDaysToWorkout).apply();
-        Log.e(TAG, "HERE");
+//        Log.e(TAG, "HERE");
     }
 
     /** Private class to download user personal information */
