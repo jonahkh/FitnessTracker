@@ -4,25 +4,28 @@
  * TCSS 450 - Team 2
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
-// TODO finish project
-/*
- * Settings page (Use Case 7)
- * Camera for login and on dashboard
- * Forgot password
- * Share workout to Facebook
- * Robotium Test
- */
-import android.app.Activity;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -36,16 +39,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
+import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.LoginActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
@@ -65,11 +72,25 @@ public class DashboardActivity extends AppCompatActivity
                     WeightWorkoutListFragment.OnListFragmentInteractionListener,
         ViewLoggedWorkoutsListFragment.LoggedWeightWorkoutsInteractListener {
 
+    /** Only one image can be taken. */
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    /** The Directory to store the pic for this app. */
+    private final String DIRECTORY = "FitnessTracker";
+
+    /** Permission for the Camera. */
+    private static final int MY_PERMISSIONS_CAMERA = 1;
+
+    /** URL used to delete the user information from database. */
+    private final static String ADD_IMAGE_URL
+            = "http://cssgate.insttech.washington.edu/~_450atm2/addPicture.php?";
+
+    /** Message for the permission of the camera. */
+    private static final String CAMERA_PERMISSION_MESSAGE =
+            "Camera permission is needed to add profile picture using your camera.";
+
     /** Stores the current workout that is being used by the active Fragment. */
     private WeightWorkout mCurrentWorkout;
-
-    /** The SavedInstanceState. Used to restore data when the app is rotated. */
-//    private Bundle mSavedInstanceState;
 
     /** The Fragment for the dashboard home page. */
     private DashboardDisplayFragment mDashView = null;
@@ -86,13 +107,22 @@ public class DashboardActivity extends AppCompatActivity
     /** Adds a cardio workout. */
     private FloatingActionButton mFabCardioWorkout;
     /** The dialog for starting a custom workout. */
-    protected Dialog mStartCustomWorkoutDialog;
+    private Dialog mStartCustomWorkoutDialog;
 
     /** The mDrawer for this Activity. */
     private DrawerLayout mDrawer;
 
     /** The navigation view for the drawer. */
     private NavigationView mNavView;
+
+    /** The path of the current photo. */
+    private String mCurrentPhotoPath;
+
+    /** Whether we are capturing an image or grabbing it from file. */
+    private boolean mImageCapture;
+
+    /** Local database. */
+    protected FitnessAppDB mProfilePicDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +166,53 @@ public class DashboardActivity extends AppCompatActivity
         }
         mSharedPreferences  = getSharedPreferences(getString(R.string.CURRENT_WORKOUT)
                 , Context.MODE_PRIVATE);
-//        startService(new Intent(this, RSSService.class));
+        // request permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_CAMERA);
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        final SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+        switch (requestCode) {
+            case MY_PERMISSIONS_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // add a picture task needed.
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            true).apply();
+                } else {
+//                    sharedPreferences.edit().putBoolean(getString(R.string.permission_granted),
+//                            false).apply();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(this, CAMERA_PERMISSION_MESSAGE, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+//    public void setLocalDatabase() {
+//        mProfilePicDB = new FitnessAppDB(getApplicationContext());
+//    }
 
     /**
      * Locks or unlocks the drawer depending on the passed mode. The drawer is locked when the user
@@ -156,7 +231,7 @@ public class DashboardActivity extends AppCompatActivity
      */
     private void initializeCustomWorkoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View view = getLayoutInflater().inflate(R.layout.start_custom_workout_dialog, null);
+        @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.start_custom_workout_dialog, null);
         final EditText text = (EditText) view.findViewById(R.id.workout_name);
         final Button start = (Button) view.findViewById(R.id.start);
         final Button cancel = (Button) view.findViewById(R.id.cancel);
@@ -199,17 +274,7 @@ public class DashboardActivity extends AppCompatActivity
      * @return true if the user's device is connected to the network
      */
     public boolean isNetworkConnected(String message) {
-        // Check for network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) {
-            Toast.makeText(this,
-                    "No network connection available. Cannot display " + message,
-                    Toast.LENGTH_SHORT) .show();
-            return false;
-        }
-        return true;
+        return isNetworkConnected(message, true);
     }
 
     /**
@@ -246,7 +311,7 @@ public class DashboardActivity extends AppCompatActivity
      *
      * @param id the id of the navigation item being set
      */
-    protected void setNavigationItem(int id) {
+    void setNavigationItem(int id) {
         mNavView.setCheckedItem(id);
     }
 
@@ -279,7 +344,7 @@ public class DashboardActivity extends AppCompatActivity
      *
      * @param workout the workout being repeated
      */
-    protected void redoLoggedWorkout(final WeightWorkout workout) {
+    void redoLoggedWorkout(final WeightWorkout workout) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Start " + workout.getWorkoutName() + " workout?");
         builder.setPositiveButton("Start", new DialogInterface.OnClickListener() {
@@ -360,13 +425,6 @@ public class DashboardActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    /**
-     * Retrieves the current workout if the app was restarted unexpectedly (if the user changes the
-     * screen orientation).
-     */
-    public void retrieveCurrentWorkout() {
-//        onRestoreInstanceState(mSavedInstanceState);
-    }
 
     @Override
     public void LoggedWeightWorkoutInteraction(WeightWorkout workout) {
@@ -425,7 +483,6 @@ public class DashboardActivity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -433,7 +490,6 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //TODO make it so when you go to another mDrawer item from a workout the ondestroy method of that fragment is called
         FragmentManager manager = getSupportFragmentManager();
         manager.getFragments().size();
         if (id == R.id.nav_predefined_workouts) {
@@ -489,6 +545,7 @@ public class DashboardActivity extends AppCompatActivity
     public void showFab() {
         mFab.show();
     }
+
     /**
      * Helper method for all AsyncTask inner classes. Connects to the web service and extracts
      * data according to the url.
@@ -522,5 +579,182 @@ public class DashboardActivity extends AppCompatActivity
             }
         }
         return response;
+    }
+
+    /** function that invokes an intent to capture a photo. */
+    public void dispatchTakePictureIntent(boolean imageCapture) {
+        mImageCapture = imageCapture;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File imageFile = null;
+            try {
+                imageFile = createImageFile();
+//                final SharedPreferences sharedPreferences = getSharedPreferences(
+//                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                if(mProfilePicDB == null) {
+                    mProfilePicDB = new FitnessAppDB(this);
+                }
+                boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e("DashBoardActivity", "Profile pic could not be send to local database");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(imageFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(imageFile));
+                galleryAddPic();
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    /** Method that invokes an intent to upload pircture from gallery of images.  */
+    public void dispatchGalleryIntent() {
+        mImageCapture = false;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), REQUEST_IMAGE_CAPTURE);
+    }
+
+    /**
+     * Creates the image file.
+     *
+     * @return The image file.
+     * @throws IOException Exception to be handled by calling method.
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_DCIM);
+        String path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM).toString() + File.separator + DIRECTORY;
+        File storageDir = new File(path);
+        if(!storageDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            storageDir.mkdir();
+        }
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.i("Dashboard Activity", mCurrentPhotoPath);
+        return image;
+    }
+
+    /**
+     *  Adds photo to the Media Provider's database, making it available
+     *  in the Android Gallery application and to other apps.
+     */
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if(!mImageCapture) {
+                Uri selectedImageUri = data.getData();
+                mCurrentPhotoPath = getPath(selectedImageUri);
+//                final SharedPreferences sharedPreferences = getSharedPreferences(
+//                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
+                final SharedPreferences sharedPreferences = getSharedPreferences(
+                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+//                sharedPreferences.edit().putString(getString(R.string.profile_pic_file_name),
+//                        mCurrentPhotoPath).apply();
+                String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                        "Email does not exist");
+                if(mProfilePicDB == null) {
+                    mProfilePicDB = new FitnessAppDB(this);
+                }
+                boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
+                if(!successful) {
+                    Log.e("DashBoardActivity", "Profile pic could not be send to local database");
+                }
+            }
+            setImageView();
+        }
+    }
+
+    /**
+     * Helper method for the onActivityResult method. to getPth of picture being used.
+     *
+     * @param uri The partial location of the image been use.
+     * @return The location of the the picture being used.
+     */
+    private String getPath(Uri uri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
+        if(cursor != null){
+            cursor.moveToFirst();
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
+    /** Helper method for onActivityResult method to set the profile picture of user. */
+    private void setImageView() {
+        ImageView profilePic = (ImageView) findViewById(R.id.profile_pic);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        final long currTime = System.currentTimeMillis();
+        final long end = currTime + 5000;
+        // will run a loop for either 5 seconds waiting for the image
+        // If the 5 seconds run out and the image is still not found
+        // the profile pic will be empty.
+        while(System.currentTimeMillis() < end && bitmap == null){
+            bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        }
+        if(profilePic != null && bitmap != null) {
+            profilePic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            profilePic.setImageBitmap(bitmap);
+            final SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            final AddPictureTask addPictureTask = new AddPictureTask(getApplicationContext());
+            final String userEmail = sharedPreferences.getString(getString(R.string.current_email),
+                    "Email does not exist");
+            String url = ADD_IMAGE_URL + "email=" + userEmail + "&photoDirectoryLocation=" +
+                    mCurrentPhotoPath;
+            Log.i("PIC URL: ", url);
+            addPictureTask.execute(url);
+        }
+    }
+
+    /**
+     * Sets reference to local database.
+     * @param localDataBase The local data base.
+     * @param currentPhotoPath The current path of the profile picture.
+     * @param userEmail The email of the user.
+     */
+    public void setLocalDataBase(FitnessAppDB localDataBase, String currentPhotoPath,
+                                 String userEmail) {
+        mProfilePicDB = localDataBase;
+        if(mProfilePicDB == null) {
+            mProfilePicDB = new FitnessAppDB(this);
+        }
+        mProfilePicDB.setProfilePicture(userEmail, currentPhotoPath);
+
     }
 }

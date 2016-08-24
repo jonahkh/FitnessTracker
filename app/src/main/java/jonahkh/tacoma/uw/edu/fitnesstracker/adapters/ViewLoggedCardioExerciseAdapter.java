@@ -30,10 +30,10 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
     private static final String CARDIO_WORKOUT_HEADER = "Cardio Workout ";
 
     /** Miles for the distance. */
-    public static final String MILES = " Miles";
+    private static final String MILES = " Miles";
 
     /** Minutes for formatting. */
-    public static final String MINUTES = " Minutes";
+    private static final String MINUTES = " Minutes";
 
     /** The list of cardio exercises for this user. */
     private final List<CardioWorkout> mValues;
@@ -44,6 +44,11 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
 //    /** The listener for the list. */
 //    private final ViewLoggedCardioExerciseListFragment.LoggedCardioExerciseInteractListener mListener;
 
+    /**
+     * Constructor for this adapter.
+     * @param context The context of the class using this adapter.
+     * @param items The List of Cardio Workouts.
+     */
     public ViewLoggedCardioExerciseAdapter(Activity context, List<CardioWorkout> items) {
         if (items == null) {
             items = new ArrayList<>();
@@ -78,16 +83,6 @@ public class ViewLoggedCardioExerciseAdapter extends RecyclerView.Adapter<ViewLo
 
         final int duration = mValues.get(position).getDuration();
         holder.mDurationView.setText(duration + MINUTES);
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            if (null != mListener) {
-//                // Notify the active callbacks interface (the activity, if the
-//                // fragment is attached to one) that an item has been selected.
-//                mListener.LoggedCardioExerciseInteraction(holder.mItem);
-//            }
-//            }
-//        });
     }
 
     @Override

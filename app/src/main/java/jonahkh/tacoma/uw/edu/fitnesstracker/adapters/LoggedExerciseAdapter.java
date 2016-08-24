@@ -5,6 +5,7 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -35,9 +36,6 @@ public class LoggedExerciseAdapter extends BaseExpandableListAdapter {
 
     /** Weight identifier for this set. */
     private static final String WEIGHT = "Weight: ";
-
-    /** Repetition identifier for this set. */
-    public static final String REPS = "Reps: ";
 
     /** The activity that holds this adapter. */
     private final Activity mContext;
@@ -90,6 +88,7 @@ public class LoggedExerciseAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         final String exerciseName = ((Exercise) getGroup(groupPosition)).getExerciseName();
@@ -104,6 +103,7 @@ public class LoggedExerciseAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final WorkoutSet set = ((WorkoutSet) getChild(groupPosition, childPosition));

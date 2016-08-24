@@ -6,12 +6,14 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,12 +29,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.Integer;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -59,6 +55,13 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
     /** Tag used for debugging. */
     private final String TAG = "Reg Additional Info";
+
+    /** Message for the permission of the camera. */
+    private static final String CAMERA_PERMISSION_MESSAGE =
+            "Permissions are needed to add profile pictures.";
+
+    /** Permission for the Camera. */
+    private static final int MY_PERMISSIONS_CAMERA = 1;
 
     /** Field used to check that all the required information is entered. */
     private final int INVALID = -1;
@@ -90,8 +93,10 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
     /** Users activity level. */
     private String mActivityLevel;
 
-    /** Number of days the user worksout. */
+    /** Number of days the user workouts. */
     private int mDaysToWorkout;
+
+    /** The imageView of the profile picture. */
     private ImageView mImageView;
 
     /** Required empty public constructor */
@@ -106,6 +111,17 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         final View myView = inflater.inflate(R.layout.fragment_register_user_additional__info,
                 container, false);
+        // request permission
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_CAMERA);
+        }
 
         Button register = (Button)myView.findViewById(R.id.registerUser_bt);
         register.setOnClickListener(new View.OnClickListener(){

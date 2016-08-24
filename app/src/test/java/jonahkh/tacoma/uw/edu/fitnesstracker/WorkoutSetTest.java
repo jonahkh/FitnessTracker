@@ -5,6 +5,8 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
+import android.util.Log;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -37,7 +39,9 @@ public class WorkoutSetTest extends TestCase {
         try {
             WorkoutSet set = new WorkoutSet(null, 1, 1, 1);
             fail("Workout Set can have null name");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WorkoutSetTest", e.toString());
+        }
     }
 
     @Test
@@ -45,7 +49,9 @@ public class WorkoutSetTest extends TestCase {
         try {
             WorkoutSet set = new WorkoutSet("", 1, 1, 1);
             fail("Workout set can have empty name");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WorkoutSetTest", e.toString());
+        }
     }
 
     @Test
@@ -53,7 +59,9 @@ public class WorkoutSetTest extends TestCase {
         try {
             WorkoutSet set = new WorkoutSet("Exercise", -1, 1, 1);
             fail("Workout set can have negative reps count");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("ExerciseTest", e.toString());
+        }
     }
 
     @Test
@@ -61,7 +69,9 @@ public class WorkoutSetTest extends TestCase {
         try {
             WorkoutSet set = new WorkoutSet("Exercise", 1, 0, 1);
             fail("Workout set can have a set number less than 1");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WorkoutSetTest", e.toString());
+        }
     }
 
     @Test
@@ -69,7 +79,9 @@ public class WorkoutSetTest extends TestCase {
         try {
             WorkoutSet set = new WorkoutSet("Exercise", 1, 1, -1);
             fail("Workout set can have negative weight");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WorkoutSetTest", e.toString());
+        }
     }
 
     @Test

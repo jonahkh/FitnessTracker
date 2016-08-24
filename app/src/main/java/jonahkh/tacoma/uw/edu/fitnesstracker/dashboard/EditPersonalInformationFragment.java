@@ -25,12 +25,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
@@ -49,7 +44,7 @@ public class EditPersonalInformationFragment extends Fragment {
             = "http://cssgate.insttech.washington.edu/~_450atm2/updateUserData.php?";
 
     /** Tag used for debugging. */
-    public static final String TAG = "Edit Personal Info";
+    private static final String TAG = "Edit Personal Info";
 
     /** Field used to check that all the required information is entered. */
     private final int INVALID = -1;
@@ -161,24 +156,20 @@ public class EditPersonalInformationFragment extends Fragment {
      *
      * @return The URL needed to launch the UpdateUserDataTask.
      *
-     * @throws UnsupportedEncodingException Incase the activity level cannot be converted to string.
+     * @throws UnsupportedEncodingException In case the activity level cannot be converted to string.
      */
     @NonNull
     private String getUrl() throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder(USER_INFO);
-        sb.append("email=");
-        sb.append(mUserEmail);
+        String sb = USER_INFO + "email=" +
+                mUserEmail +
+                "&weight=" +
+                mWeight +
+                "&daysToWorkout=" +
+                mDaysToWorkout +
+                "&activityLevel=" +
+                URLEncoder.encode(mActivityLevel, "UTF-8");
 
-        sb.append("&weight=");
-        sb.append(mWeight);
-
-        sb.append("&daysToWorkout=");
-        sb.append(mDaysToWorkout);
-
-        sb.append("&activityLevel=");
-        sb.append(URLEncoder.encode(mActivityLevel, "UTF-8"));
-
-        return sb.toString();
+        return sb;
     }
 
     /** AsyncTask class called UpdateUserDataTask that will allow us to call the update

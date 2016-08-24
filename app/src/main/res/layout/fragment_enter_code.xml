@@ -7,7 +7,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Code"
+        android:hint="@string/code"
         android:inputType="text"
         android:maxLength="6"
         android:id="@+id/code"/>

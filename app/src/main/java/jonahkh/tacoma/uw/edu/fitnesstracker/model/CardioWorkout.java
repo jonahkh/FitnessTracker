@@ -24,22 +24,22 @@ import java.util.List;
 public class CardioWorkout implements Serializable{
 
     /** Error do display when there is no data. */
-    public static final String ERROR = "No Logged Workouts to Display!";
+    private static final String ERROR = "No Logged Workouts to Display!";
 
     /** Name of the workout number for this workout. */
-    public static final String NUMBER = "workoutNumber";
+    private static final String NUMBER = "workoutNumber";
 
     /** Name of the date in the weight workout table. */
-    public static final String DATE = "dateCompleted";
+    private static final String DATE = "dateCompleted";
 
     /** The duration of the exercise. */
-    public static final String DURATION = "duration";
+    private static final String DURATION = "duration";
 
     /** Name of the exercise in the exercise table. */
-    public static final String NAME = "workoutName";
+    private static final String NAME = "workoutName";
 
     /** The distance of the exercise if applicable. */
-    public static final String DISTANCE = "distance";
+    private static final String DISTANCE = "distance";
 
     /** The current exercise number. */
     private int mWorkoutNumber;
@@ -75,8 +75,8 @@ public class CardioWorkout implements Serializable{
      * @param duration The duration of the exercise.
      * @param distance The distance of the exercise.
      */
-    public CardioWorkout(String name, int workoutNumber, String date, int duration,
-                         double distance) {
+    private CardioWorkout(String name, int workoutNumber, String date, int duration,
+                          double distance) {
         if (name == null || name.length() < 1 || workoutNumber <0 ||
                 date == null || duration < 0 || distance < 0) {
             throw new IllegalArgumentException();
@@ -92,6 +92,16 @@ public class CardioWorkout implements Serializable{
         mDistance = distance;
     }
 
+    /**
+     * Initializes an exercise activity given a name, workout number, date, duration,
+     * and distance.
+     *
+     * @param workoutNumber The current exercise number.
+     * @param dateCompleted he date this exercise was completed.
+     * @param duration The duration of the exercise.
+     * @param workoutName The name of the exercise.
+     * @param distance The distance of the exercise.
+     */
     public CardioWorkout(int workoutNumber, String dateCompleted, int duration,
                          String workoutName, double distance) {
         if (workoutName == null || workoutName.length() < 1 || workoutNumber < 0 ||
@@ -112,34 +122,32 @@ public class CardioWorkout implements Serializable{
     /**
      * Parse the passed input and convert into a new weight workout.
      *
-     * @param ecerciseActivityJSON the input being parsed (pulled from database)
+     * @param exerciseActivityJSON the input being parsed (pulled from database)
      * @param exerciseList the list being populated based on the input being parsed
      * @return null if no issues, otherwise return the error that occurred
      */
-    public static String parseCardioExercisesJSON(String ecerciseActivityJSON, List<CardioWorkout> exerciseList) {
-        if(ecerciseActivityJSON.length() < 1) {
+    public static String parseCardioExercisesJSON(String exerciseActivityJSON, List<CardioWorkout> exerciseList) {
+        if(exerciseActivityJSON.length() < 1) {
             return ERROR;
         }
         String reason = null;
-        if (ecerciseActivityJSON != null) {
-            try {
-                JSONArray arr = new JSONArray(ecerciseActivityJSON);
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    int workoutNumber = obj.getInt(NUMBER);
-                    String dateCompleted = obj.getString(DATE);
-                    int duration = obj.getInt(DURATION);
-                    String exerciseName = obj.getString(NAME);
-                    double distance = obj.getDouble(DISTANCE);
+        try {
+            JSONArray arr = new JSONArray(exerciseActivityJSON);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                int workoutNumber = obj.getInt(NUMBER);
+                String dateCompleted = obj.getString(DATE);
+                int duration = obj.getInt(DURATION);
+                String exerciseName = obj.getString(NAME);
+                double distance = obj.getDouble(DISTANCE);
 //                    Log.i("TEST", "" + check);
-                    Log.i("Tat", obj.toString());
-                    CardioWorkout exercise = new CardioWorkout(exerciseName, workoutNumber,
-                            dateCompleted, duration, distance);
-                    exerciseList.add(exercise);
-                }
-            } catch (JSONException e) {
-                reason =  e.getMessage();
+                Log.i("Tat", obj.toString());
+                CardioWorkout exercise = new CardioWorkout(exerciseName, workoutNumber,
+                        dateCompleted, duration, distance);
+                exerciseList.add(exercise);
             }
+        } catch (JSONException e) {
+            reason =  e.getMessage();
         }
         return reason;
     }
@@ -160,14 +168,18 @@ public class CardioWorkout implements Serializable{
         return -1;
     }
 
-
+    /**
+     * Methdo to get the workoutNumber.
+     *
+     * @return The workout Number of this cardio workout.
+     */
     public int getWorkoutNumber() {
         return mWorkoutNumber;
     }
 
-    public void setWorkoutNumber(int mWorkoutNumber) {
-        this.mWorkoutNumber = mWorkoutNumber;
-    }
+//    public void setWorkoutNumber(int mWorkoutNumber) {
+//        this.mWorkoutNumber = mWorkoutNumber;
+//    }
 
     public String getDate() {
         return mDate;
@@ -181,25 +193,25 @@ public class CardioWorkout implements Serializable{
         return mDuration;
     }
 
-    public void setDuration(int mDuration) {
-        this.mDuration = mDuration;
-    }
+//    public void setDuration(int mDuration) {
+//        this.mDuration = mDuration;
+//    }
 
     public String getActivityName() {
         return mActivityName;
     }
 
-    public void setActivityName(String mActivityName) {
-        this.mActivityName = mActivityName;
-    }
+//    public void setActivityName(String mActivityName) {
+//        this.mActivityName = mActivityName;
+//    }
 
     public double getDistance() {
         return mDistance;
     }
 
-    public void setDistance(double mDistance) {
-        this.mDistance = mDistance;
-    }
+//    public void setDistance(double mDistance) {
+//        this.mDistance = mDistance;
+//    }
 
     @Override
     public String toString() {

@@ -8,26 +8,21 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 
 /**
  * Fragment used to add a profile image.
@@ -38,14 +33,12 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class AddPictureFragment extends DialogFragment {
 
-
-
     /** Error message displayed if no camera permission was granted. */
     private static final String CAMERA_PERMISSION_ERROR =
-            "Camera persmission was not granted, can not take picture.";
+            "Camera permission was not granted, can not take picture.";
 
     /** The image button. */
-    private ImageButton mImageView;
+    private ImageView mImageView;
 
     /** Default empty constructor. */
     public AddPictureFragment() {
@@ -53,6 +46,7 @@ public class AddPictureFragment extends DialogFragment {
     }
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 //        mImageView = (ImageButton) getActivity().findViewById(R.id.add_pic);
@@ -66,22 +60,32 @@ public class AddPictureFragment extends DialogFragment {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                         == PackageManager.PERMISSION_GRANTED) {
                     // add from camera
-                    ((RegisterUserActivity)getActivity()).dispatchTakePictureIntent();
+                    Activity activity = getActivity();
+                    if (activity instanceof RegisterUserActivity) {
+                        ((RegisterUserActivity) activity).dispatchTakePictureIntent();
+                    } else if (activity instanceof DashboardActivity) {
+                        ((DashboardActivity) activity).dispatchTakePictureIntent(true);
+                    }
                 } else {
                     Toast.makeText(getContext(), CAMERA_PERMISSION_ERROR, Toast.LENGTH_SHORT)
                             .show();
                 }
             }
-        });
-        // negative button
-        builder.setNegativeButton(R.string.gallery, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(R.string.gallery, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // add from gallery
+                Activity activity = getActivity();
+                if (activity instanceof RegisterUserActivity) {
+                    ((RegisterUserActivity) activity).dispatchGalleryIntent();
+                } else if (activity instanceof DashboardActivity) {
+                    ((DashboardActivity) activity).dispatchGalleryIntent();
+                }
+
+
             }
         });
         // Create the AlertDialog object and return it
         return builder.create();
     }
-
 
 }

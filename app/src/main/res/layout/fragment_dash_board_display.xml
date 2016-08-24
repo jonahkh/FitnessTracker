@@ -2,10 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/dashBoardDisplay"
     android:orientation="vertical"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     tools:context=".dashboard.DashboardDisplayFragment">
+
+    <ImageView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/profile_pic"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/com_facebook_blue"
+        android:src="@android:drawable/ic_menu_camera"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:clickable="true"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/holo_blue_dark"
+        android:text= "@string/view_previous_pictures"
+        android:id="@+id/view_pre_pics"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -16,9 +36,6 @@
             android:layout_height="wrap_content"
             android:text="@string/edit_str"
             android:id="@+id/dashB_editPersonalBt"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:background="@android:color/transparent"
             android:textColor="@android:color/holo_blue_dark"/>
 
@@ -92,7 +109,7 @@
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/toggle_notifications"
-        android:text="Enable Notifications?"/>
+        android:text="@string/enable_notifications"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

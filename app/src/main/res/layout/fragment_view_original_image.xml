@@ -1,14 +1,15 @@
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.AddSetFragment">
+    tools:context="jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.ViewOriginalImageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/original_img_dis"
+        android:clickable="true"
+        android:layout_gravity="center_horizontal"
+        tools:ignore="ContentDescription" />
 
 </FrameLayout>

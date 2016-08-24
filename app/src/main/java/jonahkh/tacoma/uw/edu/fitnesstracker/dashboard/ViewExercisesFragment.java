@@ -7,7 +7,6 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.dashboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,8 +17,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
-
-import com.facebook.share.model.ShareLinkContent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,12 +58,11 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        View view = inflater.inflate(R.layout.fragment_view_exercises, container, false);
         SharedPreferences pref = getActivity()
                 .getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
         if (mCurrentWorkout == null) {
-            ((DashboardActivity) getActivity()).retrieveCurrentWorkout();
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
         String param = "&email=" + pref.getString(getString(R.string.current_email),
@@ -80,10 +76,14 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         mExerciseList = new ArrayList<>();
         mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
 //        inflater.inflate(R.layout., container, false);
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                .build();
-        return inflater.inflate(R.layout.fragment_view_exercises, container, false);
+//        ShareLinkContent content = new ShareLinkContent.Builder()
+//                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+//                .build();
+//        ShareContent content = new ShareContent.Builder().build();
+        Bundle bundle = new Bundle();
+        bundle.putString("message", "This is a test");
+//        ShareDialog dialog = new ShareDialog(getActivity());
+        return view;
     }
 
     /**

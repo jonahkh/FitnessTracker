@@ -57,9 +57,6 @@ public class WeightWorkoutListFragment extends Fragment {
     /** The listener for this list. */
     private OnListFragmentInteractionListener mListener;
 
-    /** The adapter for this list. */
-    private RecyclerView mRecyclerView;
-
     /** The current list of exercises. */
     private List<Exercise> mExerciseList;
 

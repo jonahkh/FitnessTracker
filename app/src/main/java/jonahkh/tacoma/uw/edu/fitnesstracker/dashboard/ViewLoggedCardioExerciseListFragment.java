@@ -30,7 +30,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
  */
 public class ViewLoggedCardioExerciseListFragment extends Fragment {
 
-    public static final String CARDIO_EXERCISE_URL =
+    private static final String CARDIO_EXERCISE_URL =
             "http://cssgate.insttech.washington.edu/~_450atm2/getCardioExercices.php?";
 
     /** so that we can access it in the thread to load the data. */
@@ -39,7 +39,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
     /** Tag used for debugging. */
     private final String TAG = "Cardio Workout Fragment list";
 
-    private int mColumnCount = 1;
+    private final int mColumnCount = 1;
 
     /** The list of completed exercises for this user. */
     private List<CardioWorkout> mWorkoutList;
@@ -82,6 +82,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             mRecyclerView = (RecyclerView) view;
+            //noinspection ConstantConditions
             if (mColumnCount <= 1) {
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -99,7 +100,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
                 cardioWorkoutDB = new FitnessAppDB(getActivity());
             }
             if(mWorkoutList == null) {
-                mWorkoutList = cardioWorkoutDB.getCourses();
+                mWorkoutList = cardioWorkoutDB.getCardioWorkouts();
             }
             Toast.makeText(view.getContext(), R.string.local_data_message,
                     Toast.LENGTH_SHORT).show();

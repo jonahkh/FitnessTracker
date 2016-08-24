@@ -5,8 +5,6 @@
  */
 package jonahkh.tacoma.uw.edu.fitnesstracker.model;
 
-import android.os.Bundle;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,7 @@ import java.util.List;
 public class WeightWorkout implements Serializable {
 
     /** Error message for parsing JSON. */
-    public static final String ERROR = "Network Connection Error";
+    private static final String ERROR = "Network Connection Error";
 
     /** Name of the workout in the weight workout table. */
     private static final String NAME = "workoutName";
@@ -205,9 +203,9 @@ public class WeightWorkout implements Serializable {
     /**
      * Checks if the passed list already contains the exercise.
      *
-     * @param name
-     * @param exercises
-     * @return
+     * @param name the name of the exercise being compared
+     * @param exercises the list of exercises for this workout
+     * @return the index of the passed exercise if found or -1
      */
     private static int checkContainsExercise(String name, List<Exercise> exercises) {
         for (int i = 0; i < exercises.size(); i++) {

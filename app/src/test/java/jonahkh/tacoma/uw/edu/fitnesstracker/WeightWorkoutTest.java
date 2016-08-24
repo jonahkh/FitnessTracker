@@ -6,9 +6,8 @@
 
 package jonahkh.tacoma.uw.edu.fitnesstracker;
 
-import junit.framework.TestCase;
+import android.util.Log;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +42,9 @@ public class WeightWorkoutTest {
         try {
             WeightWorkout workout = new WeightWorkout(null);
             fail("workout name can be set to null");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WeightWorkoutTest", e.toString());
+        }
     }
 
     @Test
@@ -51,7 +52,9 @@ public class WeightWorkoutTest {
         try {
             WeightWorkout workout = new WeightWorkout("");
             fail("workout name can be empty");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WeightWorkoutTest", e.toString());
+        }
     }
 
     @Test
@@ -59,7 +62,9 @@ public class WeightWorkoutTest {
         try {
             WeightWorkout workout = new WeightWorkout("workout", 0, "");
             fail("workout number can be set to a number less than 1");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WeightWorkoutTest", e.toString());
+        }
     }
 
     @Test
@@ -67,7 +72,9 @@ public class WeightWorkoutTest {
         try {
             WeightWorkout workout = new WeightWorkout("workout", 1, null);
             fail("date can be set to null");
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            Log.e("WeightWorkoutTest", e.toString());
+        }
     }
 
     @Test

@@ -8,6 +8,7 @@ package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -50,18 +51,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookActivity;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -108,17 +108,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /** The login button. */
     private LoginButton mLoginButton;
 
-    /** The Facebook login button. */
-    private FacebookActivity mFacebook;
-
     /** The shared preferences. */
     private SharedPreferences mSharedPreferences;
 
     /** Callback manager for Facebook login. */
     private CallbackManager mCallback;
-
-    /** Determines if it's okay to log in with facebook. */
-    private boolean mLoginFacebook = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,23 +127,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
         final TextView text = (TextView) findViewById(R.id.text);
-        text.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCheckBox.isChecked()) {
-                    mCheckBox.setChecked(false);
-                } else {
-                    mCheckBox.setChecked(true);
+        if(text != null) {
+            text.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCheckBox.isChecked()) {
+                        mCheckBox.setChecked(false);
+                    } else {
+                        mCheckBox.setChecked(true);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            Log.e("Login Activity", "Checked box is null");
+        }
         final TextView forgotText = (TextView) findViewById(R.id.forgot_password);
-        forgotText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetPassword();
-            }
-        });
+        if(forgotText != null) {
+            forgotText.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    resetPassword();
+                }
+            });
+        } else {
+            Log.e("Login Activity", "Forgot Text Field is null");
+        }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -169,7 +171,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         regBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Hide the register button
                 //regBut.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
@@ -200,9 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mLoginButton.setReadPermissions(permissions);
 
                 // Check that profile is logged in
-
                 mLoginButton.registerCallback(mCallback, new FacebookCallback<LoginResult>() {
-                    private ProfileTracker mProfileTracker;
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         requestData();
@@ -215,7 +214,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Log.e("TAG", "ERROR");
+                        Log.e("FaceBookLogin", "ERROR");
+                        Log.e("FaceBookLogin", exception.toString());
                     }
                 });
             }
@@ -429,9 +429,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    /**
+     * Displays dialog for user resetting password.
+     */
     private void resetPassword() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
+        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.fragment_forgot_password_email, null);
         final EditText emailText = (EditText) v.findViewById(R.id.email);
         final Button button = (Button) v.findViewById(R.id.button);
         builder.setView(v);
@@ -463,7 +466,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void changePassword(final String email) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View v = getLayoutInflater().inflate(R.layout.change_password, null);
+        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.change_password, null);
         final EditText first = (EditText) v.findViewById(R.id.first_pass);
         final EditText second = (EditText) v.findViewById(R.id.second_pass);
         final Button button = (Button) v.findViewById(R.id.button);
@@ -492,7 +495,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         dialog.show();
     }
 
-    public class ResetPasswordTask extends AsyncTask<String, Void, String> {
+    /** Class to connect to web service to reset password. */
+    private class ResetPasswordTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -516,7 +520,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * This class represents an asynch task to verify the email the user enters when they forgot
+     * This class represents an async task to verify the email the user enters when they forgot
      * their password and send them a password reset code if they enter this code correctly.
      */
     public class VerifyEmailTask extends AsyncTask<String, Void, String> {
@@ -524,18 +528,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private String mCode;
 
         /** The text field for entering the user's email. */
-        private EditText mEmail;
+        private final EditText mEmail;
 
         /** The email dialog. Will be dismissed upon email verification. */
-        private Dialog mDialog;
-        private Activity mActivity;
+        private final Dialog mDialog;
+        private final Activity mActivity;
 
         /**
          * Initialize a new VerifyEmailTask
          *
-         * @param email
+         * @param email the email of the user
          */
-        protected VerifyEmailTask(final EditText email, final Dialog dialog, final Activity activity) {
+        VerifyEmailTask(final EditText email, final Dialog dialog, final Activity activity) {
             mEmail = email;
             mDialog = dialog;
             mActivity = activity;
@@ -555,7 +559,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         mDialog.dismiss();
                         mCode = obj.getString("code");
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                        final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
+                        @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
                         final EditText text = (EditText) v.findViewById(R.id.code);
                         final Button button = (Button) v.findViewById(R.id.button);
                         builder.setView(v);
@@ -578,7 +582,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
             } catch (JSONException e) {
-                Log.e("LoginActivity", e.getStackTrace().toString());
+                Log.e("LoginActivity", Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -586,7 +590,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Asynchronous task to attempt to log in a user using Facebook.
      */
-    public class FacebookLoginTask extends AsyncTask<String, Void, String> {
+    private class FacebookLoginTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -616,7 +620,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
             } catch (JSONException e) {
-                Log.e("Dashboard", e.getStackTrace().toString());
+                Log.e("Dashboard", Arrays.toString(e.getStackTrace()));
             }
         }
     }
