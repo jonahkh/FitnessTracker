@@ -40,7 +40,7 @@ public class AddCardioWorkout extends Fragment {
 
     /** URL used get update user additional information from database. */
     private static final String ADD_CARDIO_EXERCISE
-            = "http://cssgate.insttech.washington.edu/~_450atm2/AddCardioExercise.php?";
+            = "localhost:5000/v1/fitnesstracker/AddCardioExercise.php?";
     private static final double INVALID_DOUBLE = -1.0;
 
     /** Field used to check that all the required information is entered. */
@@ -240,7 +240,7 @@ public class AddCardioWorkout extends Fragment {
     private class AddUserCadioWorkout extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return null; // TODO implement
         }
 
         /**

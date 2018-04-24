@@ -6,6 +6,7 @@
 package jonahkh.tacoma.uw.edu.fitnesstracker.authentication;
 
 
+import android.hardware.usb.UsbEndpoint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,9 @@ import com.facebook.login.LoginManager;
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.CreateUserRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.UpdateUserRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
 
 
 /**
@@ -35,13 +39,14 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  * @author Hector Diaz
  */
 public class RegisterUserFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
     /** Tag used for debugging. */
     private final String TAG = "Register User Fragment";
 
     /** URL used to add the user information to the database. */
     private final static String USER_ADD_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/addUser.php?";
+            = "localhost:5000/v1/fitnesstracker/addUser.php?";
 
     /** Users First name view. */
     private EditText mFirstName;
@@ -88,43 +93,37 @@ public class RegisterUserFragment extends Fragment {
         }
 
         Button addUserButton = (Button) v.findViewById(R.id.register_next_button);
-        addUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        addUserButton.setOnClickListener(v1 -> {
 //                RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
 //                getActivity().getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.activity_register_user_xml, userOtherInfo)
 //                        .addToBackStack(null)
 //                        .commit();
 
-                boolean fieldNotNull = checkRequirements();
-                boolean passwordsMatch = false;
-                if(fieldNotNull) {
-                   passwordsMatch = checkPasswordMatching();
-                }
+            boolean fieldNotNull = checkRequirements();
+            boolean passwordsMatch = false;
+            if(fieldNotNull) {
+               passwordsMatch = checkPasswordMatching();
+            }
 
-                if(passwordsMatch) {//password does match
-                    ((RegisterUserActivity)getActivity()).setUserInformation(
-                            mFirstName.getText().toString(),
-                            mLastName.getText().toString(),
-                            mEmail.getText().toString(),
-                            mPassword.getText().toString());
-                    String addUserURL = buildAddUserURL();
-                    ((RegisterUserActivity)getActivity()).addUserData(addUserURL);
-                }
+            if(passwordsMatch) {//password does match
+                ((RegisterUserActivity)getActivity()).setUserInformation(
+                        mFirstName.getText().toString(),
+                        mLastName.getText().toString(),
+                        mEmail.getText().toString(),
+                        mPassword.getText().toString());
+                CreateUserRequest createUserRequest = buildAddUserURL();
+                ((RegisterUserActivity)getActivity()).addUserData(JsonUtilities.toJson(createUserRequest), "POST", BASE_ENDPOINT + "adduser");
             }
         });
         v.setFocusableInTouchMode(true);
         v.requestFocus();
-        v.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-                    getActivity().finish();
-                    return true;
-                }
-                return false;
+        v.setOnKeyListener((v1, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                getActivity().finish();
+                return true;
             }
+            return false;
         });
         return v;
     }
@@ -198,26 +197,9 @@ public class RegisterUserFragment extends Fragment {
      * @return rl for calling the AsyncTask.
      */
     @NonNull
-    private String buildAddUserURL() {
-
-        StringBuilder sb = new StringBuilder(USER_ADD_URL);
-
-        try {
+    private CreateUserRequest buildAddUserURL() {
             String email = mEmail.getText().toString();
-            sb.append("email=");
-            sb.append(email);
-
-
             String pwd = mPassword.getText().toString();
-            sb.append("&pwd=");
-            sb.append(URLEncoder.encode(pwd, "UTF-8"));
-
-            Log.i(TAG, sb.toString());
-        }
-        catch(Exception e) {
-            Toast.makeText( getContext(), "Network connectivity issue", Toast.LENGTH_LONG)
-                    .show();
-        }
-        return sb.toString();
+        return new CreateUserRequest(email, pwd);
     }
 }

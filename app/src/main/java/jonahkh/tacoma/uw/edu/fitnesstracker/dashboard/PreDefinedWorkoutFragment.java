@@ -20,6 +20,7 @@ import android.widget.Toast;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.PreDefinedWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,11 @@ import java.util.List;
  * @author Hector Diaz
  */
 public class PreDefinedWorkoutFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
     /** The url to fetch data from the mysql server. */
+
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=predefinedworkouts";
+            = "localhost:5000/v1/fitnesstracker/getpredefinedworkouts";
 
     /** The listener for this Fragment. */
     private PreDefinedWorkoutListener mListener;
@@ -62,7 +65,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
                 "No existing email");
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadPreDefinedWorkoutsTask task = new DownloadPreDefinedWorkoutsTask();
-            task.execute(WORKOUT_URL + "&email=" + email);
+            task.execute(WORKOUT_URL);
         }
 
         mAdapter = new PreDefinedWorkoutAdapter(getActivity(), mWorkoutList, mListener);
@@ -113,7 +116,7 @@ public class PreDefinedWorkoutFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override

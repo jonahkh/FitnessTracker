@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -29,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,9 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.WeightWorkoutAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.DownloadWeightWorkoutsRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * A fragment representing a list of WeightWorkouts. All of the predefined workouts from the
@@ -49,10 +55,11 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
  * @author Hector Diaz
  */
 public class WeightWorkoutListFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
     /** The url to retrieve information from the database for this app. */
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=weightworkouts";
+            = "localhost:5000/v1/fitnesstracker/workouts.php?cmd=weightworkouts";
 
     /** The listener for this list. */
     private OnListFragmentInteractionListener mListener;
@@ -102,13 +109,16 @@ public class WeightWorkoutListFragment extends Fragment {
             // Determine if user is using a workout template or reusing a previously completed
             // workout
             if (mBundle != null && mBundle.getBoolean("is_custom")) {
-                param = "&num=" + mCurrentWorkout.getWorkoutNumber();
+                param = "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
             } else {
-                param = "&name=" + mCurrentWorkout.getWorkoutName();
+                param = "&workoutName=" + mCurrentWorkout.getWorkoutName();
             }
             if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
-                DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask();
-                task.execute(WORKOUT_URL + param);
+                String url = BASE_ENDPOINT + "downloadweightworkout/?workoutName=" + param;
+//                        + mCurrentWorkout.getWorkoutName()
+//                        + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
+                DownloadWeightWorkoutsTask task = new DownloadWeightWorkoutsTask(new DownloadWeightWorkoutsRequest(mCurrentWorkout.getWorkoutName(), mCurrentWorkout.getWorkoutNumber()));
+                task.execute(url);
             } else {
                 Toast.makeText(view.getContext(),
                         "No network connection available. Cannot display workouts",
@@ -135,7 +145,7 @@ public class WeightWorkoutListFragment extends Fragment {
         });
         mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
         // Handle when the user presses the back button
-        ListView list = (ListView)  view.findViewById(R.id.custom_workout_list);
+        ListView list = (ListView) view.findViewById(R.id.custom_workout_list);
         list.setAdapter(mAdapter);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
@@ -245,21 +255,22 @@ public class WeightWorkoutListFragment extends Fragment {
      * This class handles all of the web service interaction for the WeightWorkoutL
      */
     private class DownloadWeightWorkoutsTask extends AsyncTask<String, Void, String> {
-        //TODO check if result = network error. If so, then try with new url to pull from recorded workouts with email workout number
+        private DownloadWeightWorkoutsRequest request;
+
+        DownloadWeightWorkoutsTask(DownloadWeightWorkoutsRequest request) {
+            this.request = request;
+        }
+
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+
+            return RestClient.runRequest("POST", null, urls);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            // Something wrong with the network or the URL.
-            if (result.startsWith("Unable to")) {
-                Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_LONG)
-                        .show();
-                return;
-            }
-            mExerciseList = new ArrayList<>();
+
+            mExerciseList = JsonUtilities.fromJson(result, new TypeToken<List<Exercise>>(){});
             boolean checkType = false;
             if (mBundle != null) {
                 checkType = mBundle.getBoolean("is_custom");
@@ -275,11 +286,20 @@ public class WeightWorkoutListFragment extends Fragment {
             }
             mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
             // Everything is good, show the list of courses.
-            boolean check = mExerciseList.isEmpty();
             if (!mExerciseList.isEmpty()) {
+                Log.e("WWLF", "here");
                 mAdapter = new WeightWorkoutAdapter(getActivity(), mExerciseList, mListener);
                 ListView view = (ListView) getActivity().findViewById(R.id.custom_workout_list);
                 view.setAdapter(mAdapter);
+                view.setLongClickable(true);
+                view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        Log.e("WWLF", "long click");
+                        return true;
+                    }
+                });
             }
         }
     }

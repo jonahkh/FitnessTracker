@@ -29,6 +29,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.UpdateUserRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
+import lombok.AllArgsConstructor;
 
 /**
  * Fragment used to edit the personal information of the user.
@@ -38,30 +42,47 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  * @author Hector Diaz
  */
 public class EditPersonalInformationFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
-    /** URL used get update user additional information from database. */
+    /**
+     * URL used get update user additional information from database.
+     */
     private static final String USER_INFO
-            = "http://cssgate.insttech.washington.edu/~_450atm2/updateUserData.php?";
+            = "localhost:5000/v1/fitnesstracker/updateUserData.php?";
 
-    /** Tag used for debugging. */
+    /**
+     * Tag used for debugging.
+     */
     private static final String TAG = "Edit Personal Info";
 
-    /** Field used to check that all the required information is entered. */
+    /**
+     * Field used to check that all the required information is entered.
+     */
     private final int INVALID = -1;
 
-    /** Users weight. */
+    /**
+     * Users weight.
+     */
     private int mWeight;
 
-    /** Users activity level. */
+    /**
+     * Users activity level.
+     */
     private String mActivityLevel;
 
-    /** Number of days the user works out. */
+    /**
+     * Number of days the user works out.
+     */
     private int mDaysToWorkout;
 
-    /** Users email. */
+    /**
+     * Users email.
+     */
     private String mUserEmail;
 
-    /** Required empty public constructor */
+    /**
+     * Required empty public constructor
+     */
     public EditPersonalInformationFragment() {
         // Required empty public constructor
     }
@@ -77,35 +98,24 @@ public class EditPersonalInformationFragment extends Fragment {
                 "Email does not exist");
 
         // cancel updating info
-        Button cancel = (Button)myView.findViewById(R.id.epi_cancelBt);
-        cancel.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+        Button cancel = (Button) myView.findViewById(R.id.epi_cancelBt);
+        cancel.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStackImmediate());
 
-        Button save = (Button)myView.findViewById(R.id.epi_save);
-        save.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
+        Button save = (Button) myView.findViewById(R.id.epi_save);
+        save.setOnClickListener(v -> {
                 mWeight = getWeightEntered(myView);
                 mActivityLevel = getActivityLevel(myView);
                 mDaysToWorkout = getDaysToWorkout(myView);
 
-                if(mWeight != INVALID){
-                    String url = null;
-                    try {
-                        url = getUrl();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (mWeight != INVALID) {
+                    String url = BASE_ENDPOINT + "updateuserdata";
                     Log.i(TAG, url);
-                    UpdateUserDataTask task = new UpdateUserDataTask();
+
+                    UpdateUserRequest updateUserRequest = new UpdateUserRequest(mUserEmail, mWeight, mDaysToWorkout, mActivityLevel);
+                    UpdateUserDataTask task = new UpdateUserDataTask(JsonUtilities.toJson(updateUserRequest));
                     task.execute(url);
                 }
-            }
-        });
+            });
 
         return myView;
     }
@@ -118,7 +128,7 @@ public class EditPersonalInformationFragment extends Fragment {
      */
     private int getWeightEntered(View myView) {
         TextView weightV = (TextView) myView.findViewById(R.id.epi_weight);
-        if(TextUtils.isEmpty(weightV.getEditableText())){
+        if (TextUtils.isEmpty(weightV.getEditableText())) {
             weightV.setError(getString(R.string.error_field_required));
             weightV.requestFocus();
             return INVALID;
@@ -155,7 +165,6 @@ public class EditPersonalInformationFragment extends Fragment {
      * Gets the url needed to launch the UpdateUserDataTask.
      *
      * @return The URL needed to launch the UpdateUserDataTask.
-     *
      * @throws UnsupportedEncodingException In case the activity level cannot be converted to string.
      */
     @NonNull
@@ -172,13 +181,17 @@ public class EditPersonalInformationFragment extends Fragment {
         return sb;
     }
 
-    /** AsyncTask class called UpdateUserDataTask that will allow us to call the update
-     * user information. */
+    /**
+     * AsyncTask class called UpdateUserDataTask that will allow us to call the update
+     * user information.
+     */
+    @AllArgsConstructor
     private class UpdateUserDataTask extends AsyncTask<String, Void, String> {
+        private String requestJson;
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("PUT", requestJson, urls);
         }
 
 

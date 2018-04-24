@@ -21,6 +21,7 @@ import android.widget.Toast;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedWeightWorkoutsAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.List;
  * @author Hector Diaz
  */
 public class ViewLoggedWorkoutsListFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
     /** The url to access the database for this application. */
     private static final String WORKOUT_URL
@@ -61,12 +63,13 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_logged_workouts_list, container, false);
-        String param = "&email=" + getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+        String email = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
+        String param = "&email=" + email;
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.workouts))) {
             DownloadWorkoutsTask task = new DownloadWorkoutsTask();
-            task.execute(WORKOUT_URL + param);
+            task.execute(BASE_ENDPOINT + "getlastloggedworkout/" + email);
         }
         mAdapter = new ViewLoggedWeightWorkoutsAdapter(getActivity(), mWorkoutList, mListener);
         return view;
@@ -116,7 +119,7 @@ public class ViewLoggedWorkoutsListFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override

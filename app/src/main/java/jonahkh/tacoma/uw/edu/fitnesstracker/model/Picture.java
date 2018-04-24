@@ -34,7 +34,7 @@ public class Picture implements Serializable {
 
     /** URL for the PHP to delelte a picture directory. */
     private static final String DELETE_PICTURE_URL =
-            "http://cssgate.insttech.washington.edu/~_450atm2/deletePicture.php?";
+            "localhost:5000/v1/fitnesstracker/deletePicture.php?";
 
     /** The photo directory location. */
     public static final String PHOTO_DIR_LOC = "photoDirectoryLocation";
@@ -149,7 +149,7 @@ public class Picture implements Serializable {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return null;    // TODO implement REST endpoint for this
         }
 
         @Override

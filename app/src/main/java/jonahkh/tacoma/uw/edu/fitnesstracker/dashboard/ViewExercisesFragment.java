@@ -26,6 +26,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.LoggedExerciseAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Exercise;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * This Fragment displays all of the exercises that have been completed for the currently selected
@@ -35,10 +36,11 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
  * @author Hector Diaz
  */
 public class ViewExercisesFragment extends Fragment implements Serializable {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
     /** The url for the web service to access the database that contains the exercises. */
-    private static final String EXERCISE_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/workouts.php?cmd=exercise";
+//    private static final String EXERCISE_URL
+//            = "localhost:5000/v1/fitnesstracker/workouts.php?cmd=exercise";
 
     /** The Exercises being displayed. */
     private List<Exercise> mExerciseList;
@@ -65,13 +67,14 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
         if (mCurrentWorkout == null) {
             mCurrentWorkout = ((DashboardActivity) getActivity()).getCurrentWorkout();
         }
-        String param = "&email=" + pref.getString(getString(R.string.current_email),
-                    "Email does not exist")
+        String email = pref.getString(getString(R.string.current_email),
+                "Email does not exist");
+        String param = "&email=" + email
                     + "&workoutNumber=" + mCurrentWorkout.getWorkoutNumber();
 
         if (((DashboardActivity) getActivity()).isNetworkConnected(getString(R.string.exercises))) {
             DownloadExercisesTask task = new DownloadExercisesTask();
-            task.execute(EXERCISE_URL + param);
+            task.execute(BASE_ENDPOINT + "downloadexercise/" + email + "/?workoutNumber=" + mCurrentWorkout.getWorkoutNumber());
         }
         mExerciseList = new ArrayList<>();
         mAdapter = new LoggedExerciseAdapter(getActivity(), mExerciseList);
@@ -102,7 +105,7 @@ public class ViewExercisesFragment extends Fragment implements Serializable {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override

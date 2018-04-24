@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -72,6 +73,13 @@ import org.json.JSONObject;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.CommonResponse;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.LoginRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.LoginResponse;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.ResetPasswordRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.VerifyOtpRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * A login screen that offers login via email/password. Also allows you to register for the app.
@@ -81,37 +89,60 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.R;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /** Url to attempt user login. */
-    private static final String USER_URL = "http://cssgate.insttech.washington.edu/~_450atm2/login.php?";
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
+    /**
+     * Url to attempt user login.
+     */
+    private static final String USER_URL = BASE_ENDPOINT + "login";
 
-    /** Url to generate a code to verify user when resetting password. */
-    private static final String GET_CODE_URL = "http://cssgate.insttech.washington.edu/~_450atm2/resetpassword.php?";
+    private static final String VERIFY_OTP_URL = BASE_ENDPOINT + "validateotp";
+    /**
+     * Url to generate a code to verify user when resetting password.
+     */
+    private static final String VERIFY_EMAIL_URL = BASE_ENDPOINT + "verifyemail";
+    private static final String RESET_PASSWORD_URL = BASE_ENDPOINT + "resetpassword";
 
     /* Keep track of the login task to ensure we can cancel it if requested. */
     private UserLoginTask mAuthTask = null;
 
-    /** Text field for the user's email. */
+    /**
+     * Text field for the user's email.
+     */
     private AutoCompleteTextView mEmailView;
 
-    /** Text field for the user's password. */
+    /**
+     * Text field for the user's password.
+     */
     private EditText mPasswordView;
 
-    /** View that displays the progress when the app is attempting to verify credentials. */
+    /**
+     * View that displays the progress when the app is attempting to verify credentials.
+     */
     private View mProgressView;
 
-    /** View representing the login form. */
+    /**
+     * View representing the login form.
+     */
     private View mLoginFormView;
 
-    /** Determines if the user would like to remain logged in. */
+    /**
+     * Determines if the user would like to remain logged in.
+     */
     private CheckBox mCheckBox;
 
-    /** The login button. */
+    /**
+     * The login button.
+     */
     private LoginButton mLoginButton;
 
-    /** The shared preferences. */
+    /**
+     * The shared preferences.
+     */
     private SharedPreferences mSharedPreferences;
 
-    /** Callback manager for Facebook login. */
+    /**
+     * Callback manager for Facebook login.
+     */
     private CallbackManager mCallback;
 
     @Override
@@ -127,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mCheckBox = (CheckBox) findViewById(R.id.stay_logged_in);
         final TextView text = (TextView) findViewById(R.id.text);
-        if(text != null) {
+        if (text != null) {
             text.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -142,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Log.e("Login Activity", "Checked box is null");
         }
         final TextView forgotText = (TextView) findViewById(R.id.forgot_password);
-        if(forgotText != null) {
+        if (forgotText != null) {
             forgotText.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -222,33 +253,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-    /** Retrieves the email for the facebook profile currently logged in. */
+    /**
+     * Retrieves the email for the facebook profile currently logged in.
+     */
     private void requestData() {
 
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                final JSONObject json = response.getJSONObject();
-                try {
-                    if (json != null) {
-                        String email = json.getString("email");
-                        FacebookLoginTask task = new FacebookLoginTask();
-                        String url = USER_URL + "email=" + email + "&fbook=true";
-                        task.execute(url);
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        final JSONObject json = response.getJSONObject();
+                        try {
+                            if (json != null) {
+                                String email = json.getString("email");
+                                FacebookLoginTask task = new FacebookLoginTask(new LoginRequest(email, null));
+                                String url = USER_URL;
+                                task.execute(url);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+                });
         Bundle parameters = new Bundle();
         parameters.putString("fields", "email");
         request.setParameters(parameters);
         request.executeAsync();
     }
-
-
 
 
     /**
@@ -309,10 +340,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask.execute();
         }
     }
-
 
 
     /**
@@ -361,7 +391,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Select only email addresses.
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                                                                     .CONTENT_ITEM_TYPE},
+                .CONTENT_ITEM_TYPE},
 
                 // Show primary email addresses first. Note that there won't be
                 // a primary email address if the user hasn't specified one.
@@ -404,7 +434,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void login(final String email) {
         // Store user email and record that they are logged in
-        mSharedPreferences  = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
         mSharedPreferences.edit().putString(getString(R.string.current_email), email).apply();
         if (mCheckBox.isChecked()) {
@@ -444,8 +474,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                VerifyEmailTask task = new VerifyEmailTask(emailText, dialog, activity);
-                task.execute(GET_CODE_URL + "cmd=getcode&email=" + emailText.getText().toString());
+                VerifyEmailTask task = new VerifyEmailTask(new LoginRequest(emailText.getText().toString(), null), emailText, dialog, activity);
+                task.execute(VERIFY_EMAIL_URL);
             }
         });
         builder.setPositiveButton("Send Code", new DialogInterface.OnClickListener() {
@@ -482,8 +512,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     first.setError("Minimum 6 characters");
                     second.setError("Minimum 6 characters");
                 } else if (text1.equals(text2)) {
-                    final ResetPasswordTask task = new ResetPasswordTask();
-                    task.execute(GET_CODE_URL + "cmd=reset&email=" + email + "&pwd=" + text1);
+                    final ResetPasswordTask task = new ResetPasswordTask(new ResetPasswordRequest(email, text1));
+                    task.execute(RESET_PASSWORD_URL);
                     dialog.dismiss();
                 } else {
                     first.setError("Passwords do not match!");
@@ -495,16 +525,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         dialog.show();
     }
 
-    /** Class to connect to web service to reset password. */
-    private class ResetPasswordTask extends AsyncTask<String, Void, String> {
+    /**
+     * Class to connect to web service to reset password.
+     */
+    private class ResetPasswordTask extends AsyncTask<String, Void, CommonResponse> {
 
+        private ResetPasswordRequest resetPasswordRequest;
+        ResetPasswordTask(ResetPasswordRequest resetPasswordRequest) {
+            this.resetPasswordRequest = resetPasswordRequest;
+        }
         @Override
-        protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+        protected CommonResponse doInBackground(String... urls) {
+            String post = RestClient.runRequest("POST", JsonUtilities.toJson(resetPasswordRequest), urls);
+            return JsonUtilities.fromJson(post, CommonResponse.class);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(CommonResponse result) {
             try {
                 JSONArray arr = new JSONArray(result);
                 for (int i = 0; i < arr.length(); i++) {
@@ -524,13 +561,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * their password and send them a password reset code if they enter this code correctly.
      */
     public class VerifyEmailTask extends AsyncTask<String, Void, String> {
-        /** The code generated by the web service. */
+        /**
+         * The code generated by the web service.
+         */
         private String mCode;
 
-        /** The text field for entering the user's email. */
+        /**
+         * The text field for entering the user's email.
+         */
         private final EditText mEmail;
 
-        /** The email dialog. Will be dismissed upon email verification. */
+        private final LoginRequest loginRequest;
+
+        /**
+         * The email dialog. Will be dismissed upon email verification.
+         */
         private final Dialog mDialog;
         private final Activity mActivity;
 
@@ -539,14 +584,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
          *
          * @param email the email of the user
          */
-        VerifyEmailTask(final EditText email, final Dialog dialog, final Activity activity) {
+        VerifyEmailTask(final LoginRequest loginRequest, final EditText email, final Dialog dialog, final Activity activity) {
             mEmail = email;
             mDialog = dialog;
             mActivity = activity;
+            this.loginRequest = loginRequest;
         }
+
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("POST", JsonUtilities.toJson(loginRequest), urls);
         }
 
         @Override
@@ -557,7 +604,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     JSONObject obj = arr.getJSONObject(i);
                     if (obj.getString("result").equals("success")) {
                         mDialog.dismiss();
-                        mCode = obj.getString("code");
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                         @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.fragment_enter_code, null);
                         final EditText text = (EditText) v.findViewById(R.id.code);
@@ -569,7 +615,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         button.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (mCode.equals(text.getText().toString().toUpperCase())) {
+                                VerifyOtpRequest verifyOtpRequest = new VerifyOtpRequest(mEmail.getText().toString(), text.getText().toString());
+                                String response = RestClient.runRequest("POST", JsonUtilities.toJson(verifyOtpRequest));
+                                CommonResponse parsedResponse = JsonUtilities.fromJson(response, CommonResponse.class);
+                                if ("SUCCESS".equals(parsedResponse.getResult())) {
                                     changePassword(mEmail.getText().toString());
                                     dialog.dismiss();
                                 } else {
@@ -591,36 +640,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Asynchronous task to attempt to log in a user using Facebook.
      */
     private class FacebookLoginTask extends AsyncTask<String, Void, String> {
+        private LoginRequest loginRequest;
+
+        public FacebookLoginTask(LoginRequest loginRequest) {
+            this.loginRequest = loginRequest;
+        }
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("POST", JsonUtilities.toJson(loginRequest), urls);
         }
 
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
-            try {
-                JSONArray arr = new JSONArray(result);
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONObject obj = arr.getJSONObject(i);
-                    if (obj.getString("result").equals("success")) {
-                        login(obj.getString("email"));
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(),
-                                RegisterUserActivity.class);
-                        Bundle bundle = new Bundle();
-                        Profile profile = Profile.getCurrentProfile();
-                        bundle.putString("email", obj.getString("email"));
-                        bundle.putString("first", profile.getFirstName());
-                        bundle.putString("last", profile.getLastName());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+            LoginResponse loginResponse = JsonUtilities.fromJson(result, LoginResponse.class);
+            if ("SUCCESS".equals(loginResponse.getResult())) {
+                login(loginResponse.getEmail());
+            } else {
+                Intent intent = new Intent(getApplicationContext(),
+                        RegisterUserActivity.class);
+                Bundle bundle = new Bundle();
+                Profile profile = Profile.getCurrentProfile();
+                bundle.putString("first", profile.getFirstName());
+                bundle.putString("last", profile.getLastName());
+                intent.putExtras(bundle);
+                startActivity(intent);
 
-                    }
-                }
-            } catch (JSONException e) {
-                Log.e("Dashboard", Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -629,23 +675,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        /** Tag to reference for console output. */
+    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
+        /**
+         * Tag to reference for console output.
+         */
         public static final String TAG = "THIS_ACT";
 
-        /** The current email address being evaluated. */
+        /**
+         * The current email address being evaluated.
+         */
         private final String mEmail;
 
-        /** The current password being evaluated. */
+        /**
+         * The current password being evaluated.
+         */
         private final String mPassword;
 
-        /** Determines if there is a current network connection. Default value is true. */
+        /**
+         * Determines if there is a current network connection. Default value is true.
+         */
         private boolean networkAccess = true;
 
         /**
          * Initialize a new UserLoginTask.
          *
-         * @param email the email to be verified
+         * @param email    the email to be verified
          * @param password the password to be verified
          */
         UserLoginTask(String email, String password) {
@@ -654,32 +708,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            StringBuilder url = new StringBuilder(USER_URL);
-            try {
-                // Build url
-                url.append("&email=");
-                url.append(URLEncoder.encode(mEmail, "UTF-8"));
-                url.append("&pwd=");
-                url.append(URLEncoder.encode(mPassword, "UTF-8"));
-                // Establish network access
-                URL urlObject = new URL(USER_URL + url.toString());
-                HttpURLConnection urlConnection =  (HttpURLConnection) urlObject.openConnection();
-                InputStream content = urlConnection.getInputStream();
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s = buffer.readLine();
-                if (s.contains("success")) {    // Evaluate if email and password exist
-                    networkAccess = true;
-                    return true;
-                } else {
-                    return false;
-                }
+        protected Boolean doInBackground(String... params) {
+            LoginRequest loginRequest = new LoginRequest(mEmail, mPassword);
+            String response = RestClient.runRequest("POST", JsonUtilities.toJson(loginRequest), params);
+            LoginResponse loginResponse = JsonUtilities.fromJson(response, LoginResponse.class);
+            return "SUCCESS".equals(loginResponse.getResult());
 
-            } catch (IOException e) {
-                Log.e(TAG, "Network Error!");
-                networkAccess = false;
-                return false;
-            }
         }
 
         @Override

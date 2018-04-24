@@ -30,6 +30,10 @@ import java.util.Calendar;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.ExerciseRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.StartWorkoutRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * This class represents the dialog that appears when the user is attempting to add a set. The user
@@ -38,13 +42,15 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
  */
 public class AddSetFragment extends DialogFragment {
 
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
+
     /** The url to start a new workout. */
     private static final String WORKOUT_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/weightWorkout.php?cmd=start_workout";
+            = "localhost:5000/v1/fitnesstracker/weightWorkout.php?cmd=start_workout";
 
     /** Url to add a new set. */
     private static final String ADD_EXERCISE_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/weightWorkout.php?cmd=addSet";
+            = "localhost:5000/v1/fitnesstracker/weightWorkout.php?cmd=addSet";
 
     /** The current weight workout. */
     private WeightWorkout mCurrentWorkout;
@@ -90,7 +96,7 @@ public class AddSetFragment extends DialogFragment {
         mCurrentEmail = dashboard.getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE).getString(getString(R.string.current_email),
                 "Email does not exist");
-        final String url = DashboardDisplayFragment.USER_LAST_LOGGED_WORKOUT + "&email="  + mCurrentEmail;
+        final String url = BASE_ENDPOINT + "getlastworkout/&email="  + mCurrentEmail;
         Log.e("addSet", url);
         task.execute(url);
         builder.setView(v);
@@ -100,18 +106,24 @@ public class AddSetFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (checkValidData(weight, reps)) {
-                    SendWorkoutDataTask newTask = new SendWorkoutDataTask();
+                    SendWorkoutDataTask newTask = new SendWorkoutDataTask(buildRequest());
                     // If it's the first set, add a new Recorded Workout in database
                     if (mSetNumber == 1) {
-                        newTask.execute(buildUrl());
+                        newTask.execute(BASE_ENDPOINT + "startWorkout");
                     }
-                    String param = ADD_EXERCISE_URL + "&set=" + mSetNumber + "&wNum="
-                            + mWorkoutNum + "&name=" + mCurrentExercise + "&reps="
-                            + reps.getText().toString() + "&email=" + mCurrentEmail + "&weight="
-                            +  weight.getText().toString();
+//                    String param = ADD_EXERCISE_URL + "&set=" + mSetNumber + "&wNum="
+//                            + mWorkoutNum + "&name=" + mCurrentExercise + "&reps="
+//                            + reps.getText().toString() + "&email=" + mCurrentEmail + "&weight="
+//                            +  weight.getText().toString();
                     // Send set data to the server
-                    SendWorkoutDataTask setTask = new SendWorkoutDataTask();
-                    setTask.execute(param);
+                    SendWorkoutDataTask setTask = new SendWorkoutDataTask(new ExerciseRequest(mSetNumber,
+                            mWorkoutNum,
+                            mCurrentExercise,
+                            reps.getText().toString(),
+                            mCurrentEmail,
+                            weight.getText().toString())
+                    );
+                    setTask.execute(BASE_ENDPOINT + "addexercise");
                     Toast.makeText(getActivity().getApplicationContext(), "Set Successfully added!",
                             Toast.LENGTH_LONG).show();
                     dialog.dismiss();
@@ -141,19 +153,8 @@ public class AddSetFragment extends DialogFragment {
      * @return the url to add the workout to the server
      */
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
-    private String buildUrl() {
-        StringBuilder url = new StringBuilder(WORKOUT_URL);
-        Log.e("TAG", mWorkoutNum + "");
-        mWorkoutNum++;
-        url.append("&num=" + mWorkoutNum);
+    private StartWorkoutRequest buildRequest() {
 
-        url.append("&name=");
-        url.append(mCurrentWorkout.getWorkoutName().replace(' ', '_'));
-
-        url.append("&email=");
-        url.append(mCurrentEmail);
-
-        url.append("&date=");
         Calendar calendar = Calendar.getInstance();
         String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
         String year = Integer.toString(calendar.get(Calendar.YEAR));
@@ -165,9 +166,14 @@ public class AddSetFragment extends DialogFragment {
             day = "0" + day;
         }
 
-        url.append(year + "-" + month + "-" + day);
-        url.append("&type=weight");
-        return url.toString();
+//        url.append(year + "-" + month + "-" + day);
+        final StartWorkoutRequest startWorkoutRequest = new StartWorkoutRequest(mWorkoutNum,
+                mCurrentWorkout.getWorkoutName(),
+                year + "-" + month + "-" + day,
+                mCurrentEmail,
+                "weight");
+
+        return startWorkoutRequest;
     }
 
     /**
@@ -194,9 +200,18 @@ public class AddSetFragment extends DialogFragment {
 
     /** Private class to get the information about the last logged workout from user. */
     private class SendWorkoutDataTask extends AsyncTask<String, Void, String> {
+        private String requesetJson;
+
+        SendWorkoutDataTask(StartWorkoutRequest startWorkoutRequest) {
+            this.requesetJson = JsonUtilities.toJson(startWorkoutRequest);
+        }
+
+        SendWorkoutDataTask(ExerciseRequest exerciseRequest) {
+            this.requesetJson = JsonUtilities.toJson(exerciseRequest);
+        }
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("POST", JsonUtilities.toJson(requesetJson), urls);
         }
 
         @Override
@@ -212,7 +227,7 @@ public class AddSetFragment extends DialogFragment {
     private class GetWorkoutNumber extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override

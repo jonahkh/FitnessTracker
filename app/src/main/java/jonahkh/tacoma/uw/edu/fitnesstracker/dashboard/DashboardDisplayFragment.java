@@ -36,6 +36,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.Data.RSSService;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.authentication.AddPictureFragment;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * Fragment used to Display the personal information of the user. This information is displayed on
@@ -46,6 +47,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.WeightWorkout;
  * @author Hector Diaz
  */
 public class DashboardDisplayFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
 //    /** First name field of database. */
 //    public static final String FIRST_NAME = "firstName";
@@ -88,11 +90,11 @@ public class DashboardDisplayFragment extends Fragment {
 
     /** URL used get user additional information from database. */
     private static final String USER_INFO
-            = "http://cssgate.insttech.washington.edu/~_450atm2/additionalInfo.php?";
+            = "localhost:5000/v1/fitnesstracker/additionalInfo.php?";
 
     /** URL used get users last logged workout information from database. */
     public static final String USER_LAST_LOGGED_WORKOUT
-            = "http://cssgate.insttech.washington.edu/~_450atm2/getLastUserWorkout.php?";
+            = "localhost:5000/v1/fitnesstracker/getLastUserWorkout.php?";
 
     /** Message for the permission of the camera. */
     private static final String CAMERA_PERMISSION_MESSAGE =
@@ -365,7 +367,7 @@ public class DashboardDisplayFragment extends Fragment {
      * the database. Also, it sets its fields when UserLastLoggedWorkoutTask is called.
      */
     private void setUserLastLoggedWorkout() {
-        String url = USER_LAST_LOGGED_WORKOUT + "email=" + mUserEmail;
+        String url = BASE_ENDPOINT + "getlastloggedworkout/" + mUserEmail;
         Log.i(TAG, url);
         UserLastLoggedWorkoutTask task = new UserLastLoggedWorkoutTask();
         task.execute(url);
@@ -378,7 +380,7 @@ public class DashboardDisplayFragment extends Fragment {
     private void setFieldsPersonalInformation() {
         mUserEmail = mSharedPreferences.getString(getString(R.string.current_email),
                 "Email does not exist");
-        String url = USER_INFO + "email=" + mUserEmail;
+        String url = BASE_ENDPOINT + "useradditionalinfo/" + mUserEmail;
         Log.i(TAG, url);
         DownloadUserInfoTask task = new DownloadUserInfoTask();
         task.execute(url);
@@ -402,7 +404,7 @@ public class DashboardDisplayFragment extends Fragment {
     private class DownloadUserInfoTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override
@@ -440,7 +442,7 @@ public class DashboardDisplayFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override
@@ -450,6 +452,7 @@ public class DashboardDisplayFragment extends Fragment {
                 setUserLastLoggedWorkoutView();
                 return;
             }
+
             try {
                 JSONArray arr = new JSONArray(result);
                 for (int i = 0; i < arr.length(); i++) {

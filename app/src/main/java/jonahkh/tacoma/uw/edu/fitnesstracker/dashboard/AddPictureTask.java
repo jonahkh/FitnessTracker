@@ -43,7 +43,7 @@ public class AddPictureTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... urls) {
-        return DashboardActivity.doInBackgroundHelper(urls);
+        return null; // TODO implement
     }
 
     @Override

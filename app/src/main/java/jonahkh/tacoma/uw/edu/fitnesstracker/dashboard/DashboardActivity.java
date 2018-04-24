@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -83,7 +84,7 @@ public class DashboardActivity extends AppCompatActivity
 
     /** URL used to delete the user information from database. */
     private final static String ADD_IMAGE_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/addPicture.php?";
+            = "localhost:5000/v1/fitnesstracker/addPicture.php?";
 
     /** Message for the permission of the camera. */
     private static final String CAMERA_PERMISSION_MESSAGE =
@@ -492,49 +493,53 @@ public class DashboardActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager manager = getSupportFragmentManager();
         manager.getFragments().size();
-        if (id == R.id.nav_predefined_workouts) {
-            mFab.hide();
-            mFabCardioWorkout.hide();
-            PreDefinedWorkoutFragment fragment = new PreDefinedWorkoutFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (id == R.id.view_logged_workouts) {
-            mFab.hide();
-            mFabCardioWorkout.hide();
-            ViewLoggedWorkoutsListFragment fragment = new ViewLoggedWorkoutsListFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else if(id == R.id.nav_home) {
-            mFab.show();
-            mFabCardioWorkout.hide();
-            if(mDashView != null) {
+        Fragment fragment;
+        switch (id)  {
+            case (R.id.nav_predefined_workouts) :
+                mFab.hide();
+                mFabCardioWorkout.hide();
+                fragment = new PreDefinedWorkoutFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, mDashView)
+                        .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
-            } else {
-                mDashView = new DashboardDisplayFragment();
+                break;
+            case (R.id.view_logged_workouts) :
+                mFab.hide();
+                mFabCardioWorkout.hide();
+                fragment = new ViewLoggedWorkoutsListFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, mDashView)
+                        .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
-            }
-        } else if(id == R.id.view_logged_cardio_workouts){
-            mFab.hide();
-            mFabCardioWorkout.show();
-            ViewLoggedCardioExerciseListFragment fragment =
-                    new ViewLoggedCardioExerciseListFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+                break;
+            case (R.id.nav_home) :
+                mFab.show();
+                mFabCardioWorkout.hide();
+                if(mDashView != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, mDashView)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    mDashView = new DashboardDisplayFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, mDashView)
+                            .addToBackStack(null)
+                            .commit();
+                }
+                break;
+            case (R.id.view_logged_cardio_workouts) :
+                mFab.hide();
+                mFabCardioWorkout.show();
+                fragment =
+                        new ViewLoggedCardioExerciseListFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            break;
         }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
@@ -546,41 +551,6 @@ public class DashboardActivity extends AppCompatActivity
         mFab.show();
     }
 
-    /**
-     * Helper method for all AsyncTask inner classes. Connects to the web service and extracts
-     * data according to the url.
-     *
-     * @param urls the urls being passed to the web service
-     * @return an empty String if the connection was successful, otherwise returns the error
-     *          message received
-     */
-    public static String doInBackgroundHelper(String...urls) {
-        String response = "";
-        HttpURLConnection urlConnection = null;
-        for (String url : urls) {
-            try {
-                URL urlObject = new URL(url);
-                urlConnection = (HttpURLConnection) urlObject.openConnection();
-
-                InputStream content = urlConnection.getInputStream();
-
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s;
-                while ((s = buffer.readLine()) != null) {
-                    response += s;
-                }
-
-            } catch (Exception e) {
-                response = "Network connection unavailable, please try again later";
-            }
-            finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
-        }
-        return response;
-    }
-
     /** function that invokes an intent to capture a photo. */
     public void dispatchTakePictureIntent(boolean imageCapture) {
         mImageCapture = imageCapture;
@@ -588,6 +558,7 @@ public class DashboardActivity extends AppCompatActivity
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File imageFile = null;
             try {
+
                 imageFile = createImageFile();
 //                final SharedPreferences sharedPreferences = getSharedPreferences(
 //                        getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);

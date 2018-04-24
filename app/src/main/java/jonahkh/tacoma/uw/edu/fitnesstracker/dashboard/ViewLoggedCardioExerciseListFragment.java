@@ -23,6 +23,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.ViewLoggedCardioExerciseAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 /**
  * A fragment representing a list of Items.
@@ -31,7 +32,7 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.model.CardioWorkout;
 public class ViewLoggedCardioExerciseListFragment extends Fragment {
 
     private static final String CARDIO_EXERCISE_URL =
-            "http://cssgate.insttech.washington.edu/~_450atm2/getCardioExercices.php?";
+            "localhost:5000/v1/fitnesstracker/downloadcardioexercises";
 
     /** so that we can access it in the thread to load the data. */
     private RecyclerView mRecyclerView;
@@ -94,7 +95,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
         if (networkAlive) {
             DownloadCardioExercisesTask task = new DownloadCardioExercisesTask();
 //            Log.i(TAG, CARDIO_EXERCISE_URL + param);
-            task.execute(CARDIO_EXERCISE_URL + param);
+            task.execute(CARDIO_EXERCISE_URL + "/" + mUserEmail);
         } else {
             if(cardioWorkoutDB == null){
                 cardioWorkoutDB = new FitnessAppDB(getActivity());
@@ -142,7 +143,7 @@ public class ViewLoggedCardioExerciseListFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override

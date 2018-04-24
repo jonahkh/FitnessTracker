@@ -90,7 +90,7 @@ public class AddCardioWorkoutTest extends
         solo.enterText(1, set1);
         solo.clickOnText("Add Set");
         solo.clickOnText("pistol squat");
-        String weight2 = "" + random.nextInt(300) + 1;
+        String weFight2 = "" + random.nextInt(300) + 1;
         String set2 = "" + random.nextInt(15) + 1;
         solo.enterText(0, weight2);
         solo.enterText(1, set2);

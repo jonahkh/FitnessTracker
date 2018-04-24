@@ -40,6 +40,10 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.Data.FitnessAppDB;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.AddPictureTask;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.CreateUserAdditionalInfoRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.CreateUserRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
+import lombok.AllArgsConstructor;
 
 /**
  * Activity used to register a User. In order to register, a user must enter in their first and last
@@ -50,86 +54,135 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.AddPictureTask;
  * @author Hector Diaz
  */
 public class RegisterUserActivity extends AppCompatActivity {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
-    /** The Directory to store the pic for this app. */
+    /**
+     * The Directory to store the pic for this app.
+     */
     private final String DIRECTORY = "FitnessTracker";
 
-    /** Tag used for debugging. */
+    /**
+     * Tag used for debugging.
+     */
     private final String TAG = "Register Activity";
 
-    /** Permission for the Camera. */
+    /**
+     * Permission for the Camera.
+     */
     private static final int MY_PERMISSIONS_CAMERA = 1;
 
-    /** Message for the permission of the camera. */
+    /**
+     * Message for the permission of the camera.
+     */
     private static final String CAMERA_PERMISSION_MESSAGE =
             "Permissions are needed to add profile pictures.";
 
     /**
-     *  Boolean value used for lunching AdditionalInformationFragment after entering
-     *  user first information.
+     * Boolean value used for lunching AdditionalInformationFragment after entering
+     * user first information.
      */
     private boolean redo = true;
 
-    /** URL used to add the user information to database. */
+    /**
+     * URL used to add the user information to database.
+     */
     private final static String USER_ADDITIONAL_INFO_ADD_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/addUserAdditionalInfo.php?";
+            = "localhost:5000/v1/fitnesstracker/addUserAdditionalInfo.php?";
 
-    /** URL used to delete the user information from database. */
+    /**
+     * URL used to delete the user information from database.
+     */
     private final static String ADD_IMAGE_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/addPicture.php?";
+            = "localhost:5000/v1/fitnesstracker/addPicture.php?";
 
-    /** Only one image can be taken. */
+    /**
+     * Only one image can be taken.
+     */
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    /** Users First name. */
+    /**
+     * Users First name.
+     */
     private String mUserFirstName = "";
 
-    /** Users Last name. */
+    /**
+     * Users Last name.
+     */
     private String mUserLastName = "";
 
-    /** Users email. */
+    /**
+     * Users email.
+     */
     private String mUserEmail = "";
 
-    /** User password. */
+    /**
+     * User password.
+     */
     private String mUserPassword = "";
 
-    /** Users photo, null for now for this stage of project.*/
+    /**
+     * Users photo, null for now for this stage of project.
+     */
     private byte[] mPhoto;
 
-    /** Users Date from his/hers DOB.*/
+    /**
+     * Users Date from his/hers DOB.
+     */
     private int mDateDOB;
 
-    /** Users Month from his/hers DOB.*/
+    /**
+     * Users Month from his/hers DOB.
+     */
     private int mMonthDOB;
 
-    /** Users year from his/hers DOB.*/
+    /**
+     * Users year from his/hers DOB.
+     */
     private int mYearDOB;
 
-    /** Users weight. */
+    /**
+     * Users weight.
+     */
     private int mWeight;
 
-    /** Users Height in Feet. */
+    /**
+     * Users Height in Feet.
+     */
     private int mHeightFt;
 
-    /** Users Height in Inches. */
+    /**
+     * Users Height in Inches.
+     */
     private int mHeightIn;
 
-    /** Users gender. */
+    /**
+     * Users gender.
+     */
     private char mGender;
 
-    /** Users activity level. */
+    /**
+     * Users activity level.
+     */
     private String mActivityLevel;
 
-    /** Number of days the user works out. */
+    /**
+     * Number of days the user works out.
+     */
     private int mDaysToWorkout;
 
-    /** The path of the current photo. */
+    /**
+     * The path of the current photo.
+     */
     private String mCurrentPhotoPath;
 
-    /** Whether we are capturing an image or grabbing it from file. */
+    /**
+     * Whether we are capturing an image or grabbing it from file.
+     */
     private boolean mImageCapture;
 
-    /** The local database that contains references to profile pictures. */
+    /**
+     * The local database that contains references to profile pictures.
+     */
     private FitnessAppDB mProfilePicDB;
 
     @Override
@@ -154,7 +207,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_CAMERA);
         }
 
@@ -196,7 +249,9 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
-    /** Method that invokes an intent to capture a photo.  */
+    /**
+     * Method that invokes an intent to capture a photo.
+     */
     protected void dispatchTakePictureIntent() {
         mImageCapture = true;
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -211,13 +266,13 @@ public class RegisterUserActivity extends AppCompatActivity {
                         "Email does not exist");
                 FitnessAppDB profilePicDB = new FitnessAppDB(getApplicationContext());
                 boolean successful = profilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
-                if(!successful) {
+                if (!successful) {
                     Log.e(TAG, "Profile pic could not be send to local database");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(imageFile != null) {
+            if (imageFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(imageFile));
                 galleryAddPic();
@@ -226,7 +281,9 @@ public class RegisterUserActivity extends AppCompatActivity {
         }
     }
 
-    /** Method that invokes an intent to upload pircture from gallery of images.  */
+    /**
+     * Method that invokes an intent to upload pircture from gallery of images.
+     */
     public void dispatchGalleryIntent() {
         mImageCapture = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -238,7 +295,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if(!mImageCapture) {
+            if (!mImageCapture) {
                 Uri selectedImageUri = data.getData();
                 mCurrentPhotoPath = getPath(selectedImageUri);
 //                final SharedPreferences sharedPreferences = getSharedPreferences(
@@ -251,7 +308,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                         "Email does not exist");
                 mProfilePicDB = new FitnessAppDB(getApplicationContext());
                 boolean successful = mProfilePicDB.setProfilePicture(userEmail, mCurrentPhotoPath);
-                if(!successful) {
+                if (!successful) {
                     Log.e(TAG, "Profile pic could not be send to local database");
                 }
 
@@ -268,10 +325,10 @@ public class RegisterUserActivity extends AppCompatActivity {
      */
     private String getPath(Uri uri) {
         String res = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
 
-        if(cursor != null){
+        if (cursor != null) {
             cursor.moveToFirst();
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
@@ -280,7 +337,9 @@ public class RegisterUserActivity extends AppCompatActivity {
         return res;
     }
 
-    /** Helper method for onActivityResult method to set the profile picture of user. */
+    /**
+     * Helper method for onActivityResult method to set the profile picture of user.
+     */
     private void setImageView() {
         ImageView profilePic = (ImageView) findViewById(R.id.add_pic);
         Log.i("Image Location", mCurrentPhotoPath);
@@ -326,7 +385,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         String path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM).toString() + File.separator + DIRECTORY;
         File storageDir = new File(path);
-        if(!storageDir.exists()) {
+        if (!storageDir.exists()) {
             storageDir.mkdir();
         }
         File image = File.createTempFile(
@@ -342,8 +401,8 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
     /**
-     *  Adds photo to the Media Provider's database, making it available
-     *  in the Android Gallery application and to other apps.
+     * Adds photo to the Media Provider's database, making it available
+     * in the Android Gallery application and to other apps.
      */
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -359,8 +418,8 @@ public class RegisterUserActivity extends AppCompatActivity {
      *
      * @param url Url used to lunch the AddUserTask class.
      */
-    public void addUserData(String url) {
-        AddUserTask task = new AddUserTask();
+    public void addUserData(String requestJson, String requestMethod, String url) {
+        AddUserTask task = new AddUserTask(requestJson, requestMethod);
         task.execute(url);
     }
 
@@ -368,9 +427,9 @@ public class RegisterUserActivity extends AppCompatActivity {
      * Method to set the information of the user.
      *
      * @param theFirstName the first name of the user
-     * @param theLastName the last name of the user
-     * @param theEmail the email of the user
-     * @param thePass the password for the user
+     * @param theLastName  the last name of the user
+     * @param theEmail     the email of the user
+     * @param thePass      the password for the user
      */
     public void setUserInformation(final String theFirstName, final String theLastName,
                                    final String theEmail, final String thePass) {
@@ -383,14 +442,14 @@ public class RegisterUserActivity extends AppCompatActivity {
     /**
      * Method used to set the Users additional information.
      *
-     * @param photo Users photo. In this version it's null.
-     * @param dateDOB Users Date from his/hers DOB.
-     * @param monthDOB Users Month from his/hers DOB.
-     * @param yearDOB Users Year from his/hers DOB.
-     * @param weight Users weight.
-     * @param heightFt Users Height in Feet.
-     * @param heightIn Users Height in Inches.
-     * @param gender Users Gender.
+     * @param photo         Users photo. In this version it's null.
+     * @param dateDOB       Users Date from his/hers DOB.
+     * @param monthDOB      Users Month from his/hers DOB.
+     * @param yearDOB       Users Year from his/hers DOB.
+     * @param weight        Users weight.
+     * @param heightFt      Users Height in Feet.
+     * @param heightIn      Users Height in Inches.
+     * @param gender        Users Gender.
      * @param activityLevel Users activity level.
      * @param daysToWorkout Number of days the users workouts.
      */
@@ -412,56 +471,28 @@ public class RegisterUserActivity extends AppCompatActivity {
                 + "\nemail: " + mUserEmail + "\nPassword: " + mUserPassword
                 + "\nDOB: " + mMonthDOB + "/" + mDateDOB + "/" + mYearDOB
                 + "\nWeight: " + mWeight + "\nHeight: " + mHeightFt + "'" + mHeightIn + "\""
-                +"\nGender: " + mGender + "\nActivity Level: " + mActivityLevel
+                + "\nGender: " + mGender + "\nActivity Level: " + mActivityLevel
                 + "\nDays to workout: " + mDaysToWorkout;
         Log.i(TAG, messageDebug);
     }
 
-    /** Method that will build the url for calling the AsyncTask.  */
-    public String buildAddUserAdditionaIfoURL() {
+    /**
+     * Method that will build the url for calling the AsyncTask.
+     */
+    public CreateUserAdditionalInfoRequest BuildCreateUserAdditionalInfoRequest() {
 
-        StringBuilder sb = new StringBuilder(USER_ADDITIONAL_INFO_ADD_URL);
+        String birthDay = "" + mYearDOB + "-" + mMonthDOB + "-" + mDateDOB;
+        return new CreateUserAdditionalInfoRequest(mUserEmail,
+                mUserFirstName,
+                mUserLastName,
+                birthDay,
+                mWeight,
+                mHeightFt,
+                mHeightIn,
+                mGender,
+                mActivityLevel,
+                mDaysToWorkout);
 
-        try {
-            sb.append("email=");
-            sb.append(mUserEmail);
-
-            sb.append("&firstName=");
-            sb.append(URLEncoder.encode(mUserFirstName, "UTF-8"));
-
-            sb.append("&lastName=");
-            sb.append(URLEncoder.encode(mUserLastName, "UTF-8"));
-
-            sb.append("&profilePhoto=");
-            sb.append(Arrays.toString(mPhoto));
-
-            String birthDay = "" + mYearDOB + "-" + mMonthDOB + "-" + mDateDOB;
-            sb.append("&birthDay=");
-            sb.append(URLEncoder.encode(birthDay, "UTF-8"));
-
-            sb.append("&weight=");
-            sb.append(mWeight);
-
-            sb.append("&heightFt=");
-            sb.append(mHeightFt);
-
-            sb.append("&heightIn=");
-            sb.append(mHeightIn);
-
-            sb.append("&gender=");
-            sb.append(URLEncoder.encode(String.valueOf(mGender), "UTF-8"));
-
-            sb.append("&activityLevel=");
-            sb.append(URLEncoder.encode(mActivityLevel, "UTF-8"));
-
-            sb.append("&daysToWorkout=");
-            sb.append(mDaysToWorkout);
-            Log.i(TAG, sb.toString());
-        }
-        catch(Exception e) {
-            Log.e(TAG, "Something wrong with the url" + e.getMessage());
-        }
-        return sb.toString();
     }
 
     /**
@@ -474,14 +505,18 @@ public class RegisterUserActivity extends AppCompatActivity {
     }
 
 
-
-    /** AsyncTask class called AddUserTask that will allow us to call the service for adding
-     * user information. */
+    /**
+     * AsyncTask class called AddUserTask that will allow us to call the service for adding
+     * user information.
+     */
+    @AllArgsConstructor
     private class AddUserTask extends AsyncTask<String, Void, String> {
+        private String requestJson;
+        private String requestMethod;
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest(requestMethod, requestJson, urls);
         }
 
 
@@ -500,7 +535,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
                     getSupportFragmentManager().popBackStackImmediate();
-                    if(redo) {
+                    if (redo) {
                         // Launch the RegisterUserAdditionalInfoFragment to get the additional information.
                         RegisterUserAdditionalInfoFragment userOtherInfo = new RegisterUserAdditionalInfoFragment();
                         getSupportFragmentManager().beginTransaction()
@@ -512,7 +547,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                         (Toast.makeText(getApplicationContext(),
                                 R.string.registration_successful, Toast.LENGTH_SHORT)).show();
                         // Store user email and record that they are logged in
-                        SharedPreferences sharedPreferences  = getSharedPreferences
+                        SharedPreferences sharedPreferences = getSharedPreferences
                                 (getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
                         sharedPreferences.edit().putString(getString(R.string.current_email),
                                 mUserEmail).apply();

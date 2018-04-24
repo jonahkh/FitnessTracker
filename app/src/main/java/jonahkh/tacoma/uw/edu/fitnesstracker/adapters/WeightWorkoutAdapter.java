@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,14 +77,13 @@ public class WeightWorkoutAdapter extends BaseAdapter {
 
     @SuppressLint("InflateParams")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater =
                     (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.fragment_weightworkout, null);
         }
         final ViewHolder holder = new ViewHolder(convertView);
-        holder.mItem = mValues.get(position);
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getExerciseName());
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +96,20 @@ public class WeightWorkoutAdapter extends BaseAdapter {
                 }
             }
         });
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                displayDialog(position);
+                return false;
+            }
+        });
         return convertView;
     }
+
+    private void displayDialog(int position) {
+
+    }
+
     /**
      * Holds all of the view elements for each list item for this adapter.
      */

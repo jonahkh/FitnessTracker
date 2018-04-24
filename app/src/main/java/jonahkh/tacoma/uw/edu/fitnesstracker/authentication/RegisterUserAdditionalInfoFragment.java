@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbEndpoint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -38,6 +39,9 @@ import java.util.Locale;
 
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
+import jonahkh.tacoma.uw.edu.fitnesstracker.model.domain.CreateUserAdditionalInfoRequest;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.JsonUtilities;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 
 /**
@@ -48,10 +52,11 @@ import jonahkh.tacoma.uw.edu.fitnesstracker.dashboard.DashboardActivity;
  * @author Hector Diaz
  */
 public class RegisterUserAdditionalInfoFragment extends Fragment {
+    private static final String BASE_ENDPOINT = "localhost:5000/v1/fitnesstracker/";
 
     /** URL used to delete the user information from database. */
     private final static String USER_DELETE_URL
-            = "http://cssgate.insttech.washington.edu/~_450atm2/deleteUser.php?";
+            = "localhost:5000/v1/fitnesstracker/deleteUser.php?";
 
     /** Tag used for debugging. */
     private final String TAG = "Reg Additional Info";
@@ -124,53 +129,44 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
         }
 
         Button register = (Button)myView.findViewById(R.id.registerUser_bt);
-        register.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                mDateDOB = getDateSelected(myView);
-                mMonthDOB = getMonthSelected(myView);
-                mYearDOB = getYearEntered(myView);
-                mWeight = getWeightEntered(myView);
-                mHeightFt = getHeightFt(myView);
-                mHeightIn = getHeightIn(myView);
-                mGender = getGender(myView);
-                mActivityLevel = getActivityLevel(myView);
-                mDaysToWorkout = getDaysToWorkout(myView);
+        register.setOnClickListener(v -> {
+            mDateDOB = getDateSelected(myView);
+            mMonthDOB = getMonthSelected(myView);
+            mYearDOB = getYearEntered(myView);
+            mWeight = getWeightEntered(myView);
+            mHeightFt = getHeightFt(myView);
+            mHeightIn = getHeightIn(myView);
+            mGender = getGender(myView);
+            mActivityLevel = getActivityLevel(myView);
+            mDaysToWorkout = getDaysToWorkout(myView);
 
-                // Check that the entered information is valid.
-                if(mDateDOB != INVALID && mMonthDOB != INVALID && mYearDOB != INVALID
-                        && mWeight != INVALID && mHeightFt != INVALID && mHeightIn != INVALID){
+            // Check that the entered information is valid.
+            if(mDateDOB != INVALID && mMonthDOB != INVALID && mYearDOB != INVALID
+                    && mWeight != INVALID && mHeightFt != INVALID && mHeightIn != INVALID){
 
-                    ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mPhoto, mDateDOB,
-                            mMonthDOB, mYearDOB, mWeight, mHeightFt, mHeightIn, mGender,
-                            mActivityLevel, mDaysToWorkout);
+                ((RegisterUserActivity)getActivity()).setUserAdditionInfo(mPhoto, mDateDOB,
+                        mMonthDOB, mYearDOB, mWeight, mHeightFt, mHeightIn, mGender,
+                        mActivityLevel, mDaysToWorkout);
 
-                    String url = ((RegisterUserActivity)getActivity()).buildAddUserAdditionaIfoURL();
-                    ((RegisterUserActivity)getActivity()).addUserData(url);
-                }
+                CreateUserAdditionalInfoRequest request = ((RegisterUserActivity) getActivity()).BuildCreateUserAdditionalInfoRequest();
+                ((RegisterUserActivity)getActivity()).addUserData(JsonUtilities.toJson(request), "POST", BASE_ENDPOINT + "updateuserdata");
             }
         });
 
         Button cancelBut = (Button) myView.findViewById(R.id.registerUser_cancelBt);
-        cancelBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                // delete email and password from user
-                String email = ((RegisterUserActivity)getActivity()).getUserEmail();
-                String url = USER_DELETE_URL + "email=" + email;
-                DeleteUserTask task = new DeleteUserTask();
-                Log.i(TAG, url);
-                task.execute(url);
-            }
+        cancelBut.setOnClickListener(v -> {
+            // delete email and password from user
+            String email = ((RegisterUserActivity)getActivity()).getUserEmail();
+            String url = BASE_ENDPOINT + "deleteuser/" + email;
+            DeleteUserTask task = new DeleteUserTask();
+            Log.i(TAG, url);
+            task.execute(url);
         });
 
         mImageView = (ImageView) myView.findViewById(R.id.add_pic);
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddPictureFragment fragment = new AddPictureFragment();
-                fragment.show(getActivity().getSupportFragmentManager(), "launch");
-            }
+        mImageView.setOnClickListener(v -> {
+            AddPictureFragment fragment = new AddPictureFragment();
+            fragment.show(getActivity().getSupportFragmentManager(), "launch");
         });
 
         return myView;
@@ -338,7 +334,7 @@ public class RegisterUserAdditionalInfoFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("DELETE", null, urls);
         }
 
 

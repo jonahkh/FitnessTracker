@@ -1,15 +1,22 @@
+//plugins {
+//    id 'net.ltgt.apt' version '0.10'
+//}
 apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "24.0.0"
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "jonahkh.tacoma.uw.edu.fitnesstracker"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        jackOptions {
+            enabled true
+        }
     }
     buildTypes {
         release {
@@ -19,20 +26,34 @@ android {
     }
 
     // This will allow us the location and map libraries
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+
 }
 
 repositories {
     mavenCentral()
 }
 
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
+    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.8.2'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'org.apache.httpcomponents:httpcore:4.4.1'
+    compile 'org.apache.httpcomponents:httpclient:4.5'
+
+//    compileOnly groups:  "org.projectlombok:lombok:1.16.20"
+//    provided 'org.projectlombok:lombok:1.16.20'
+
     androidTestCompile fileTree(dir: 'libs', include: 'robotium-solo-5.5.4.jar')
 }

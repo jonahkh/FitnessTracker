@@ -25,6 +25,7 @@ import android.widget.Toast;
 import jonahkh.tacoma.uw.edu.fitnesstracker.R;
 import jonahkh.tacoma.uw.edu.fitnesstracker.adapters.MyPictureRecyclerViewAdapter;
 import jonahkh.tacoma.uw.edu.fitnesstracker.model.Picture;
+import jonahkh.tacoma.uw.edu.fitnesstracker.services.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public class PictureListFragment extends Fragment {
     private static final String ADD_PICTURE_URL =
-            "http://cssgate.insttech.washington.edu/~_450atm2/getAfterImages.php?";
+            "localhost:5000/v1/fitnesstracker/getAfterImages.php?";
 
     /** Number of columns to show. */
     private final int mColumnCount = 3;
@@ -98,7 +99,7 @@ public class PictureListFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... urls) {
-            return DashboardActivity.doInBackgroundHelper(urls);
+            return RestClient.runRequest("GET", null, urls);
         }
 
         @Override
